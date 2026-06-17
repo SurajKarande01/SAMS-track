@@ -19,7 +19,7 @@ import com.tka.sams.api.service.SubjectService;
 
 @RestController
 @RequestMapping("/subject")
-@CrossOrigin("http://localhost:4200")
+@CrossOrigin("*")
 public class SubjectController {
 
 	@Autowired

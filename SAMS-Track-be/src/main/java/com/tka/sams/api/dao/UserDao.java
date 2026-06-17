@@ -59,16 +59,18 @@ public class UserDao {
 
 	public User updateUser(User user) {
 		Session session = null;
-
 		try {
 			session = factory.openSession();
 			session.update(user);
 			session.beginTransaction().commit();
 			return user;
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
+		} finally {
+			if (session != null) {
+				session.close();
+			}
 		}
 	}
 

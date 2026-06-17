@@ -20,27 +20,112 @@ import AllStudents from "./pages/faculty/AllStudents";
 import MarkAttendance from "./pages/faculty/MarkAttendance";
 import ViewAttendance from "./pages/faculty/ViewAttendance";
 
-// Layout Components
+// Layout & Protection Components
 import Footer from "./components/Footer";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
     <div className="flex flex-col min-h-screen">
       <div className="flex-grow">
         <Routes>
+          {/* Public Routes */}
           <Route path="/" element={<Welcome />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/admin-dashboard" element={<AdminDashboard />} />
-          <Route path="/faculty-dashboard" element={<FacultyDashboard />} />
-          <Route path="/add-user" element={<AddUser />} />
-          <Route path="/all-users" element={<AllUser />} />
-          <Route path="/update-user/:username" element={<UpdateUser />} />
-          <Route path="/all-subject" element={<AllSubject />} />
-          <Route path="/add-student" element={<AddStudent />} />
-          <Route path="/all-students" element={<AllStudents />} />
-          <Route path="/mark-attendance" element={<MarkAttendance />} />
-          <Route path="/view-attendance" element={<ViewAttendance />} />
-          <Route path="/my-profile" element={<Profile />} />
+
+          {/* Admin Protected Routes */}
+          <Route
+            path="/admin-dashboard"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/add-user"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <AddUser />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/all-users"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <AllUser />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/update-user/:username"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <UpdateUser />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/all-subject"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <AllSubject />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Faculty Protected Routes */}
+          <Route
+            path="/faculty-dashboard"
+            element={
+              <ProtectedRoute allowedRoles={["faculty"]}>
+                <FacultyDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/add-student"
+            element={
+              <ProtectedRoute allowedRoles={["faculty"]}>
+                <AddStudent />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/all-students"
+            element={
+              <ProtectedRoute allowedRoles={["faculty"]}>
+                <AllStudents />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/mark-attendance"
+            element={
+              <ProtectedRoute allowedRoles={["faculty"]}>
+                <MarkAttendance />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Shared Protected Routes */}
+          <Route
+            path="/view-attendance"
+            element={
+              <ProtectedRoute allowedRoles={["admin", "faculty"]}>
+                <ViewAttendance />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/my-profile"
+            element={
+              <ProtectedRoute allowedRoles={["admin", "faculty"]}>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </div>
       <Footer />

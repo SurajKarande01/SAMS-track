@@ -18,7 +18,7 @@ import com.tka.sams.api.service.StudentService;
 
 @RestController
 @RequestMapping("/student")
-@CrossOrigin("http://localhost:4200")
+@CrossOrigin("*")
 public class StudentController {
 
 	@Autowired

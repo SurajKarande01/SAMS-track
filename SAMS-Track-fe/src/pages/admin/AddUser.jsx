@@ -1,5 +1,6 @@
 import { useState } from "react";
-import AdminMenu from "./AdminMenu";
+import AdminMenu from "../../components/AdminMenu";
+import { userService } from "../../services/userService";
 
 function AddUser() {
   const [form, setForm] = useState({
@@ -11,6 +12,7 @@ function AddUser() {
     lastName: "",
   });
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -19,86 +21,80 @@ function AddUser() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
+    setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:8091/user/register-user/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+      await userService.register(form);
+      setMessage("User registered successfully!");
+      setForm({
+        username: "",
+        password: "",
+        email: "",
+        role: "",
+        firstName: "",
+        lastName: "",
       });
-
-      if (response.ok) {
-        setMessage("User registered successfully!");
-        setForm({
-          username: "",
-          password: "",
-          email: "",
-          role: "",
-          firstName: "",
-          lastName: "",
-        });
-      } else {
-        setMessage("Failed to register user.");
-      }
     } catch (err) {
-      setMessage("Something went wrong.");
+      setMessage("Failed to register user.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       <AdminMenu />
 
-      <div className="flex justify-center py-10 px-4">
+      <div className="flex-grow flex justify-center py-10 px-4">
         <form
           onSubmit={handleSubmit}
-          className="bg-white p-6 rounded shadow w-full max-w-lg"
+          className="bg-white p-6 rounded shadow w-full max-w-lg border border-gray-200"
         >
-          <h2 className="text-xl font-bold mb-4 text-center">Add User</h2>
+          <h2 className="text-xl font-bold mb-4 text-center text-gray-800">Add User</h2>
 
           <div className="mb-3">
-            <label className="block mb-1 text-sm font-medium">Username</label>
+            <label className="block mb-1 text-sm font-medium text-gray-700">Username</label>
             <input
               type="text"
               name="username"
               value={form.username}
               onChange={handleChange}
-              className="w-full border p-2 rounded"
+              className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
               required
             />
           </div>
 
           <div className="mb-3">
-            <label className="block mb-1 text-sm font-medium">Password</label>
+            <label className="block mb-1 text-sm font-medium text-gray-700">Password</label>
             <input
               type="password"
               name="password"
               value={form.password}
               onChange={handleChange}
-              className="w-full border p-2 rounded"
+              className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
               required
             />
           </div>
 
           <div className="mb-3">
-            <label className="block mb-1 text-sm font-medium">Email</label>
+            <label className="block mb-1 text-sm font-medium text-gray-700">Email</label>
             <input
               type="email"
               name="email"
               value={form.email}
               onChange={handleChange}
-              className="w-full border p-2 rounded"
+              className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
               required
             />
           </div>
 
           <div className="mb-3">
-            <label className="block mb-1 text-sm font-medium">Role</label>
+            <label className="block mb-1 text-sm font-medium text-gray-700">Role</label>
             <select
               name="role"
               value={form.role}
               onChange={handleChange}
-              className="w-full border p-2 rounded"
+              className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
               required
             >
               <option value="">Select role</option>
@@ -108,7 +104,7 @@ function AddUser() {
           </div>
 
           <div className="mb-3">
-            <label className="block mb-1 text-sm font-medium">
+            <label className="block mb-1 text-sm font-medium text-gray-700">
               First Name
             </label>
             <input
@@ -116,19 +112,19 @@ function AddUser() {
               name="firstName"
               value={form.firstName}
               onChange={handleChange}
-              className="w-full border p-2 rounded"
+              className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
               required
             />
           </div>
 
           <div className="mb-3">
-            <label className="block mb-1 text-sm font-medium">Last Name</label>
+            <label className="block mb-1 text-sm font-medium text-gray-700">Last Name</label>
             <input
               type="text"
               name="lastName"
               value={form.lastName}
               onChange={handleChange}
-              className="w-full border p-2 rounded"
+              className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
               required
             />
           </div>
@@ -136,7 +132,7 @@ function AddUser() {
           {message && (
             <p
               className={`text-sm text-center mb-3 ${
-                message.includes("success") ? "text-green-600" : "text-red-500"
+                message.includes("successfully") ? "text-green-600" : "text-red-500"
               }`}
             >
               {message}
@@ -145,9 +141,10 @@ function AddUser() {
 
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 rounded"
+            disabled={loading}
+            className="w-full bg-blue-500 text-white py-2 rounded font-semibold hover:bg-blue-600 transition disabled:opacity-50"
           >
-            Add User
+            {loading ? "Registering..." : "Add User"}
           </button>
         </form>
       </div>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import AdminMenu from "./AdminMenu";
-import FacultyMenu from "./FacultyMenu";
+import AdminMenu from "../components/AdminMenu";
+import FacultyMenu from "../components/FacultyMenu";
+import { userService } from "../services/userService";
 
 function Profile() {
   const username = localStorage.getItem("username");
@@ -10,8 +11,7 @@ function Profile() {
   const [form, setForm] = useState({ username: "", password: "", firstName: "", lastName: "", email: "", role: "" });
 
   useEffect(() => {
-    fetch(`http://localhost:8091/user/get-user-by-username/${username}/`)
-      .then((res) => res.json())
+    userService.getByUsername(username)
       .then((data) => { setUser(data); setForm(data); })
       .catch((err) => console.error(err));
   }, [username]);
@@ -19,12 +19,7 @@ function Profile() {
   const handleChange = (e) => { setForm({ ...form, [e.target.name]: e.target.value }); };
 
   const handleSave = () => {
-    fetch("http://localhost:8091/user/update-user/", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    })
-      .then((res) => { if (!res.ok) throw new Error("Failed"); return res.json(); })
+    userService.update(form)
       .then((data) => { alert("Profile updated!"); setUser(data); setIsEditing(false); })
       .catch(() => alert("Error updating profile."));
   };
@@ -32,10 +27,10 @@ function Profile() {
   if (!user) return <div className="p-6">Loading...</div>;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       {role === "admin" ? <AdminMenu /> : <FacultyMenu />}
-      <div className="flex justify-center py-10 px-4">
-        <div className="bg-white p-6 rounded shadow w-full max-w-lg">
+      <div className="flex-grow flex justify-center py-10 px-4">
+        <div className="bg-white p-6 rounded shadow w-full max-w-lg border border-gray-200">
           <h2 className="text-xl font-bold mb-4 text-center">My Profile</h2>
           <div className="mb-3">
             <label className="block text-sm font-medium mb-1">Username</label>

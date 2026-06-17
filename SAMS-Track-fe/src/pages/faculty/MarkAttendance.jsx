@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
-import FacultyMenu from "./FacultyMenu";
+import FacultyMenu from "../../components/FacultyMenu";
+import { subjectService } from "../../services/subjectService";
+import { studentService } from "../../services/studentService";
+import { attendanceService } from "../../services/attendanceService";
 
 function MarkAttendance() {
   const [subjects, setSubjects] = useState([]);
@@ -8,24 +11,22 @@ function MarkAttendance() {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [attendance, setAttendance] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const username = localStorage.getItem("username");
 
   // fetch subjects
   useEffect(() => {
-    fetch("http://localhost:8091/subject/get-all-subjects/")
-      .then((res) => res.json())
+    subjectService.getAll()
       .then((data) => setSubjects(data))
       .catch((err) => console.error(err));
   }, []);
 
   // fetch students
   useEffect(() => {
-    fetch("http://localhost:8091/student/get-all-students/")
-      .then((res) => res.json())
+    studentService.getAll()
       .then((data) => {
         setStudents(data);
-        // set all to false initially
         const initial = {};
         data.forEach((s) => (initial[s.id] = false));
         setAttendance(initial);
@@ -76,40 +77,31 @@ function MarkAttendance() {
       students: selectedStudents,
     };
 
+    setLoading(true);
     try {
-      const res = await fetch(
-        "http://localhost:8091/attendance/take-attendance/",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        }
-      );
-
-      if (res.ok) {
-        alert("Attendance marked successfully!");
-      } else {
-        alert("Failed to mark attendance.");
-      }
+      await attendanceService.takeAttendance(payload);
+      alert("Attendance marked successfully!");
     } catch (err) {
       console.error(err);
       alert("Error while marking attendance.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       <FacultyMenu />
 
-      <div className="p-6 max-w-4xl mx-auto">
-        <h2 className="text-xl font-bold mb-4 text-center">Mark Attendance</h2>
+      <div className="p-6 max-w-4xl mx-auto flex-grow w-full">
+        <h2 className="text-xl font-bold mb-4 text-center text-gray-800">Mark Attendance</h2>
 
         {/* subject, date, time */}
         <div className="flex flex-wrap gap-4 mb-6">
           <select
             value={selectedSubject}
             onChange={(e) => setSelectedSubject(e.target.value)}
-            className="border p-2 rounded flex-1"
+            className="border p-2 rounded flex-1 focus:ring-2 focus:ring-blue-500 focus:outline-none"
           >
             <option value="">Select Subject</option>
             {subjects.map((s) => (
@@ -123,14 +115,14 @@ function MarkAttendance() {
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            className="border p-2 rounded flex-1"
+            className="border p-2 rounded flex-1 focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
 
           <input
             type="time"
             value={time}
             onChange={(e) => setTime(e.target.value)}
-            className="border p-2 rounded flex-1"
+            className="border p-2 rounded flex-1 focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
         </div>
 
@@ -138,36 +130,37 @@ function MarkAttendance() {
         <div className="mb-4 flex gap-2">
           <button
             onClick={selectAll}
-            className="bg-green-500 text-white px-3 py-1 rounded text-sm"
+            className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm transition"
           >
             Select All
           </button>
           <button
             onClick={deselectAll}
-            className="bg-gray-400 text-white px-3 py-1 rounded text-sm"
+            className="bg-gray-400 hover:bg-gray-500 text-white px-3 py-1 rounded text-sm transition"
           >
             Deselect All
           </button>
         </div>
 
         {/* students list */}
-        <div className="border rounded p-4 bg-white mb-6">
+        <div className="border border-gray-200 rounded p-4 bg-white mb-6 max-h-96 overflow-y-auto">
           {students.length > 0 ? (
             students.map((student) => (
-              <div key={student.id} className="flex items-center mb-2">
+              <div key={student.id} className="flex items-center mb-2 last:mb-0 hover:bg-gray-50 p-1 rounded">
                 <input
                   type="checkbox"
+                  id={`student-${student.id}`}
                   checked={attendance[student.id] || false}
                   onChange={() => toggleStudent(student.id)}
-                  className="mr-2"
+                  className="mr-2 cursor-pointer focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded"
                 />
-                <span>
+                <label htmlFor={`student-${student.id}`} className="cursor-pointer text-gray-700 select-none">
                   {student.id} - {student.name}
-                </span>
+                </label>
               </div>
             ))
           ) : (
-            <p className="text-gray-500">No students found</p>
+            <p className="text-gray-500 text-center py-4">No students found</p>
           )}
         </div>
 
@@ -175,9 +168,10 @@ function MarkAttendance() {
         <div className="text-center">
           <button
             onClick={handleSubmit}
-            className="bg-blue-500 text-white px-6 py-2 rounded"
+            disabled={loading}
+            className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded font-semibold transition disabled:opacity-50"
           >
-            Submit Attendance
+            {loading ? "Submitting..." : "Submit Attendance"}
           </button>
         </div>
       </div>

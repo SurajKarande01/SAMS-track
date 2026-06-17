@@ -1,14 +1,9 @@
-
 function Footer() {
   return (
-    <>
-      <footer className="bg-gray-800 text-white py-4">
-        <div className="container mx-auto text-center">
-          <p>&copy; {new Date().getFullYear()} SAMSTRACK. All rights reserved.</p>
-        </div>
-      </footer>
-    </>
-  )
+    <footer className="bg-gray-800 text-white text-center p-3 mt-auto">
+      <p>&copy; {new Date().getFullYear()} SAMSTRACK. All rights reserved.</p>
+    </footer>
+  );
 }
 
-export default Footer
+export default Footer;

@@ -3,129 +3,129 @@ import FacultyMenu from "./FacultyMenu";
 
 function AllStudents() {
   const [students, setStudents] = useState([]);
-  const [editingStudent, setEditingStudent] = useState(null);
-  const [formData, setFormData] = useState({ id: "", name: "", email: "" });
+  const [editingId, setEditingId] = useState(null);
+  const [editName, setEditName] = useState("");
+  const [editEmail, setEditEmail] = useState("");
 
-  // Fetch students
+  // fetch students
   useEffect(() => {
     fetch("http://localhost:8091/student/get-all-students/")
       .then((res) => res.json())
       .then((data) => setStudents(data))
-      .catch((err) => console.error("Error fetching students:", err));
+      .catch((err) => console.error("Error:", err));
   }, []);
 
-  // Delete student
+  // delete student
   const deleteStudent = (id) => {
+    if (!window.confirm("Delete this student?")) return;
+
     fetch(`http://localhost:8091/student/delete-student/${id}/`, {
       method: "DELETE",
     })
       .then(() => {
         setStudents(students.filter((s) => s.id !== id));
       })
-      .catch((err) => console.error("Error deleting student:", err));
+      .catch((err) => console.error("Error:", err));
   };
 
-  // Handle edit click
-  const startEditing = (student) => {
-    setEditingStudent(student.id);
-    setFormData({ id: student.id, name: student.name, email: student.email });
+  // start editing
+  const startEdit = (student) => {
+    setEditingId(student.id);
+    setEditName(student.name);
+    setEditEmail(student.email);
   };
 
-  // Handle form input
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  // Save updated student
-  const updateStudent = () => {
+  // save edit
+  const saveEdit = () => {
     fetch("http://localhost:8091/student/update-student/", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
+      body: JSON.stringify({ id: editingId, name: editName, email: editEmail }),
     })
       .then(() => {
         setStudents(
           students.map((s) =>
-            s.id === formData.id ? { ...s, ...formData } : s
+            s.id === editingId ? { ...s, name: editName, email: editEmail } : s
           )
         );
-        setEditingStudent(null);
+        setEditingId(null);
       })
-      .catch((err) => console.error("Error updating student:", err));
+      .catch((err) => console.error("Error:", err));
   };
 
   return (
-    <>
+    <div className="min-h-screen bg-gray-50">
       <FacultyMenu />
+
       <div className="p-6">
-        <h2 className="text-xl font-bold mb-4">All Students</h2>
-        <table className="w-full border border-gray-300">
+        <h2 className="text-xl font-bold mb-4 text-center">All Students</h2>
+
+        <table className="w-full border">
           <thead>
             <tr className="bg-gray-200">
-              <th className="border px-4 py-2">ID</th>
-              <th className="border px-4 py-2">Name</th>
-              <th className="border px-4 py-2">Email</th>
-              <th className="border px-4 py-2">Actions</th>
+              <th className="border p-2">ID</th>
+              <th className="border p-2">Name</th>
+              <th className="border p-2">Email</th>
+              <th className="border p-2">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {students.map((student) => (
-              <tr key={student.id} className="text-center">
-                <td className="border px-4 py-2">{student.id}</td>
-                <td className="border px-4 py-2">
-                  {editingStudent === student.id ? (
-                    <input
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      className="border px-2 py-1 rounded"
-                    />
-                  ) : (
-                    student.name
-                  )}
-                </td>
-                <td className="border px-4 py-2">
-                  {editingStudent === student.id ? (
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      className="border px-2 py-1 rounded"
-                    />
-                  ) : (
-                    student.email
-                  )}
-                </td>
-                <td className="border px-4 py-2 space-x-2">
-                  {editingStudent === student.id ? (
+            {students.length > 0 ? (
+              students.map((student) => (
+                <tr key={student.id} className="text-center">
+                  <td className="border p-2">{student.id}</td>
+                  <td className="border p-2">
+                    {editingId === student.id ? (
+                      <input
+                        type="text"
+                        value={editName}
+                        onChange={(e) => setEditName(e.target.value)}
+                        className="border p-1 rounded"
+                      />
+                    ) : (
+                      student.name
+                    )}
+                  </td>
+                  <td className="border p-2">
+                    {editingId === student.id ? (
+                      <input
+                        type="email"
+                        value={editEmail}
+                        onChange={(e) => setEditEmail(e.target.value)}
+                        className="border p-1 rounded"
+                      />
+                    ) : (
+                      student.email
+                    )}
+                  </td>
+                  <td className="border p-2">
+                    {editingId === student.id ? (
+                      <button
+                        onClick={saveEdit}
+                        className="bg-green-500 text-white px-2 py-1 rounded text-sm mr-2"
+                      >
+                        Save
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => startEdit(student)}
+                        className="bg-blue-500 text-white px-2 py-1 rounded text-sm mr-2"
+                      >
+                        Edit
+                      </button>
+                    )}
                     <button
-                      onClick={updateStudent}
-                      className="bg-green-500 text-white px-3 py-1 rounded"
+                      onClick={() => deleteStudent(student.id)}
+                      className="bg-red-500 text-white px-2 py-1 rounded text-sm"
                     >
-                      Save
+                      Delete
                     </button>
-                  ) : (
-                    <button
-                      onClick={() => startEditing(student)}
-                      className="bg-blue-500 text-white px-3 py-1 rounded"
-                    >
-                      Edit
-                    </button>
-                  )}
-                  <button
-                    onClick={() => deleteStudent(student.id)}
-                    className="bg-red-500 text-white px-3 py-1 rounded"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-            {students.length === 0 && (
+                  </td>
+                </tr>
+              ))
+            ) : (
               <tr>
-                <td colSpan="4" className="text-center py-4 text-gray-500">
+                <td colSpan="4" className="text-center p-4 text-gray-500">
                   No students found
                 </td>
               </tr>
@@ -133,7 +133,7 @@ function AllStudents() {
           </tbody>
         </table>
       </div>
-    </>
+    </div>
   );
 }
 

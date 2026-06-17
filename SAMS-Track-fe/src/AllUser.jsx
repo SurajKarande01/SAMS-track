@@ -6,98 +6,74 @@ function AllUser() {
   const [users, setUsers] = useState([]);
   const navigate = useNavigate();
 
-  // Fetch all users
+  // fetch all users
   const fetchUsers = () => {
     fetch("http://localhost:8091/user/get-all-user/")
       .then((res) => res.json())
       .then((data) => setUsers(data))
-      .catch((err) => console.error("Error fetching users:", err));
+      .catch((err) => console.error("Error:", err));
   };
 
   useEffect(() => {
     fetchUsers();
   }, []);
 
-  // Delete user
-  const handleDeleteUser = (username) => {
-    if (!window.confirm(`Are you sure you want to delete user: ${username}?`)) {
-      return;
-    }
+  // delete user
+  const deleteUser = (username) => {
+    if (!window.confirm(`Delete user: ${username}?`)) return;
 
     fetch(
       `http://localhost:8091/user/delete-user-by-username?username=${username}`,
-      {
-        method: "DELETE",
-      }
+      { method: "DELETE" }
     )
-      .then(async (res) => {
+      .then((res) => {
         if (res.ok) {
-          alert("User deleted successfully!");
+          alert("User deleted!");
           fetchUsers();
         } else {
-          const errorText = await res.text();
-          alert(`Failed to delete user. Reason: ${errorText}`);
+          alert("Failed to delete user.");
         }
       })
-      .catch((err) =>
-        alert("Error deleting user. Possibly associated with other records.")
-      );
+      .catch(() => alert("Error deleting user."));
   };
 
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-200 via-purple-200 to-pink-200">
+    <div className="min-h-screen bg-gray-50">
       <AdminMenu />
-      <h1 className="text-2xl font-bold mb-4 text-center">All Users</h1>
-      <div className="overflow-x-auto">
-        <table className="min-w-full border border-gray-200 shadow-md rounded-lg">
-          <thead className="bg-gray-800 text-white">
-            <tr>
-              <th className="px-4 py-2 border text-center">Username</th>
-              <th className="px-4 py-2 border text-center">Password</th>
-              <th className="px-4 py-2 border text-center">First Name</th>
-              <th className="px-4 py-2 border text-center">Last Name</th>
-              <th className="px-4 py-2 border text-center">Email</th>
-              <th className="px-4 py-2 border text-center">Role</th>
-              <th className="px-4 py-2 border text-center">Actions</th>
+
+      <div className="p-6">
+        <h2 className="text-xl font-bold mb-4 text-center">All Users</h2>
+
+        <table className="w-full border">
+          <thead>
+            <tr className="bg-gray-200">
+              <th className="border p-2">Username</th>
+              <th className="border p-2">First Name</th>
+              <th className="border p-2">Last Name</th>
+              <th className="border p-2">Email</th>
+              <th className="border p-2">Role</th>
+              <th className="border p-2">Actions</th>
             </tr>
           </thead>
           <tbody>
             {users.length > 0 ? (
-              users.map((user, index) => (
-                <tr
-                  key={index}
-                  className={`${
-                    index % 2 === 0 ? "bg-gray-100" : "bg-white"
-                  } hover:bg-gray-200`}
-                >
-                  <td className="px-4 py-2 border text-center">
-                    {user.username}
-                  </td>
-
-                  <td className="px-4 py-2 border text-center">
-                    {user.password}
-                  </td>
-                  <td className="px-4 py-2 border text-center">
-                    {user.firstName}
-                  </td>
-                  <td className="px-4 py-2 border text-center">
-                    {user.lastName}
-                  </td>
-                  <td className="px-4 py-2 border text-center">{user.email}</td>
-                  <td className="px-4 py-2 border text-center">
-                    {user.role ? user.role : "N/A"}
-                  </td>
-                  <td className="px-4 py-2 border text-center space-x-2">
+              users.map((user, i) => (
+                <tr key={i} className="text-center">
+                  <td className="border p-2">{user.username}</td>
+                  <td className="border p-2">{user.firstName}</td>
+                  <td className="border p-2">{user.lastName}</td>
+                  <td className="border p-2">{user.email}</td>
+                  <td className="border p-2">{user.role || "N/A"}</td>
+                  <td className="border p-2">
                     <button
-                     onClick={() => navigate(`/update-user/${user.username}`)}
-                      className="bg-blue-600 text-white px-3 py-1 rounded-md shadow hover:bg-blue-700 transition cursor-pointer"
+                      onClick={() => navigate(`/update-user/${user.username}`)}
+                      className="bg-blue-500 text-white px-2 py-1 rounded mr-2 text-sm"
                     >
-                      Update
+                      Edit
                     </button>
                     <button
-                      onClick={() => handleDeleteUser(user.username)}
-                      className="bg-red-600 text-white px-3 py-1 rounded-md shadow hover:bg-red-700 transition cursor-pointer"
+                      onClick={() => deleteUser(user.username)}
+                      className="bg-red-500 text-white px-2 py-1 rounded text-sm"
                     >
                       Delete
                     </button>
@@ -106,7 +82,7 @@ function AllUser() {
               ))
             ) : (
               <tr>
-                <td colSpan="6" className="text-center py-4">
+                <td colSpan="6" className="text-center p-4 text-gray-500">
                   No users found.
                 </td>
               </tr>

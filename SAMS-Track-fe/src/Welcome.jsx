@@ -1,55 +1,63 @@
 
+import { Link } from "react-router-dom";
 
-const functionalities = [
-  {
-    title: "Mark Attendance",
-    description: "Easily mark student attendance for each class.",
-    icon: "📋",
-  },
-  {
-    title: "View Records",
-    description: "Check attendance history and student records.",
-    icon: "📑",
-  },
-  {
-    title: "Manage Students",
-    description: "Add, edit, or remove student details.",
-    icon: "👨‍🎓",
-  },
-  {
-    title: "Reports",
-    description: "Generate and download attendance reports.",
-    icon: "📊",
-  },
-];
-
-const Welcome = () => {
+function Welcome() {
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* Header */}
-      <header className="w-full bg-white shadow flex items-center justify-between px-6 py-4">
-        <h1 className="text-2xl font-bold text-blue-600">SAMSTRACK</h1>
-        <a href="/login" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">Login</a>
-      </header>
+    <div className="min-h-screen bg-white">
+      {/* simple navbar */}
+      <nav className="bg-blue-500 text-white p-4 flex justify-between items-center">
+        <h1 className="text-xl font-bold">SAMSTRACK</h1>
+        <Link to="/login" className="bg-white text-blue-500 px-4 py-1 rounded">
+          Login
+        </Link>
+      </nav>
 
-      {/* Main Section */}
-      <main className="flex-1 flex flex-col items-center justify-center px-4 py-8">
-        <h2 className="text-xl md:text-2xl font-semibold mb-6 text-gray-800">Welcome to Student Attendance Management System</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-5xl">
-          {functionalities.map((func, idx) => (
-            <div
-              key={idx}
-              className="bg-white rounded-lg shadow p-6 flex flex-col items-center text-center hover:shadow-lg transition"
-            >
-              <div className="text-4xl mb-3">{func.icon}</div>
-              <h3 className="text-lg font-bold mb-2 text-blue-600">{func.title}</h3>
-              <p className="text-gray-600 text-sm">{func.description}</p>
-            </div>
-          ))}
+      {/* main content */}
+      <div className="text-center mt-20">
+        <h2 className="text-3xl font-bold mb-4">
+          Student Attendance Management System
+        </h2>
+        <p className="text-gray-600 mb-10">
+          A simple system to manage student attendance
+        </p>
+
+        {/* feature cards */}
+        <div className="flex flex-wrap justify-center gap-6 px-4">
+          <div className="border p-6 rounded w-60 text-center">
+            <div className="text-3xl mb-2">📋</div>
+            <h3 className="font-bold mb-1">Mark Attendance</h3>
+            <p className="text-sm text-gray-500">
+              Easily mark student attendance for each class.
+            </p>
+          </div>
+
+          <div className="border p-6 rounded w-60 text-center">
+            <div className="text-3xl mb-2">📑</div>
+            <h3 className="font-bold mb-1">View Records</h3>
+            <p className="text-sm text-gray-500">
+              Check attendance history and student records.
+            </p>
+          </div>
+
+          <div className="border p-6 rounded w-60 text-center">
+            <div className="text-3xl mb-2">👨‍🎓</div>
+            <h3 className="font-bold mb-1">Manage Students</h3>
+            <p className="text-sm text-gray-500">
+              Add, edit, or remove student details.
+            </p>
+          </div>
+
+          <div className="border p-6 rounded w-60 text-center">
+            <div className="text-3xl mb-2">📊</div>
+            <h3 className="font-bold mb-1">Reports</h3>
+            <p className="text-sm text-gray-500">
+              Generate and download attendance reports.
+            </p>
+          </div>
         </div>
-      </main>
+      </div>
     </div>
   );
-};
+}
 
 export default Welcome;

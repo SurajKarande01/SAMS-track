@@ -1,63 +1,63 @@
-
+import { Link } from "react-router-dom";
 import AdminMenu from "./AdminMenu";
-
-const adminFunctions = [
-  {
-    title: "Add User",
-    description: "Create a new user account for the system.",
-    href: "/add-user",
-    icon: "👤",
-  },
-  {
-    title: "All User",
-    description: "View and manage all users.",
-    href: "/all-user",
-    icon: "👥",
-  },
-  {
-    title: "Manage User",
-    description: "Delete and update user information. Role management.",
-    href: "/all-users",
-    icon: "🛠️"
-  },
-  {
-    title: "Add Subject",
-    description: "Add a new subject to the curriculum.",
-    href: "#",
-    icon: "📖",
-  },
-  {
-    title: "All Subject",
-    description: "View and manage all subjects.",
-    href: "/all-subject",
-    icon: "📚",
-  },
-  {
-    title: "View Attendance",
-    description: "Check and analyze attendance records.",
-    href: "/view-attendance",
-    icon: "📊",
-  },
-];
 
 function AdminDashboard() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-200 via-purple-200 to-pink-200">
+    <div className="min-h-screen bg-gray-50">
       <AdminMenu />
-      <div className="max-w-6xl mx-auto py-12 px-4">
-        <h2 className="text-2xl font-bold text-blue-700 mb-8 text-center">Admin Functionalities</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {adminFunctions.map((func, idx) => (
-            <a
-              key={idx}
-              href={func.href}
-              className="bg-white rounded-xl shadow-lg p-8 flex flex-col items-center text-center hover:shadow-2xl hover:-translate-y-1 transition transform duration-200 group"
-            >
-              <div className="text-5xl mb-4 group-hover:scale-110 transition">{func.icon}</div>
-              <h3 className="text-lg font-bold text-blue-600 mb-2">{func.title}</h3>
-              <p className="text-gray-600 text-sm">{func.description}</p>
-            </a>
-          ))}
+
+      <div className="p-6">
+        <h2 className="text-2xl font-bold mb-6 text-center">
+          Admin Dashboard
+        </h2>
+
+        <div className="flex flex-wrap justify-center gap-4">
+          <Link
+            to="/add-user"
+            className="border p-6 rounded w-56 text-center bg-white"
+          >
+            <div className="text-3xl mb-2">👤</div>
+            <h3 className="font-bold">Add User</h3>
+            <p className="text-sm text-gray-500">Create a new user account</p>
+          </Link>
+
+          <Link
+            to="/all-users"
+            className="border p-6 rounded w-56 text-center bg-white"
+          >
+            <div className="text-3xl mb-2">👥</div>
+            <h3 className="font-bold">All Users</h3>
+            <p className="text-sm text-gray-500">View and manage all users</p>
+          </Link>
+
+          <Link
+            to="/all-subject"
+            className="border p-6 rounded w-56 text-center bg-white"
+          >
+            <div className="text-3xl mb-2">📚</div>
+            <h3 className="font-bold">All Subjects</h3>
+            <p className="text-sm text-gray-500">
+              View and manage all subjects
+            </p>
+          </Link>
+
+          <Link
+            to="/view-attendance"
+            className="border p-6 rounded w-56 text-center bg-white"
+          >
+            <div className="text-3xl mb-2">📊</div>
+            <h3 className="font-bold">View Attendance</h3>
+            <p className="text-sm text-gray-500">Check attendance records</p>
+          </Link>
+
+          <Link
+            to="/my-profile"
+            className="border p-6 rounded w-56 text-center bg-white"
+          >
+            <div className="text-3xl mb-2">🧑‍💼</div>
+            <h3 className="font-bold">My Profile</h3>
+            <p className="text-sm text-gray-500">View your profile</p>
+          </Link>
         </div>
       </div>
     </div>

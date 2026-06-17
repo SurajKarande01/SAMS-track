@@ -3,30 +3,27 @@ import { useNavigate } from "react-router-dom";
 
 function Login() {
   const navigate = useNavigate();
-  const [loginRequest, setLoginRequest] = useState({ username: "", password: "" });
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
 
-  const inputHandler = (e) => {
-    const { name, value } = e.target;
-    setLoginRequest((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const submitHandler = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
-    setLoading(true);
+
     try {
-      // Replace with your actual API endpoint
       const response = await fetch("http://localhost:8091/user/login-user", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(loginRequest),
+        body: JSON.stringify({ username, password }),
       });
+
       const user = await response.json();
+
       if (user && user.username) {
         localStorage.setItem("username", user.username);
         localStorage.setItem("role", user.role);
+
         if (user.role === "admin") {
           navigate("/admin-dashboard");
         } else if (user.role === "faculty") {
@@ -38,51 +35,50 @@ function Login() {
         setError("Invalid username or password");
       }
     } catch (err) {
-      setError("Login failed. Please try again.", err.message);
+      setError("Login failed. Please try again.");
     }
-    setLoading(false);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-400 via-purple-400 to-pink-400">
-      <form
-        className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md flex flex-col gap-6"
-        onSubmit={submitHandler}
-      >
-        <h2 className="text-2xl font-bold text-center text-blue-600">Login</h2>
-        <div className="flex flex-col gap-2">
-          <label htmlFor="username" className="text-sm font-medium text-gray-700">Username</label>
-          <input
-            type="text"
-            id="username"
-            name="username"
-            value={loginRequest.username}
-            onChange={inputHandler}
-            className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            required
-          />
-        </div>
-        <div className="flex flex-col gap-2">
-          <label htmlFor="password" className="text-sm font-medium text-gray-700">Password</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={loginRequest.password}
-            onChange={inputHandler}
-            className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            required
-          />
-        </div>
-        {error && <div className="text-red-500 text-sm text-center">{error}</div>}
-        <button
-          type="submit"
-          className="bg-blue-600 text-white py-2 rounded font-semibold hover:bg-blue-700 transition"
-          disabled={loading}
-        >
-          {loading ? "Logging in..." : "Login"}
-        </button>
-      </form>
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+      <div className="bg-white p-8 rounded shadow w-96">
+        <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
+
+        <form onSubmit={handleLogin}>
+          <div className="mb-4">
+            <label className="block mb-1 font-medium">Username</label>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full border p-2 rounded"
+              required
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block mb-1 font-medium">Password</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full border p-2 rounded"
+              required
+            />
+          </div>
+
+          {error && (
+            <p className="text-red-500 text-sm mb-3 text-center">{error}</p>
+          )}
+
+          <button
+            type="submit"
+            className="w-full bg-blue-500 text-white py-2 rounded"
+          >
+            Login
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

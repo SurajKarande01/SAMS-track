@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import AdminMenu from "./AdminMenu";
 
 function UpdateUser() {
-  const { username } = useParams(); // here id is actually username
+  const { username } = useParams();
   const navigate = useNavigate();
   const [user, setUser] = useState({
     username: "",
@@ -14,15 +14,12 @@ function UpdateUser() {
     lastName: "",
   });
 
-  // Fetch user details by username
+  // fetch user data
   useEffect(() => {
     fetch(`http://localhost:8091/user/get-user-by-username/${username}`)
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to fetch user");
-        return res.json();
-      })
+      .then((res) => res.json())
       .then((data) => setUser(data))
-      .catch((err) => console.error("Error fetching user:", err));
+      .catch((err) => console.error("Error:", err));
   }, [username]);
 
   const handleChange = (e) => {
@@ -39,136 +36,105 @@ function UpdateUser() {
     })
       .then((res) => {
         if (res.ok) {
-          alert("User updated successfully!");
-          navigate("/all-users"); // redirect back
+          alert("User updated!");
+          navigate("/all-users");
         } else {
-          alert("Failed to update user!");
+          alert("Failed to update user.");
         }
       })
-      .catch((err) => console.error("Error updating user:", err));
+      .catch((err) => console.error("Error:", err));
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-200 via-purple-200 to-pink-200">
-      {/* top menu */}
+    <div className="min-h-screen bg-gray-50">
       <AdminMenu />
 
-      {/* form section */}
-      <div className="flex justify-center items-center py-12 px-4">
+      <div className="flex justify-center py-10 px-4">
         <form
-          className="bg-white rounded-xl shadow-lg p-8 w-full max-w-2xl flex flex-col gap-6"
           onSubmit={handleSubmit}
+          className="bg-white p-6 rounded shadow w-full max-w-lg"
         >
-          <h2 className="text-2xl font-bold text-green-600 text-center mb-2">
-            Update User
-          </h2>
+          <h2 className="text-xl font-bold mb-4 text-center">Update User</h2>
 
-          {/* grid like AddUser */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Username - disabled */}
-            <div className="flex flex-col gap-2">
-              <label htmlFor="username" className="text-sm font-medium text-gray-700">
-                Username
-              </label>
-              <input
-                type="text"
-                id="username"
-                name="username"
-                value={user.username}
-                disabled
-                className="border rounded px-3 py-2 bg-gray-100 text-gray-600 cursor-not-allowed"
-              />
-            </div>
-
-            {/* Password */}
-            <div className="flex flex-col gap-2">
-              <label htmlFor="password" className="text-sm font-medium text-gray-700">
-                Password
-              </label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                value={user.password}
-                onChange={handleChange}
-                className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
-                required
-              />
-            </div>
-
-            {/* Email */}
-            <div className="flex flex-col gap-2">
-              <label htmlFor="email" className="text-sm font-medium text-gray-700">
-                Email
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={user.email}
-                onChange={handleChange}
-                className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
-                required
-              />
-            </div>
-
-            {/* Role */}
-            <div className="flex flex-col gap-2">
-              <label htmlFor="role" className="text-sm font-medium text-gray-700">
-                Role
-              </label>
-              <select
-                id="role"
-                name="role"
-                value={user.role}
-                onChange={handleChange}
-                className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
-                required
-              >
-                <option value="">Select Role</option>
-                <option value="admin">Admin</option>
-                <option value="faculty">Faculty</option>
-                <option value="student">Student</option>
-              </select>
-            </div>
-
-            {/* First Name */}
-            <div className="flex flex-col gap-2">
-              <label htmlFor="firstName" className="text-sm font-medium text-gray-700">
-                First Name
-              </label>
-              <input
-                type="text"
-                id="firstName"
-                name="firstName"
-                value={user.firstName}
-                onChange={handleChange}
-                className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
-                required
-              />
-            </div>
-
-            {/* Last Name */}
-            <div className="flex flex-col gap-2">
-              <label htmlFor="lastName" className="text-sm font-medium text-gray-700">
-                Last Name
-              </label>
-              <input
-                type="text"
-                id="lastName"
-                name="lastName"
-                value={user.lastName}
-                onChange={handleChange}
-                className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
-                required
-              />
-            </div>
+          <div className="mb-3">
+            <label className="block mb-1 text-sm font-medium">Username</label>
+            <input
+              type="text"
+              name="username"
+              value={user.username}
+              disabled
+              className="w-full border p-2 rounded bg-gray-100"
+            />
           </div>
 
-          {/* Submit button */}
+          <div className="mb-3">
+            <label className="block mb-1 text-sm font-medium">Password</label>
+            <input
+              type="password"
+              name="password"
+              value={user.password}
+              onChange={handleChange}
+              className="w-full border p-2 rounded"
+              required
+            />
+          </div>
+
+          <div className="mb-3">
+            <label className="block mb-1 text-sm font-medium">Email</label>
+            <input
+              type="email"
+              name="email"
+              value={user.email}
+              onChange={handleChange}
+              className="w-full border p-2 rounded"
+              required
+            />
+          </div>
+
+          <div className="mb-3">
+            <label className="block mb-1 text-sm font-medium">Role</label>
+            <select
+              name="role"
+              value={user.role}
+              onChange={handleChange}
+              className="w-full border p-2 rounded"
+              required
+            >
+              <option value="">Select Role</option>
+              <option value="admin">Admin</option>
+              <option value="faculty">Faculty</option>
+            </select>
+          </div>
+
+          <div className="mb-3">
+            <label className="block mb-1 text-sm font-medium">
+              First Name
+            </label>
+            <input
+              type="text"
+              name="firstName"
+              value={user.firstName}
+              onChange={handleChange}
+              className="w-full border p-2 rounded"
+              required
+            />
+          </div>
+
+          <div className="mb-3">
+            <label className="block mb-1 text-sm font-medium">Last Name</label>
+            <input
+              type="text"
+              name="lastName"
+              value={user.lastName}
+              onChange={handleChange}
+              className="w-full border p-2 rounded"
+              required
+            />
+          </div>
+
           <button
             type="submit"
-            className="bg-green-600 text-white py-2 rounded font-semibold hover:bg-green-700 transition"
+            className="w-full bg-green-500 text-white py-2 rounded"
           >
             Update User
           </button>

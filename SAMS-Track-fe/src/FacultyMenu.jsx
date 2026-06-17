@@ -1,87 +1,47 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function FacultyMenu() {
-  const [studentMenuOpen, setStudentMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
-  const nevigate=useNavigate();
+  const logout = () => {
+    localStorage.removeItem("role");
+    localStorage.removeItem("username");
+    navigate("/");
+  };
 
-  const logout = () =>{
-    localStorage.removeItem('role');
-    localStorage.removeItem('username');
-    nevigate('/')
-  }
   return (
-    <div className="bg-gray-50">
-      <nav className="bg-white shadow flex items-center justify-between px-6 py-4">
-        <div className="text-lg font-bold text-blue-600">SAMSTRACK</div>
+    <nav className="bg-green-500 text-white p-3 flex items-center justify-between">
+      <Link to="/faculty-dashboard" className="font-bold text-lg">
+        SAMSTRACK
+      </Link>
 
-        <div className="flex items-center gap-6">
-          {/* Dashboard */}
-          <a
-            href="/faculty-dashboard"
-            className="font-semibold text-blue-600 px-3 py-2 rounded hover:bg-blue-50 transition"
-          >
-            Dashboard
-          </a>
-          {/* Students Dropdown */}
-          <div className="relative">
-            <button
-              className="font-semibold text-blue-600 px-3 py-2 rounded hover:bg-blue-50 transition flex items-center gap-1"
-              onClick={() => setStudentMenuOpen((open) => !open)}
-            >
-              Students
-              <span className="ml-1">▼</span>
-            </button>
-            {studentMenuOpen && (
-              <div className="absolute left-0 mt-2 w-40 bg-white border rounded shadow-lg z-10">
-                <a
-                  href="/add-student"
-                  className="block px-4 py-2 hover:bg-blue-100 transition"
-                >
-                  Add Students
-                </a>
-                <a
-                  href="/all-students"
-                  className="block px-4 py-2 hover:bg-blue-100 transition"
-                >
-                  All Students
-                </a>
-              </div>
-            )}
-          </div>
-
-          {/* Mark Attendance */}
-          <a
-            href="/mark-attendance"
-            className="font-semibold text-blue-600 px-3 py-2 rounded hover:bg-blue-50 transition"
-          >
-            Mark Attendance
-          </a>
-          {/* View Attendance */}
-          <a
-            href="/view-attendance"
-            className="font-semibold text-blue-600 px-3 py-2 rounded hover:bg-blue-50 transition"
-          >
-            View Attendance
-          </a>
-        </div>
-
-        {/* Right Corner: My Profile & Logout */}
-        <div className="flex items-center gap-4">
-          <a
-            href="/my-profile"
-            className="font-semibold text-gray-700 px-3 py-2 rounded hover:bg-gray-100 transition"
-          >
-            My Profile
-          </a>
-          <button onClick={logout} className="bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600 transition">
-            Logout
-          </button>
-        </div>
-      </nav>
-     
-    </div>
+      <div className="flex gap-4 items-center">
+        <Link to="/faculty-dashboard" className="hover:underline">
+          Dashboard
+        </Link>
+        <Link to="/add-student" className="hover:underline">
+          Add Student
+        </Link>
+        <Link to="/all-students" className="hover:underline">
+          Students
+        </Link>
+        <Link to="/mark-attendance" className="hover:underline">
+          Mark Attendance
+        </Link>
+        <Link to="/view-attendance" className="hover:underline">
+          View Attendance
+        </Link>
+        <Link to="/my-profile" className="hover:underline">
+          Profile
+        </Link>
+        <button
+          onClick={logout}
+          className="bg-red-500 px-3 py-1 rounded text-sm"
+        >
+          Logout
+        </button>
+      </div>
+    </nav>
   );
 }
 

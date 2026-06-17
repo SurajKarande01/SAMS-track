@@ -8,11 +8,10 @@ function MarkAttendance() {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [attendance, setAttendance] = useState({});
-  const [selectAll, setSelectAll] = useState(false);
 
-  const username = localStorage.getItem("username"); // logged in user
+  const username = localStorage.getItem("username");
 
-  // Fetch subjects
+  // fetch subjects
   useEffect(() => {
     fetch("http://localhost:8091/subject/get-all-subjects/")
       .then((res) => res.json())
@@ -20,53 +19,52 @@ function MarkAttendance() {
       .catch((err) => console.error(err));
   }, []);
 
-  // Fetch students
+  // fetch students
   useEffect(() => {
     fetch("http://localhost:8091/student/get-all-students/")
       .then((res) => res.json())
       .then((data) => {
         setStudents(data);
-        const initialAttendance = {};
-        data.forEach((stu) => {
-          initialAttendance[stu.id] = false;
-        });
-        setAttendance(initialAttendance);
+        // set all to false initially
+        const initial = {};
+        data.forEach((s) => (initial[s.id] = false));
+        setAttendance(initial);
       })
       .catch((err) => console.error(err));
   }, []);
 
-  // Handle select all
-  const handleSelectAll = () => {
-    const newStatus = !selectAll;
+  // toggle checkbox
+  const toggleStudent = (id) => {
+    setAttendance({ ...attendance, [id]: !attendance[id] });
+  };
+
+  // select all
+  const selectAll = () => {
     const updated = {};
-    students.forEach((stu) => {
-      updated[stu.id] = newStatus;
-    });
+    students.forEach((s) => (updated[s.id] = true));
     setAttendance(updated);
-    setSelectAll(newStatus);
   };
 
-  // Handle individual checkbox
-  const handleCheckboxChange = (id) => {
-    setAttendance((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
+  // deselect all
+  const deselectAll = () => {
+    const updated = {};
+    students.forEach((s) => (updated[s.id] = false));
+    setAttendance(updated);
   };
 
-  // Submit attendance with validation
+  // submit
   const handleSubmit = async () => {
-    // Validation: check all fields
     if (!selectedSubject || !date || !time) {
-      alert("Please fill all fields: Subject, Date, and Time.");
+      alert("Please fill all fields!");
       return;
     }
-    // Validation: at least one student selected
+
     const selectedStudents = students
-      .filter((stu) => attendance[stu.id])
-      .map((stu) => ({ id: stu.id }));
+      .filter((s) => attendance[s.id])
+      .map((s) => ({ id: s.id }));
+
     if (selectedStudents.length === 0) {
-      alert("Please select at least one student.");
+      alert("Please select at least one student!");
       return;
     }
 
@@ -78,102 +76,112 @@ function MarkAttendance() {
       students: selectedStudents,
     };
 
-    console.log("Submitting payload:", payload);
-
     try {
-      const res = await fetch("http://localhost:8091/attendance/take-attendance/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      const res = await fetch(
+        "http://localhost:8091/attendance/take-attendance/",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }
+      );
 
       if (res.ok) {
         alert("Attendance marked successfully!");
       } else {
-        alert("Failed to mark attendance");
+        alert("Failed to mark attendance.");
       }
     } catch (err) {
       console.error(err);
-      alert("Error while marking attendance");
+      alert("Error while marking attendance.");
     }
   };
 
   return (
-    <>
+    <div className="min-h-screen bg-gray-50">
       <FacultyMenu />
 
-      <div className="p-6 max-w-5xl mx-auto">
-        {/* First Row: Subject, Date, Time */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <div className="p-6 max-w-4xl mx-auto">
+        <h2 className="text-xl font-bold mb-4 text-center">Mark Attendance</h2>
+
+        {/* subject, date, time */}
+        <div className="flex flex-wrap gap-4 mb-6">
           <select
-            className="border p-2 rounded w-full"
             value={selectedSubject}
             onChange={(e) => setSelectedSubject(e.target.value)}
+            className="border p-2 rounded flex-1"
           >
             <option value="">Select Subject</option>
-            {subjects.map((subj) => (
-              <option key={subj.id} value={subj.id}>
-                {subj.name}
+            {subjects.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.name}
               </option>
             ))}
           </select>
 
           <input
             type="date"
-            className="border p-2 rounded w-full"
             value={date}
             onChange={(e) => setDate(e.target.value)}
+            className="border p-2 rounded flex-1"
           />
 
           <input
             type="time"
-            className="border p-2 rounded w-full"
             value={time}
             onChange={(e) => setTime(e.target.value)}
+            className="border p-2 rounded flex-1"
           />
         </div>
 
-        {/* Second Row: Students List */}
-        <div className="border rounded p-4 shadow bg-white">
-          <div className="flex items-center mb-4">
-            <input
-              type="checkbox"
-              checked={selectAll}
-              onChange={handleSelectAll}
-              className="mr-2"
-            />
-            <label className="font-semibold">Select / Deselect All</label>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-            {students.map((stu) => (
-              <div
-                key={stu.id}
-                className="flex items-center border rounded p-2 hover:bg-gray-50"
-              >
-                <input
-                  type="checkbox"
-                  checked={attendance[stu.id] || false}
-                  onChange={() => handleCheckboxChange(stu.id)}
-                  className="mr-2"
-                />
-                <span>{stu.id} - {stu.name}</span>
-              </div>
-            ))}
-          </div>
+        {/* select all / deselect all buttons */}
+        <div className="mb-4 flex gap-2">
+          <button
+            onClick={selectAll}
+            className="bg-green-500 text-white px-3 py-1 rounded text-sm"
+          >
+            Select All
+          </button>
+          <button
+            onClick={deselectAll}
+            className="bg-gray-400 text-white px-3 py-1 rounded text-sm"
+          >
+            Deselect All
+          </button>
         </div>
 
-        {/* Submit Button */}
-        <div className="mt-6 flex justify-center">
+        {/* students list */}
+        <div className="border rounded p-4 bg-white mb-6">
+          {students.length > 0 ? (
+            students.map((student) => (
+              <div key={student.id} className="flex items-center mb-2">
+                <input
+                  type="checkbox"
+                  checked={attendance[student.id] || false}
+                  onChange={() => toggleStudent(student.id)}
+                  className="mr-2"
+                />
+                <span>
+                  {student.id} - {student.name}
+                </span>
+              </div>
+            ))
+          ) : (
+            <p className="text-gray-500">No students found</p>
+          )}
+        </div>
+
+        {/* submit button */}
+        <div className="text-center">
           <button
             onClick={handleSubmit}
-            className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
+            className="bg-blue-500 text-white px-6 py-2 rounded"
           >
             Submit Attendance
           </button>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

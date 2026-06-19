@@ -27,7 +27,9 @@ public class StudentDao {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			session.close();
+			if (session != null) {
+				session.close();
+			}
 		}
 		return students;
 	}
@@ -44,7 +46,9 @@ public class StudentDao {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			session.close();
+			if (session != null) {
+				session.close();
+			}
 		}
 		return list;
 	}
@@ -52,16 +56,22 @@ public class StudentDao {
 	public Student createStudent(Student student) {
 		Session session = null;
 		Student s = null;
+		Transaction transaction = null;
 		try {
 			session = factory.openSession();
-			Transaction transaction = session.beginTransaction();
+			transaction = session.beginTransaction();
 			session.save(student);
 			transaction.commit();
 			s = student;
 		} catch (Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
 			e.printStackTrace();
 		} finally {
-			session.close();
+			if (session != null) {
+				session.close();
+			}
 		}
 		return s;
 	}
@@ -75,7 +85,9 @@ public class StudentDao {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			session.close();
+			if (session != null) {
+				session.close();
+			}
 		}
 		return student;
 	}
@@ -83,16 +95,22 @@ public class StudentDao {
 	public Student updateStudent(Student studentDetails) {
 		Session session = null;
 		Student s = null;
+		Transaction transaction = null;
 		try {
 			session = factory.openSession();
-			Transaction transaction = session.beginTransaction();
+			transaction = session.beginTransaction();
 			session.update(studentDetails);
 			transaction.commit();
 			s = studentDetails;
 		} catch (Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
 			e.printStackTrace();
 		} finally {
-			session.close();
+			if (session != null) {
+				session.close();
+			}
 		}
 		return s;
 	}
@@ -100,9 +118,10 @@ public class StudentDao {
 	public String deleteStudent(long id) {
 		Session session = null;
 		String msg = null;
+		Transaction transaction = null;
 		try {
 			session = factory.openSession();
-			Transaction transaction = session.beginTransaction();
+			transaction = session.beginTransaction();
 			Student student = session.get(Student.class, id);
 
 			if (student != null) {
@@ -113,9 +132,14 @@ public class StudentDao {
 				msg = "Not Exists !!";
 			}
 		} catch (Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
 			e.printStackTrace();
 		} finally {
-			session.close();
+			if (session != null) {
+				session.close();
+			}
 		}
 		return msg;
 	}

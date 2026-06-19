@@ -64,7 +64,7 @@ public class AttendanceController {
 
 
 	@PostMapping("/take-attendance")
-	public AttendanceRecord createAttendanceRecord(@RequestBody AttendanceRecordRequest request) {
+	public org.springframework.http.ResponseEntity<?> createAttendanceRecord(@RequestBody AttendanceRecordRequest request) {
 		
 		User user = userService.getUserByName(request.getUsername());
 		Subject subject = subjectService.getSubjectById(request.getSubjectId());
@@ -78,6 +78,11 @@ public class AttendanceController {
 		attendanceRecord.setNumberOfStudents(request.getStudents().size());
 
 		System.out.println(attendanceRecord);
-		return attendanceRecordService.saveAttendance(attendanceRecord);
+		AttendanceRecord saved = attendanceRecordService.saveAttendance(attendanceRecord);
+		if (saved != null) {
+			return new org.springframework.http.ResponseEntity<>(saved, org.springframework.http.HttpStatus.CREATED);
+		} else {
+			return new org.springframework.http.ResponseEntity<>("Failed to record attendance", org.springframework.http.HttpStatus.BAD_REQUEST);
+		}
 	}
 }

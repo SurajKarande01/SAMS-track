@@ -32,8 +32,13 @@ public class SubjectController {
 
 	@PostMapping("/add-subject")
 	@CrossOrigin(methods = RequestMethod.POST)
-	public Subject createSubject(@RequestBody Subject subject) {
-		return subjectService.createSubject(subject);
+	public org.springframework.http.ResponseEntity<?> createSubject(@RequestBody Subject subject) {
+		Subject created = subjectService.createSubject(subject);
+		if (created != null) {
+			return new org.springframework.http.ResponseEntity<>(created, org.springframework.http.HttpStatus.CREATED);
+		} else {
+			return new org.springframework.http.ResponseEntity<>("Failed to create subject or subject already exists", org.springframework.http.HttpStatus.BAD_REQUEST);
+		}
 	}
 
 	@GetMapping("/get-subject-by-id/{id}")
@@ -43,13 +48,22 @@ public class SubjectController {
 	
 	@PutMapping("/update-subject")
 	@CrossOrigin(methods = RequestMethod.PUT)
-	public Subject updateSubject(@RequestBody Subject subjectDetails) {
-
-		return subjectService.updateSubject(subjectDetails);
+	public org.springframework.http.ResponseEntity<?> updateSubject(@RequestBody Subject subjectDetails) {
+		Subject updated = subjectService.updateSubject(subjectDetails);
+		if (updated != null) {
+			return new org.springframework.http.ResponseEntity<>(updated, org.springframework.http.HttpStatus.OK);
+		} else {
+			return new org.springframework.http.ResponseEntity<>("Failed to update subject", org.springframework.http.HttpStatus.BAD_REQUEST);
+		}
 	}
 
 	@DeleteMapping("/delete-subject/{id}")
-	public String deleteSubject(@PathVariable long id) {
-		return subjectService.deleteSubject(id);
+	public org.springframework.http.ResponseEntity<String> deleteSubject(@PathVariable long id) {
+		String result = subjectService.deleteSubject(id);
+		if ("deleted".equals(result)) {
+			return new org.springframework.http.ResponseEntity<>(result, org.springframework.http.HttpStatus.OK);
+		} else {
+			return new org.springframework.http.ResponseEntity<>(result, org.springframework.http.HttpStatus.NOT_FOUND);
+		}
 	}
 }

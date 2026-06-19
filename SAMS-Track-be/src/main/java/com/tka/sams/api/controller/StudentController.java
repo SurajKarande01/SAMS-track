@@ -30,8 +30,13 @@ public class StudentController {
 	}
 
 	@PostMapping("/add-student")
-	public Student createStudent(@RequestBody Student student) {
-		return studentService.createStudent(student);
+	public org.springframework.http.ResponseEntity<?> createStudent(@RequestBody Student student) {
+		Student created = studentService.createStudent(student);
+		if (created != null) {
+			return new org.springframework.http.ResponseEntity<>(created, org.springframework.http.HttpStatus.CREATED);
+		} else {
+			return new org.springframework.http.ResponseEntity<>("Failed to create student", org.springframework.http.HttpStatus.BAD_REQUEST);
+		}
 	}
 
 	@GetMapping("/get-student-by-id/{id}")
@@ -40,13 +45,22 @@ public class StudentController {
 	}
 
 	@PutMapping("/update-student")
-	public Student updateStudent(@RequestBody Student studentDetails) {
-
-		return studentService.updateStudent(studentDetails);
+	public org.springframework.http.ResponseEntity<?> updateStudent(@RequestBody Student studentDetails) {
+		Student updated = studentService.updateStudent(studentDetails);
+		if (updated != null) {
+			return new org.springframework.http.ResponseEntity<>(updated, org.springframework.http.HttpStatus.OK);
+		} else {
+			return new org.springframework.http.ResponseEntity<>("Failed to update student", org.springframework.http.HttpStatus.BAD_REQUEST);
+		}
 	}
 
 	@DeleteMapping("/delete-student/{id}")
-	public String deleteStudent(@PathVariable long id) {
-		return studentService.deleteStudent(id);
+	public org.springframework.http.ResponseEntity<String> deleteStudent(@PathVariable long id) {
+		String result = studentService.deleteStudent(id);
+		if ("Deleted !!".equals(result)) {
+			return new org.springframework.http.ResponseEntity<>(result, org.springframework.http.HttpStatus.OK);
+		} else {
+			return new org.springframework.http.ResponseEntity<>(result, org.springframework.http.HttpStatus.NOT_FOUND);
+		}
 	}
 }

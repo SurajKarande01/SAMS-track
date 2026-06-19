@@ -26,7 +26,9 @@ public class SubjectDao {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			session.close();
+			if (session != null) {
+				session.close();
+			}
 		}
 		return subject;
 	}
@@ -42,7 +44,9 @@ public class SubjectDao {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			session.close();
+			if (session != null) {
+				session.close();
+			}
 		}
 		return list;
 	}
@@ -50,9 +54,10 @@ public class SubjectDao {
 	public Subject createSubject(Subject subject) {
 		Session session = null;
 		Subject sub = null;
+		Transaction transaction = null;
 		try {
 			session = factory.openSession();
-			Transaction transaction = session.beginTransaction();
+			transaction = session.beginTransaction();
 
 			Criteria criteria = session.createCriteria(Subject.class);
 			criteria.add(Restrictions.eq("name", subject.getName()));
@@ -61,12 +66,18 @@ public class SubjectDao {
 				session.save(subject);
 				transaction.commit();
 				sub = subject;
+			} else {
+				transaction.rollback();
 			}
-
 		} catch (Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
 			e.printStackTrace();
 		} finally {
-			session.close();
+			if (session != null) {
+				session.close();
+			}
 		}
 		return sub;
 	}
@@ -74,16 +85,22 @@ public class SubjectDao {
 	public Subject updateSubject(Subject subjectDetails) {
 		Session session = null;
 		Subject sub = null;
+		Transaction transaction = null;
 		try {
 			session = factory.openSession();
-			Transaction transaction = session.beginTransaction();
+			transaction = session.beginTransaction();
 			session.update(subjectDetails);
 			transaction.commit();
 			sub = subjectDetails;
 		} catch (Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
 			e.printStackTrace();
 		} finally {
-			session.close();
+			if (session != null) {
+				session.close();
+			}
 		}
 		return sub;
 	}
@@ -91,25 +108,30 @@ public class SubjectDao {
 	public String deleteSubject(long id) { //10
 		Session session = null;
 		String msg = null;
+		Transaction transaction = null;
 		try {
 			session = factory.openSession();
+			transaction = session.beginTransaction();
 			Subject subject = session.get(Subject.class, id);
 			
 			if(subject!=null) {
 				session.delete(subject);
-				session.beginTransaction().commit();
+				transaction.commit();
 				msg = "deleted";
 			}else {
+				transaction.rollback();
 				msg="not exists";
 			}
-			
-			
-
 		} catch (Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
 			msg = null;
 			e.printStackTrace();
 		} finally {
-			session.close();
+			if (session != null) {
+				session.close();
+			}
 		}
 		return msg;
 	}

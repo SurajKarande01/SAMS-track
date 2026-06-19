@@ -71,9 +71,10 @@ public class AttendanceRecordDao {
 	
 	
 	public List<AttendanceRecord> getAttendanceByFaculty(String facultyUsername) {
-        Session session = factory.openSession();
+        Session session = null;
         List<AttendanceRecord> list = null;
         try {
+            session = factory.openSession();
             Criteria criteria = session.createCriteria(AttendanceRecord.class);
             criteria.createAlias("user", "u");
             criteria.add(Restrictions.eq("u.username", facultyUsername));
@@ -81,7 +82,9 @@ public class AttendanceRecordDao {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            session.close();
+            if (session != null) {
+                session.close();
+            }
         }
         return list;
     }
@@ -93,16 +96,17 @@ public class AttendanceRecordDao {
 			session = factory.openSession();
 
 			Criteria criteria = session.createCriteria(AttendanceRecord.class);
-			SimpleExpression dateEq = Restrictions.eq("date", date);
-			SimpleExpression subjectEq = Restrictions.eq("subject.id", subjectId);
-
-			criteria.add(Restrictions.and(dateEq, subjectEq));
+			criteria.createAlias("subject", "s");
+			criteria.add(Restrictions.eq("date", date));
+			criteria.add(Restrictions.eq("s.id", subjectId));
 
 			list = criteria.list();
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			session.close();
+			if (session != null) {
+				session.close();
+			}
 		}
 		return list;
 	}
@@ -110,16 +114,22 @@ public class AttendanceRecordDao {
 	public AttendanceRecord saveAttendance(AttendanceRecord attendanceRecord) {
 		Session session = null;
 		AttendanceRecord record = null;
+		Transaction transaction = null;
 		try {
 			session = factory.openSession();
-			Transaction transaction = session.beginTransaction();
+			transaction = session.beginTransaction();
 			session.save(attendanceRecord);
 			transaction.commit();
 			record = attendanceRecord;
 		} catch (Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
 			e.printStackTrace();
 		} finally {
-			session.close();
+			if (session != null) {
+				session.close();
+			}
 		}
 		return record;
 	}

@@ -14,11 +14,11 @@ export const userService = {
     return response.data;
   },
   getAll: async () => {
-    const response = await API.get("/user/get-all-user/");
+    const response = await API.get("/user/get-all-user");
     return response.data;
   },
   getAllFaculty: async () => {
-    const response = await API.get("/user/get-all-faculty/");
+    const response = await API.get("/user/get-all-faculty");
     return response.data;
   },
   delete: async (username) => {
@@ -26,7 +26,7 @@ export const userService = {
     return response.data;
   },
   update: async (userData) => {
-    const response = await API.put("/user/update-user/", userData);
+    const response = await API.put("/user/update-user", userData);
     return response.data;
   },
 };

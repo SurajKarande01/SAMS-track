@@ -32,16 +32,14 @@ public class UserController {
 	
 // http://localhost:8091/user/login-user
 	@PostMapping("/login-user")
-	public Object loginUser(@RequestBody LoginRequest request) {
+	public ResponseEntity<?> loginUser(@RequestBody LoginRequest request) {
 		User user = service.loginUser(request);
 		
 		if(user!=null) {
-			return user;
+			return new ResponseEntity<>(user, HttpStatus.OK);
 		}else {
-			return null;
+			return new ResponseEntity<>("Invalid username or password", HttpStatus.UNAUTHORIZED);
 		}
-		
-		
 	}
 
 	@CrossOrigin(methods = RequestMethod.POST)
@@ -51,7 +49,7 @@ public class UserController {
 		if (registerUser != null) {
 			return new ResponseEntity<String>("Registered", HttpStatus.CREATED);
 		} else {
-			return new ResponseEntity<String>("Something Went Wrong", HttpStatus.OK);
+			return new ResponseEntity<String>("Something Went Wrong", HttpStatus.BAD_REQUEST);
 		}
 	}
 

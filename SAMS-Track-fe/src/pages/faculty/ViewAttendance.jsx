@@ -7,10 +7,11 @@ import { attendanceService } from "../../services/attendanceService";
 
 function ViewAttendance() {
   const role = localStorage.getItem("role");
+  const username = localStorage.getItem("username");
   const [faculties, setFaculties] = useState([]);
   const [subjects, setSubjects] = useState([]);
   const [attendance, setAttendance] = useState([]);
-  const [selectedFaculty, setSelectedFaculty] = useState("");
+  const [selectedFaculty, setSelectedFaculty] = useState(role === "faculty" ? (username || "") : "");
   const [selectedSubject, setSelectedSubject] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
   const [showModal, setShowModal] = useState(false);

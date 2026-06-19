@@ -5,6 +5,7 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -24,16 +25,15 @@ public class UserDao {
 		try {
 			session = factory.openSession();
 			user = session.get(User.class, request.getUsername());
-			if (user != null) {
-				if (user.getPassword().equals(request.getPassword())) {
-					return user;
-				}
-			} else {
-				return null;
+			if (user != null && user.getPassword().equals(request.getPassword())) {
+				return user;
 			}
-
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			if (session != null) {
+				session.close();
+			}
 		}
 		return null;
 	}
@@ -41,30 +41,45 @@ public class UserDao {
 	public String deleteUserById(String username) {
 		Session session = null;
 		String msg = null;
+		Transaction transaction = null;
 		try {
 			session = factory.openSession();
+			transaction = session.beginTransaction();
 			User user = session.get(User.class, username);
-			session.delete(user);
-			session.beginTransaction().commit();
-			msg = "deleted";
-
+			if (user != null) {
+				session.delete(user);
+				transaction.commit();
+				msg = "deleted";
+			} else {
+				msg = "not exists";
+			}
 		} catch (Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
 			msg = null;
 			e.printStackTrace();
 		} finally {
-			session.close();
+			if (session != null) {
+				session.close();
+			}
 		}
 		return msg;
 	}
 
 	public User updateUser(User user) {
 		Session session = null;
+		Transaction transaction = null;
 		try {
 			session = factory.openSession();
+			transaction = session.beginTransaction();
 			session.update(user);
-			session.beginTransaction().commit();
+			transaction.commit();
 			return user;
 		} catch (Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
 			e.printStackTrace();
 			return null;
 		} finally {
@@ -81,11 +96,12 @@ public class UserDao {
 			session = factory.openSession();
 			Criteria criteria = session.createCriteria(User.class);
 			list = criteria.list();
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			session.close();
+			if (session != null) {
+				session.close();
+			}
 		}
 		return list;
 	}
@@ -96,12 +112,12 @@ public class UserDao {
 		try {
 			session = factory.openSession();
 			user = session.get(User.class, username);
-
 		} catch (Exception e) {
 			e.printStackTrace();
-
 		} finally {
-			session.close();
+			if (session != null) {
+				session.close();
+			}
 		}
 		return user;
 	}
@@ -109,20 +125,26 @@ public class UserDao {
 	public User registerUser(User user) {
 		Session session = null;
 		User user2 = null;
+		Transaction transaction = null;
 		try {
 			session = factory.openSession();
 			user2 = session.get(User.class, user.getUsername());
 			if (user2 == null) {
+				transaction = session.beginTransaction();
 				session.save(user);
-				session.beginTransaction().commit();
+				transaction.commit();
 				return user;
 			}
-
 		} catch (Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
 			e.printStackTrace();
 			return null;
 		} finally {
-			session.close();
+			if (session != null) {
+				session.close();
+			}
 		}
 		return null;
 	}
@@ -135,11 +157,12 @@ public class UserDao {
 			Criteria criteria = session.createCriteria(User.class);
 			criteria.add(Restrictions.eq("role", "admin"));
 			list = criteria.list();
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			session.close();
+			if (session != null) {
+				session.close();
+			}
 		}
 		return list;
 	}
@@ -152,11 +175,12 @@ public class UserDao {
 			Criteria criteria = session.createCriteria(User.class);
 			criteria.add(Restrictions.eq("role", "faculty"));
 			list = criteria.list();
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			session.close();
+			if (session != null) {
+				session.close();
+			}
 		}
 		return list;
 	}

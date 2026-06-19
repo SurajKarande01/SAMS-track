@@ -21,4 +21,12 @@ export const studentService = {
     const response = await API.delete(`/student/delete-student/${id}`);
     return response.data;
   },
+  chooseSubjects: async (studentId, subjectIds) => {
+    const response = await API.post(`/student/${studentId}/choose-subjects`, subjectIds);
+    return response.data;
+  },
+  getSubjects: async (studentId) => {
+    const response = await API.get(`/student/${studentId}/subjects`);
+    return response.data;
+  },
 };

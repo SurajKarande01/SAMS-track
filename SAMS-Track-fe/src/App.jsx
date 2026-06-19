@@ -19,6 +19,7 @@ import AddStudent from "./pages/faculty/AddStudent";
 import AllStudents from "./pages/faculty/AllStudents";
 import MarkAttendance from "./pages/faculty/MarkAttendance";
 import ViewAttendance from "./pages/faculty/ViewAttendance";
+import StudentDashboard from "./pages/student/StudentDashboard";
 
 // Layout & Protection Components
 import Footer from "./components/Footer";
@@ -121,8 +122,16 @@ function App() {
           <Route
             path="/my-profile"
             element={
-              <ProtectedRoute allowedRoles={["admin", "faculty"]}>
+              <ProtectedRoute allowedRoles={["admin", "faculty", "student", "parent"]}>
                 <Profile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/student-dashboard"
+            element={
+              <ProtectedRoute allowedRoles={["student", "parent"]}>
+                <StudentDashboard />
               </ProtectedRoute>
             }
           />
@@ -134,3 +143,4 @@ function App() {
 }
 
 export default App;
+

@@ -135,4 +135,22 @@ public class SubjectDao {
 		}
 		return msg;
 	}
+
+	public List<Subject> getSubjectsByFaculty(String facultyUsername) {
+		Session session = null;
+		try {
+			session = factory.openSession();
+			return session.createQuery("from Subject where facultyUsername = :facultyUsername", Subject.class)
+					.setParameter("facultyUsername", facultyUsername)
+					.list();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			if (session != null) {
+				session.close();
+			}
+		}
+	}
 }
+

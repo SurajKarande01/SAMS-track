@@ -37,4 +37,13 @@ public class StudentService {
 	public String deleteStudent(long id) {
 		return dao.deleteStudent(id);
 	}
+
+	public Student getStudentByContactNo(String contactNo) {
+		return dao.getStudentByContactNo(contactNo);
+	}
+
+	public Student getStudentByParentNo(String parentNo) {
+		return dao.getStudentByParentNo(parentNo);
+	}
 }
+

@@ -37,4 +37,8 @@ public class SubjectService {
 		
 		return dao.deleteSubject(id);
 	}
+
+	public List<Subject> getSubjectsByFaculty(String facultyUsername) {
+		return dao.getSubjectsByFaculty(facultyUsername);
+	}
 }

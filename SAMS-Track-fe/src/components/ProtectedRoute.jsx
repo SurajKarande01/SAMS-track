@@ -14,6 +14,8 @@ function ProtectedRoute({ children, allowedRoles }) {
       return <Navigate to="/admin-dashboard" replace />;
     } else if (role === "faculty") {
       return <Navigate to="/faculty-dashboard" replace />;
+    } else if (role === "student" || role === "parent") {
+      return <Navigate to="/student-dashboard" replace />;
     }
     return <Navigate to="/" replace />;
   }

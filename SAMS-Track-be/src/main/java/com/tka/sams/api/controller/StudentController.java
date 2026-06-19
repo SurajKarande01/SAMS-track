@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tka.sams.api.entity.Student;
+import com.tka.sams.api.entity.Subject;
 import com.tka.sams.api.service.StudentService;
 
 @RestController
@@ -63,4 +64,36 @@ public class StudentController {
 			return new org.springframework.http.ResponseEntity<>(result, org.springframework.http.HttpStatus.NOT_FOUND);
 		}
 	}
+
+	@Autowired
+	private com.tka.sams.api.service.SubjectService subjectService;
+
+	@PostMapping("/{studentId}/choose-subjects")
+	public org.springframework.http.ResponseEntity<?> chooseSubjects(@PathVariable Long studentId, @RequestBody java.util.List<Long> subjectIds) {
+		Student student = studentService.getStudentById(studentId);
+		if (student == null) {
+			return new org.springframework.http.ResponseEntity<>("Student not found", org.springframework.http.HttpStatus.NOT_FOUND);
+		}
+		
+		java.util.Set<Subject> subjects = new java.util.HashSet<>();
+		for (Long subId : subjectIds) {
+			Subject subject = subjectService.getSubjectById(subId);
+			if (subject != null) {
+				subjects.add(subject);
+			}
+		}
+		student.setSubjects(subjects);
+		Student updated = studentService.updateStudent(student);
+		return new org.springframework.http.ResponseEntity<>(updated, org.springframework.http.HttpStatus.OK);
+	}
+
+	@GetMapping("/{studentId}/subjects")
+	public java.util.Set<Subject> getStudentSubjects(@PathVariable Long studentId) {
+		Student student = studentService.getStudentById(studentId);
+		if (student != null) {
+			return student.getSubjects();
+		}
+		return new java.util.HashSet<>();
+	}
 }
+

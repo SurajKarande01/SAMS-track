@@ -66,4 +66,9 @@ public class SubjectController {
 			return new org.springframework.http.ResponseEntity<>(result, org.springframework.http.HttpStatus.NOT_FOUND);
 		}
 	}
+
+	@GetMapping("/faculty/{facultyUsername}")
+	public List<Subject> getSubjectsByFaculty(@PathVariable String facultyUsername) {
+		return subjectService.getSubjectsByFaculty(facultyUsername);
+	}
 }

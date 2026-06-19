@@ -17,4 +17,8 @@ export const subjectService = {
     const response = await API.delete(`/subject/delete-subject/${id}`);
     return response.data;
   },
+  getByFaculty: async (facultyUsername) => {
+    const response = await API.get(`/subject/faculty/${facultyUsername}`);
+    return response.data;
+  },
 };

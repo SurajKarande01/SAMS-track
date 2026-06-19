@@ -17,14 +17,19 @@ function Login() {
     try {
       const user = await userService.login(username, password);
 
-      if (user && user.username) {
+      if (user && user.role) {
         localStorage.setItem("username", user.username);
         localStorage.setItem("role", user.role);
+        if (user.studentId) {
+          localStorage.setItem("studentId", user.studentId.toString());
+        }
 
         if (user.role === "admin") {
           navigate("/admin-dashboard");
         } else if (user.role === "faculty") {
           navigate("/faculty-dashboard");
+        } else if (user.role === "student" || user.role === "parent") {
+          navigate("/student-dashboard");
         } else {
           navigate("/");
         }

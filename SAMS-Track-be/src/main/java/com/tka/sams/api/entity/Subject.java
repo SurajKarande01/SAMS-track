@@ -11,9 +11,9 @@ public class Subject {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    private String facultyUsername;
 
     public Subject() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public Long getId() {
@@ -31,7 +31,14 @@ public class Subject {
 	public void setName(String name) {
 		this.name = name;
 	}
-    
-    
+
+	public String getFacultyUsername() {
+		return facultyUsername;
+	}
+
+	public void setFacultyUsername(String facultyUsername) {
+		this.facultyUsername = facultyUsername;
+	}
 }
+
 

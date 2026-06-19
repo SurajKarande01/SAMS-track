@@ -144,4 +144,41 @@ public class StudentDao {
 		return msg;
 	}
 
+	public Student getStudentByContactNo(String contactNo) {
+		Session session = null;
+		try {
+			session = factory.openSession();
+			List<Student> list = session.createQuery("from Student where contactNo = :contactNo", Student.class)
+					.setParameter("contactNo", contactNo)
+					.list();
+			return list.isEmpty() ? null : list.get(0);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			if (session != null) {
+				session.close();
+			}
+		}
+	}
+
+	public Student getStudentByParentNo(String parentNo) {
+		Session session = null;
+		try {
+			session = factory.openSession();
+			List<Student> list = session.createQuery("from Student where parentNo = :parentNo", Student.class)
+					.setParameter("parentNo", parentNo)
+					.list();
+			return list.isEmpty() ? null : list.get(0);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			if (session != null) {
+				session.close();
+			}
+		}
+	}
+
 }
+

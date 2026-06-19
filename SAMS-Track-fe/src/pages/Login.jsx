@@ -37,7 +37,11 @@ function Login() {
         setError("Invalid username or password");
       }
     } catch (err) {
-      setError("Login failed. Please try again.");
+      if (err.response && err.response.data && typeof err.response.data === "string") {
+        setError(err.response.data);
+      } else {
+        setError("Login failed. Please try again.");
+      }
     } finally {
       setLoading(false);
     }

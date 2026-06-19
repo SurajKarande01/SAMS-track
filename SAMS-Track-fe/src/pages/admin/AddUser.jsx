@@ -35,7 +35,11 @@ function AddUser() {
         lastName: "",
       });
     } catch (err) {
-      setMessage("Failed to register user.");
+      if (err.response && err.response.data && typeof err.response.data === "string") {
+        setMessage(err.response.data);
+      } else {
+        setMessage("Failed to register user.");
+      }
     } finally {
       setLoading(false);
     }

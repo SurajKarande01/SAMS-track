@@ -85,7 +85,7 @@ function FacultyDashboard() {
       const added = allSubs.find(s => s.name === newSubjectName.trim() && !s.facultyUsername);
       if (added) {
         added.facultyUsername = loggedInUser;
-        await subjectService.update(added.id, added.name); // Updates association
+        await subjectService.update(added.id, added.name, added.facultyUsername); // Updates association
       }
 
       setSuccessMsg("Subject created successfully!");

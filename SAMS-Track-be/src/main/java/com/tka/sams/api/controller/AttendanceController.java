@@ -65,17 +65,30 @@ public class AttendanceController {
 
 	@PostMapping("/take-attendance")
 	public org.springframework.http.ResponseEntity<?> createAttendanceRecord(@RequestBody AttendanceRecordRequest request) {
-		
-		User user = userService.getUserByName(request.getUsername());
+		String username = request.getUsername() != null ? request.getUsername() : request.getFaculty();
+		User user = userService.getUserByName(username);
 		Subject subject = subjectService.getSubjectById(request.getSubjectId());
+		
+		java.util.Set<Student> studentSet = new java.util.HashSet<>();
+		if (request.getStudents() != null) {
+			studentSet.addAll(request.getStudents());
+		}
+		if (request.getStudentIds() != null) {
+			for (Long sId : request.getStudentIds()) {
+				Student student = studentService.getStudentById(sId);
+				if (student != null) {
+					studentSet.add(student);
+				}
+			}
+		}
 		
 		AttendanceRecord attendanceRecord = new AttendanceRecord();
 		attendanceRecord.setUser(user);
 		attendanceRecord.setSubject(subject);
 		attendanceRecord.setDate(request.getDate());
 		attendanceRecord.setTime(request.getTime());
-		attendanceRecord.setStudents(request.getStudents());
-		attendanceRecord.setNumberOfStudents(request.getStudents().size());
+		attendanceRecord.setStudents(studentSet);
+		attendanceRecord.setNumberOfStudents(studentSet.size());
 
 		System.out.println(attendanceRecord);
 		AttendanceRecord saved = attendanceRecordService.saveAttendance(attendanceRecord);

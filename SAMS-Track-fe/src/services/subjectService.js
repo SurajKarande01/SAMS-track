@@ -9,8 +9,8 @@ export const subjectService = {
     const response = await API.post("/subject/add-subject", { name });
     return response.data;
   },
-  update: async (id, name) => {
-    const response = await API.put("/subject/update-subject", { id, name });
+  update: async (id, name, facultyUsername) => {
+    const response = await API.put("/subject/update-subject", { id, name, facultyUsername });
     return response.data;
   },
   delete: async (id) => {

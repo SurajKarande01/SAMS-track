@@ -26,43 +26,68 @@ function Profile() {
 
   if (!user) return <div className="p-6">Loading...</div>;
 
+  const getBackgroundClass = () => {
+    if (role === "admin") return "bg-gradient-to-br from-blue-200 via-purple-200 to-pink-200";
+    if (role === "faculty") return "bg-gradient-to-br from-green-200 via-blue-200 to-purple-200";
+    return "bg-gradient-to-br from-indigo-200 via-purple-200 to-pink-200";
+  };
+
+  const getHeaderColor = () => {
+    if (role === "admin") return "text-blue-700";
+    if (role === "faculty") return "text-green-700";
+    return "text-indigo-700";
+  };
+
+  const getButtonClass = () => {
+    if (role === "admin") return "bg-blue-600 hover:bg-blue-700";
+    if (role === "faculty") return "bg-green-600 hover:bg-green-700";
+    return "bg-indigo-600 hover:bg-indigo-700";
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className={`min-h-screen ${getBackgroundClass()} flex flex-col`}>
       {role === "admin" ? <AdminMenu /> : <FacultyMenu />}
       <div className="flex-grow flex justify-center py-10 px-4">
-        <div className="bg-white p-6 rounded shadow w-full max-w-lg border border-gray-200">
-          <h2 className="text-xl font-bold mb-4 text-center">My Profile</h2>
-          <div className="mb-3">
-            <label className="block text-sm font-medium mb-1">Username</label>
-            <input type="text" value={form.username} disabled className="w-full border p-2 rounded bg-gray-100" />
+        <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-lg flex flex-col gap-4 border">
+          <h2 className={`text-2xl font-bold text-center ${getHeaderColor()}`}>My Profile</h2>
+          
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-medium text-gray-700">Username</label>
+            <input type="text" value={form.username} disabled className="border rounded px-3 py-2 bg-gray-100 text-gray-500 cursor-not-allowed" />
           </div>
-          <div className="mb-3">
-            <label className="block text-sm font-medium mb-1">First Name</label>
-            <input type="text" name="firstName" value={form.firstName} onChange={handleChange} disabled={!isEditing} className={`w-full border p-2 rounded ${isEditing ? "bg-white" : "bg-gray-100"}`} />
+          
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-medium text-gray-700">First Name</label>
+            <input type="text" name="firstName" value={form.firstName} onChange={handleChange} disabled={!isEditing} className={`border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 ${isEditing ? "bg-white" : "bg-gray-100 text-gray-500"}`} />
           </div>
-          <div className="mb-3">
-            <label className="block text-sm font-medium mb-1">Last Name</label>
-            <input type="text" name="lastName" value={form.lastName} onChange={handleChange} disabled={!isEditing} className={`w-full border p-2 rounded ${isEditing ? "bg-white" : "bg-gray-100"}`} />
+          
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-medium text-gray-700">Last Name</label>
+            <input type="text" name="lastName" value={form.lastName} onChange={handleChange} disabled={!isEditing} className={`border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 ${isEditing ? "bg-white" : "bg-gray-100 text-gray-500"}`} />
           </div>
-          <div className="mb-3">
-            <label className="block text-sm font-medium mb-1">Email</label>
-            <input type="email" name="email" value={form.email} onChange={handleChange} disabled={!isEditing} className={`w-full border p-2 rounded ${isEditing ? "bg-white" : "bg-gray-100"}`} />
+          
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-medium text-gray-700">Email</label>
+            <input type="email" name="email" value={form.email} onChange={handleChange} disabled={!isEditing} className={`border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 ${isEditing ? "bg-white" : "bg-gray-100 text-gray-500"}`} />
           </div>
-          <div className="mb-3">
-            <label className="block text-sm font-medium mb-1">Password</label>
-            <input type="password" name="password" value={form.password} onChange={handleChange} disabled={!isEditing} className={`w-full border p-2 rounded ${isEditing ? "bg-white" : "bg-gray-100"}`} />
+          
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-medium text-gray-700">Password</label>
+            <input type="password" name="password" value={form.password} onChange={handleChange} disabled={!isEditing} className={`border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 ${isEditing ? "bg-white" : "bg-gray-100 text-gray-500"}`} />
           </div>
-          <div className="mb-3">
-            <label className="block text-sm font-medium mb-1">Role</label>
-            <input type="text" value={form.role} disabled className="w-full border p-2 rounded bg-gray-100" />
+          
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-medium text-gray-700">Role</label>
+            <input type="text" value={form.role} disabled className="border rounded px-3 py-2 bg-gray-100 text-gray-500 cursor-not-allowed" />
           </div>
+
           <div className="flex gap-2 justify-end mt-4">
             {!isEditing ? (
-              <button onClick={() => setIsEditing(true)} className="bg-blue-500 text-white px-4 py-2 rounded">Edit</button>
+              <button onClick={() => setIsEditing(true)} className={`${getButtonClass()} text-white px-4 py-2 rounded font-semibold transition`}>Edit</button>
             ) : (
               <>
-                <button onClick={handleSave} className="bg-green-500 text-white px-4 py-2 rounded">Save</button>
-                <button onClick={() => { setIsEditing(false); setForm(user); }} className="bg-gray-400 text-white px-4 py-2 rounded">Cancel</button>
+                <button onClick={handleSave} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-semibold transition">Save</button>
+                <button onClick={() => { setIsEditing(false); setForm(user); }} className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded font-semibold transition">Cancel</button>
               </>
             )}
           </div>

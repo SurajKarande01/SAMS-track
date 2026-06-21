@@ -37,40 +37,40 @@ function AllUser() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-blue-200 via-purple-200 to-pink-200 flex flex-col">
       <AdminMenu />
 
-      <div className="p-6 flex-grow">
-        <h2 className="text-xl font-bold mb-4 text-center text-gray-800">All Users</h2>
+      <div className="p-6 max-w-6xl mx-auto flex-grow w-full">
+        <h2 className="text-2xl font-bold mb-6 text-center text-blue-700">All Users</h2>
 
         {loading ? (
           <div className="text-center py-4 text-gray-600">Loading...</div>
         ) : (
-          <div className="overflow-x-auto border rounded border-gray-200 bg-white">
-            <table className="w-full border-collapse">
+          <div className="overflow-x-auto bg-white rounded-lg shadow-lg p-4 border border-gray-300">
+            <table className="w-full border border-gray-300 text-left">
               <thead>
-                <tr className="bg-gray-100 text-gray-700">
-                  <th className="border-b p-3 text-left">Username</th>
-                  <th className="border-b p-3 text-left">First Name</th>
-                  <th className="border-b p-3 text-left">Last Name</th>
-                  <th className="border-b p-3 text-left">Email</th>
-                  <th className="border-b p-3 text-left">Role</th>
-                  <th className="border-b p-3 text-center">Actions</th>
+                <tr className="bg-gray-200 text-gray-800">
+                  <th className="border px-4 py-2">Username</th>
+                  <th className="border px-4 py-2">First Name</th>
+                  <th className="border px-4 py-2">Last Name</th>
+                  <th className="border px-4 py-2">Email</th>
+                  <th className="border px-4 py-2">Role</th>
+                  <th className="border px-4 py-2 text-center">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {users.length > 0 ? (
                   users.map((user, i) => (
                     <tr key={i} className="hover:bg-gray-50">
-                      <td className="border-b p-3">{user.username}</td>
-                      <td className="border-b p-3">{user.firstName}</td>
-                      <td className="border-b p-3">{user.lastName}</td>
-                      <td className="border-b p-3">{user.email}</td>
-                      <td className="border-b p-3 capitalize">{user.role || "N/A"}</td>
-                      <td className="border-b p-3 text-center space-x-2">
+                      <td className="border px-4 py-2">{user.username}</td>
+                      <td className="border px-4 py-2">{user.firstName}</td>
+                      <td className="border px-4 py-2">{user.lastName}</td>
+                      <td className="border px-4 py-2">{user.email}</td>
+                      <td className="border px-4 py-2 capitalize">{user.role || "N/A"}</td>
+                      <td className="border px-4 py-2 text-center space-x-2">
                         <button
                           onClick={() => navigate(`/update-user/${user.username}`)}
-                          className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm transition"
+                          className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition"
                         >
                           Edit
                         </button>
@@ -85,7 +85,7 @@ function AllUser() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="6" className="text-center p-4 text-gray-500">
+                    <td colSpan="6" className="text-center p-4 text-gray-500 border">
                       No users found.
                     </td>
                   </tr>

@@ -8,35 +8,34 @@ function AdminMenu() {
     localStorage.removeItem("username");
     navigate("/");
   };
-
   return (
-    <nav className="bg-blue-500 text-white p-3 flex items-center justify-between shadow-sm">
-      <Link to="/admin-dashboard" className="font-bold text-lg">
-        SAMSTRACK
+    <nav className="bg-blue-600 text-white p-4 flex items-center justify-between shadow border-b border-blue-700">
+      <Link to="/admin-dashboard" className="font-bold text-xl tracking-tight">
+        SAMS-TRACK
       </Link>
 
-      <div className="flex gap-4 items-center">
-        <Link to="/admin-dashboard" className="hover:underline text-sm font-medium">
+      <div className="flex gap-6 items-center">
+        <Link to="/admin-dashboard" className="hover:text-blue-200 text-sm font-bold">
           Dashboard
         </Link>
-        <Link to="/add-user" className="hover:underline text-sm font-medium">
+        <Link to="/add-user" className="hover:text-blue-200 text-sm font-bold">
           Add User
         </Link>
-        <Link to="/all-users" className="hover:underline text-sm font-medium">
+        <Link to="/all-users" className="hover:text-blue-200 text-sm font-bold">
           All Users
         </Link>
-        <Link to="/all-subject" className="hover:underline text-sm font-medium">
+        <Link to="/all-subject" className="hover:text-blue-200 text-sm font-bold">
           Subjects
         </Link>
-        <Link to="/view-attendance" className="hover:underline text-sm font-medium">
+        <Link to="/view-attendance" className="hover:text-blue-200 text-sm font-bold">
           Attendance
         </Link>
-        <Link to="/my-profile" className="hover:underline text-sm font-medium">
+        <Link to="/my-profile" className="hover:text-blue-200 text-sm font-bold">
           Profile
         </Link>
         <button
           onClick={logout}
-          className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded text-sm transition"
+          className="bg-red-500 hover:bg-red-600 px-4 py-1.5 rounded font-bold text-sm transition border border-red-600 shadow"
         >
           Logout
         </button>

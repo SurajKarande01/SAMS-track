@@ -210,44 +210,39 @@ function FacultyDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-[#fafafc] text-gray-900 font-sans flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-green-200 via-blue-200 to-purple-200 text-gray-900 font-sans flex flex-col">
       <FacultyMenu />
 
       <div className="p-6 md:p-8 flex-grow max-w-7xl mx-auto w-full">
         {/* Welcome Section */}
-        <div className="bg-white rounded-3xl border border-gray-100 p-8 shadow-sm mb-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="bg-white rounded-xl border border-gray-300 p-6 shadow-lg mb-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
-            <span className="text-emerald-600 font-bold text-xs uppercase tracking-widest bg-emerald-50 px-2.5 py-1 rounded-md">
-              Faculty Access
-            </span>
-            <h1 className="text-3xl font-extrabold tracking-tight mt-3 text-gray-900">
-              Faculty Workstation
-            </h1>
-            <p className="text-gray-500 text-sm mt-1">
+            <h1 className="text-3xl font-bold text-blue-700">Faculty Dashboard</h1>
+            <p className="text-gray-600 text-sm mt-1">
               Manage student registries, check classrooms/courses, log daily attendance, and enter academic marks.
             </p>
           </div>
 
           <div className="flex gap-4">
-            <div className="bg-gray-50 border border-gray-100 rounded-2xl p-4 min-w-[120px] text-center">
-              <div className="text-2xl font-bold text-indigo-600">{assignedSubjects.length}</div>
-              <div className="text-xs text-gray-400 font-medium mt-1">Assigned Classes</div>
+            <div className="bg-gray-100 border border-gray-300 rounded-lg p-3 min-w-[120px] text-center shadow">
+              <div className="text-2xl font-bold text-blue-700">{assignedSubjects.length}</div>
+              <div className="text-xs text-gray-500 font-semibold mt-1">Assigned Classes</div>
             </div>
-            <div className="bg-gray-50 border border-gray-100 rounded-2xl p-4 min-w-[120px] text-center">
-              <div className="text-2xl font-bold text-emerald-600">{students.length}</div>
-              <div className="text-xs text-gray-400 font-medium mt-1">Total Students</div>
+            <div className="bg-gray-100 border border-gray-300 rounded-lg p-3 min-w-[120px] text-center shadow">
+              <div className="text-2xl font-bold text-green-700">{students.length}</div>
+              <div className="text-xs text-gray-500 font-semibold mt-1">Total Students</div>
             </div>
           </div>
         </div>
 
         {/* Messages */}
         {successMsg && (
-          <div className="mb-6 bg-emerald-50 text-emerald-700 px-5 py-3 rounded-2xl border border-emerald-100 text-sm font-medium">
+          <div className="mb-6 bg-green-100 text-green-800 px-5 py-3 rounded-lg border border-green-300 text-sm font-semibold">
             {successMsg}
           </div>
         )}
         {errorMsg && (
-          <div className="mb-6 bg-rose-50 text-rose-700 px-5 py-3 rounded-2xl border border-rose-100 text-sm font-medium">
+          <div className="mb-6 bg-red-100 text-red-800 px-5 py-3 rounded-lg border border-red-300 text-sm font-semibold">
             {errorMsg}
           </div>
         )}
@@ -259,27 +254,24 @@ function FacultyDashboard() {
           <div className="lg:col-span-2 space-y-8">
             
             {/* Assigned Classrooms / Courses */}
-            <div className="bg-white rounded-3xl border border-gray-100 p-6 shadow-sm">
-              <div className="mb-6 flex justify-between items-center">
-                <div>
-                  <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
-                    <BookOpen className="w-5 h-5 text-indigo-500" />
-                    <span>Assigned Classrooms / Courses</span>
-                  </h2>
-                  <p className="text-xs text-gray-400">Classrooms assigned to your account</p>
-                </div>
+            <div className="bg-white rounded-xl border border-gray-300 p-6 shadow-lg">
+              <div className="mb-6">
+                <h2 className="text-xl font-bold text-blue-700 flex items-center gap-2">
+                  <span>📖 Assigned Classrooms / Courses</span>
+                </h2>
+                <p className="text-xs text-gray-500">Classrooms assigned to your account</p>
               </div>
 
               {assignedSubjects.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {assignedSubjects.map((sub) => (
-                    <div key={sub.id} className="p-5 rounded-2xl border border-gray-100 bg-gray-50/50 flex flex-col justify-between hover:border-indigo-200 transition duration-300">
+                    <div key={sub.id} className="p-5 rounded-lg border border-gray-300 bg-gray-50 flex flex-col justify-between hover:shadow-md transition">
                       <div>
-                        <div className="w-9 h-9 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 font-bold mb-3">
+                        <div className="w-10 h-10 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-lg mb-3 border border-blue-200">
                           {sub.name.charAt(0)}
                         </div>
                         <h3 className="font-bold text-gray-800 text-base">{sub.name}</h3>
-                        <span className="text-[10px] bg-indigo-50 text-indigo-600 font-bold px-2 py-0.5 rounded mt-1.5 inline-block">
+                        <span className="text-[10px] bg-blue-100 text-blue-700 font-bold px-2 py-0.5 rounded border border-blue-200 mt-1.5 inline-block">
                           Active Course
                         </span>
                       </div>
@@ -290,104 +282,98 @@ function FacultyDashboard() {
                             setAttSubject(sub.id.toString());
                             setShowAttendanceModal(true);
                           }}
-                          className="flex-grow bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 rounded-xl text-xs transition flex items-center justify-center gap-1"
+                          className="flex-grow bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded text-xs transition"
                         >
-                          <CheckSquare className="w-3.5 h-3.5" />
-                          <span>Attendance</span>
+                          Take Attendance
                         </button>
                         <button
                           onClick={() => {
                             setMarkSubject(sub.id.toString());
                             setShowMarksModal(true);
                           }}
-                          className="flex-grow bg-slate-800 hover:bg-slate-900 text-white font-bold py-2 rounded-xl text-xs transition flex items-center justify-center gap-1"
+                          className="flex-grow bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded text-xs transition"
                         >
-                          <Award className="w-3.5 h-3.5" />
-                          <span>Log Marks</span>
+                          Log Marks
                         </button>
                       </div>
                     </div>
                   ))}
                 </div>
               ) : (
-                <div className="py-8 text-center text-gray-400 text-sm border border-dashed border-gray-200 rounded-2xl">
+                <div className="py-8 text-center text-gray-400 text-sm border border-dashed border-gray-300 rounded-lg bg-gray-50">
                   No courses are currently assigned to you. Use the "Quick Add Subject" tool on the right to start.
                 </div>
               )}
             </div>
 
             {/* Students List */}
-            <div className="bg-white rounded-3xl border border-gray-100 p-6 shadow-sm">
+            <div className="bg-white rounded-xl border border-gray-300 p-6 shadow-lg">
               <div className="mb-6 flex justify-between items-center">
                 <div>
-                  <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
-                    <Users className="w-5 h-5 text-indigo-500" />
-                    <span>Registered Students</span>
+                  <h2 className="text-xl font-bold text-blue-700 flex items-center gap-2">
+                    <span>👥 Registered Students</span>
                   </h2>
-                  <p className="text-xs text-gray-400">Click on a student's name to view report & profile details</p>
+                  <p className="text-xs text-gray-500">Click on a student's name to view report & profile details</p>
                 </div>
                 <Link
                   to="/add-student"
-                  className="bg-indigo-50 hover:bg-indigo-100 text-indigo-600 font-bold text-xs px-3.5 py-2 rounded-xl transition flex items-center gap-1.5"
+                  className="bg-blue-100 hover:bg-blue-200 text-blue-700 font-bold text-xs px-3.5 py-2 rounded-lg border border-blue-300 transition"
                 >
-                  <PlusCircle className="w-3.5 h-3.5" />
-                  <span>Add Student</span>
+                  + Add Student
                 </Link>
               </div>
 
               <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse">
+                <table className="w-full text-left border border-gray-300">
                   <thead>
-                    <tr className="border-b border-gray-100 text-xs text-gray-400 font-semibold">
-                      <th className="pb-3">Name</th>
-                      <th className="pb-3">Contact</th>
-                      <th className="pb-3">Parent Contact</th>
-                      <th className="pb-3 text-right">Actions</th>
+                    <tr className="bg-gray-200 text-gray-800 text-xs font-bold">
+                      <th className="border px-4 py-2">Name</th>
+                      <th className="border px-4 py-2">Contact</th>
+                      <th className="border px-4 py-2">Parent Contact</th>
+                      <th className="border px-4 py-2 text-center w-28">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-50 text-sm">
+                  <tbody className="divide-y divide-gray-200 text-sm">
                     {students.length > 0 ? (
                       students.map((st) => (
-                        <tr key={st.id} className="hover:bg-gray-50/40 transition duration-150">
-                          <td className="py-3.5 font-semibold text-gray-800">
+                        <tr key={st.id} className="hover:bg-gray-50 transition duration-150">
+                          <td className="border px-4 py-3 font-semibold text-gray-800">
                             <button
                               onClick={() => {
                                 setSelectedStudent(st);
                                 setShowReportModal(true);
                               }}
-                              className="text-indigo-600 hover:text-indigo-800 hover:underline text-left font-bold"
+                              className="text-blue-600 hover:text-blue-800 hover:underline text-left font-bold"
                             >
                               {st.name || st.username}
                             </button>
                           </td>
-                          <td className="py-3.5 text-gray-500 font-medium">{st.contactNo || "N/A"}</td>
-                          <td className="py-3.5 text-gray-500 font-medium">{st.parentNo || "N/A"}</td>
-                          <td className="py-3.5 text-right">
-                            <div className="flex justify-end gap-2">
-                              <button
-                                onClick={() => {
-                                  setSelectedStudent(st);
-                                  setShowReportModal(true);
-                                }}
-                                className="bg-gray-50 hover:bg-gray-100 p-2 rounded-lg text-gray-600 transition"
-                                title="View Report / Profile"
-                              >
-                                <Eye className="w-4 h-4" />
-                              </button>
-                              <button
-                                onClick={() => handleDeleteStudent(st.id)}
-                                className="bg-rose-50 hover:bg-rose-100 p-2 rounded-lg text-rose-600 transition"
-                                title="Delete Student"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </button>
-                            </div>
+                          <td className="border px-4 py-3 text-gray-600">{st.contactNo || "N/A"}</td>
+                          <td className="border px-4 py-3 text-gray-600">{st.parentNo || "N/A"}</td>
+                          <td className="border px-4 py-3 text-center space-x-2">
+                            <button
+                              onClick={() => {
+                                setSelectedStudent(st);
+                                setShowReportModal(true);
+                              }}
+                              className="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded text-xs font-semibold transition inline-block"
+                              title="View Report / Profile"
+                            >
+                              View
+                            </button>
+                            <button
+                              onClick={() => handleDeleteStudent(st.id)}
+                              className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs font-semibold transition inline-block"
+                              title="Delete Student"
+                            >
+                              Delete
+                            </button>
                           </td>
                         </tr>
                       ))
                     ) : (
                       <tr>
-                        <td colSpan="4" className="text-center py-8 text-gray-400 text-sm">
+                        <td colSpan="4" className="text-center py-8 text-gray-400 text-sm border">
                           No students found in the database.
                         </td>
                       </tr>
@@ -403,26 +389,26 @@ function FacultyDashboard() {
           <div className="space-y-8">
             
             {/* Quick add subject */}
-            <div className="bg-white rounded-3xl border border-gray-100 p-6 shadow-sm">
-              <h3 className="font-bold text-gray-800 text-base mb-2">Quick Add Subject</h3>
-              <p className="text-xs text-gray-400 mb-5">Create a classroom and assign to your account</p>
+            <div className="bg-white rounded-xl border border-gray-300 p-6 shadow-lg">
+              <h3 className="font-bold text-blue-700 text-base mb-1">Quick Add Subject</h3>
+              <p className="text-xs text-gray-500 mb-5">Create a classroom and assign to your account</p>
 
               <form onSubmit={handleAddSubject} className="space-y-4">
-                <div>
-                  <label className="block mb-1.5 font-bold text-xs text-gray-400 uppercase tracking-wider">Subject Name</label>
+                <div className="flex flex-col gap-1">
+                  <label className="font-bold text-xs text-gray-600 uppercase tracking-wider">Subject Name</label>
                   <input
                     type="text"
                     value={newSubjectName}
                     onChange={(e) => setNewSubjectName(e.target.value)}
                     placeholder="e.g. Chemistry II"
-                    className="w-full border border-gray-100 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 bg-gray-50/50 text-sm"
+                    className="border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white text-sm"
                     required
                   />
                 </div>
                 
                 <button
                   type="submit"
-                  className="w-full bg-slate-900 hover:bg-slate-950 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition duration-200"
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-lg text-sm transition duration-200"
                 >
                   Create & Link Subject
                 </button>
@@ -430,21 +416,18 @@ function FacultyDashboard() {
             </div>
 
             {/* Quick Navigation Menu */}
-            <div className="bg-white rounded-3xl border border-gray-100 p-6 shadow-sm space-y-3">
-              <h3 className="font-bold text-gray-800 text-base mb-2">Shortcut Actions</h3>
+            <div className="bg-white rounded-xl border border-gray-300 p-6 shadow-lg space-y-3">
+              <h3 className="font-bold text-blue-700 text-base mb-3">Shortcut Actions</h3>
               
               <button
                 onClick={() => {
                   setAttSubject("");
                   setShowAttendanceModal(true);
                 }}
-                className="w-full flex items-center justify-between p-3.5 bg-gray-50 rounded-xl hover:bg-indigo-50 hover:text-indigo-700 transition group text-sm font-semibold text-gray-700"
+                className="w-full flex items-center justify-between p-3.5 bg-gray-50 hover:bg-blue-50 border border-gray-300 rounded-lg hover:border-blue-300 transition text-sm font-semibold text-gray-700"
               >
-                <span className="flex items-center gap-2">
-                  <CheckSquare className="w-4 h-4 text-indigo-500" />
-                  Take Attendance
-                </span>
-                <ChevronRight className="w-4 h-4 text-gray-400 group-hover:translate-x-1 transition duration-250" />
+                <span>📝 Take Attendance</span>
+                <span className="text-gray-400">➡️</span>
               </button>
 
               <button
@@ -453,13 +436,10 @@ function FacultyDashboard() {
                   setMarkSubject("");
                   setShowMarksModal(true);
                 }}
-                className="w-full flex items-center justify-between p-3.5 bg-gray-50 rounded-xl hover:bg-indigo-50 hover:text-indigo-700 transition group text-sm font-semibold text-gray-700"
+                className="w-full flex items-center justify-between p-3.5 bg-gray-50 hover:bg-blue-50 border border-gray-300 rounded-lg hover:border-blue-300 transition text-sm font-semibold text-gray-700"
               >
-                <span className="flex items-center gap-2">
-                  <Award className="w-4 h-4 text-indigo-500" />
-                  Log Marks & Grades
-                </span>
-                <ChevronRight className="w-4 h-4 text-gray-400 group-hover:translate-x-1 transition duration-250" />
+                <span>🏆 Log Marks & Grades</span>
+                <span className="text-gray-400">➡️</span>
               </button>
             </div>
 
@@ -469,67 +449,67 @@ function FacultyDashboard() {
 
       {/* 1. REPORT / PROFILE MODAL */}
       {showReportModal && selectedStudent && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4 animate-fade-in">
-          <div className="bg-white rounded-3xl border border-gray-100 max-w-2xl w-full max-h-[85vh] overflow-y-auto p-6 md:p-8 shadow-xl relative">
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4 animate-fade-in">
+          <div className="bg-white rounded-xl border border-gray-300 max-w-2xl w-full max-h-[85vh] overflow-y-auto p-6 md:p-8 shadow-2xl relative">
             <button
               onClick={() => {
                 setShowReportModal(false);
                 setSelectedStudent(null);
               }}
-              className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 bg-gray-50 p-1.5 rounded-full"
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-xl font-bold"
             >
-              <X className="w-4 h-4" />
+              ✕
             </button>
 
             <div id="student-report-print-area">
               <div className="mb-6">
-                <span className="text-xs text-indigo-600 font-extrabold bg-indigo-50 px-2 py-0.5 rounded">
+                <span className="text-xs text-blue-700 font-extrabold bg-blue-100 px-2 py-0.5 rounded border border-blue-200">
                   Student Data Profile
                 </span>
-                <h2 className="text-2xl font-extrabold text-gray-800 mt-2">
+                <h2 className="text-2xl font-bold text-gray-800 mt-2">
                   {selectedStudent.name || selectedStudent.username}
                 </h2>
-                <p className="text-xs text-gray-400 mt-0.5">Linked parent credentials & grade summary</p>
+                <p className="text-xs text-gray-500 mt-0.5">Linked parent credentials & grade summary</p>
               </div>
 
               {/* Grid detail */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-gray-50/60 p-4 rounded-2xl border border-gray-100 mb-6 text-sm">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-gray-100 p-4 rounded-lg border border-gray-300 mb-6 text-sm">
                 <div>
-                  <span className="text-gray-400 font-semibold block text-xs">Email:</span>
+                  <span className="text-gray-500 font-semibold block text-xs">Email:</span>
                   <span className="font-bold text-gray-700">{selectedStudent.email || "N/A"}</span>
                 </div>
                 <div>
-                  <span className="text-gray-400 font-semibold block text-xs">Student Contact No:</span>
+                  <span className="text-gray-500 font-semibold block text-xs">Student Contact No:</span>
                   <span className="font-bold text-gray-700">{selectedStudent.contactNo || "N/A"}</span>
                 </div>
                 <div>
-                  <span className="text-gray-400 font-semibold block text-xs">Parent Contact No:</span>
+                  <span className="text-gray-500 font-semibold block text-xs">Parent Contact No:</span>
                   <span className="font-bold text-gray-700">{selectedStudent.parentNo || "N/A"}</span>
                 </div>
                 <div>
-                  <span className="text-gray-400 font-semibold block text-xs">Address:</span>
+                  <span className="text-gray-500 font-semibold block text-xs">Address:</span>
                   <span className="font-bold text-gray-700">{selectedStudent.address || "N/A"}</span>
                 </div>
               </div>
 
               {/* Marks Summary */}
               <div className="mb-6">
-                <h3 className="font-bold text-gray-800 text-sm mb-3">Academic Performance & Grades</h3>
+                <h3 className="font-bold text-blue-700 text-sm mb-3">Academic Performance & Grades</h3>
                 <div className="space-y-2 max-h-[220px] overflow-y-auto pr-2">
                   {marksList.filter(m => m.student?.id === selectedStudent.id).length > 0 ? (
                     marksList
                       .filter(m => m.student?.id === selectedStudent.id)
                       .map(m => (
-                        <div key={m.id} className="p-3 bg-white border border-gray-100 rounded-xl flex justify-between items-center text-sm shadow-xs">
+                        <div key={m.id} className="p-3 bg-white border border-gray-300 rounded-lg flex justify-between items-center text-sm shadow-sm">
                           <div>
                             <span className="font-bold text-gray-800">{m.subject?.name || "Subject"}</span>
                             <span className="text-[10px] text-gray-400 block mt-0.5">{m.date} ({m.term})</span>
                           </div>
-                          <div className="font-extrabold text-indigo-600">{m.marks} / 100</div>
+                          <div className="font-extrabold text-blue-700">{m.marks} / 100</div>
                         </div>
                       ))
                   ) : (
-                    <div className="text-center py-6 text-xs text-gray-400 border border-dashed border-gray-200 rounded-xl">
+                    <div className="text-center py-6 text-xs text-gray-400 border border-dashed border-gray-300 rounded-lg bg-gray-50">
                       No registered evaluations found.
                     </div>
                   )}
@@ -538,21 +518,19 @@ function FacultyDashboard() {
             </div>
 
             {/* Print Buttons */}
-            <div className="mt-8 pt-6 border-t border-gray-100 flex flex-wrap gap-3">
+            <div className="mt-8 pt-6 border-t border-gray-300 flex flex-wrap gap-3">
               <button
                 onClick={() => handlePrintReport("weekly")}
-                className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition"
+                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded text-xs transition"
               >
-                <Printer className="w-4 h-4" />
-                <span>Generate Weekly Report</span>
+                🖨️ Generate Weekly Report
               </button>
 
               <button
                 onClick={() => handlePrintReport("monthly")}
-                className="flex items-center gap-2 bg-slate-900 hover:bg-slate-950 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition"
+                className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded text-xs transition"
               >
-                <FileText className="w-4 h-4" />
-                <span>Generate Monthly Report</span>
+                📄 Generate Monthly Report
               </button>
             </div>
 
@@ -562,31 +540,31 @@ function FacultyDashboard() {
 
       {/* 2. TAKE ATTENDANCE MODAL */}
       {showAttendanceModal && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-3xl border border-gray-100 max-w-xl w-full max-h-[85vh] overflow-y-auto p-6 md:p-8 shadow-xl relative">
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl border border-gray-300 max-w-xl w-full max-h-[85vh] overflow-y-auto p-6 md:p-8 shadow-2xl relative">
             <button
               onClick={() => {
                 setShowAttendanceModal(false);
                 setAttSelectedStudents([]);
               }}
-              className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 bg-gray-50 p-1.5 rounded-full"
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-xl font-bold"
             >
-              <X className="w-4 h-4" />
+              ✕
             </button>
 
             <div className="mb-6">
-              <h2 className="text-xl font-bold text-gray-800">Record Attendance</h2>
-              <p className="text-xs text-gray-400">Log presence of students for a particular subject & date</p>
+              <h2 className="text-xl font-bold text-blue-700">Record Attendance</h2>
+              <p className="text-xs text-gray-500">Log presence of students for a particular subject & date</p>
             </div>
 
             <form onSubmit={handleSaveAttendance} className="space-y-5">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div>
-                  <label className="block mb-1.5 font-bold text-xs text-gray-500 uppercase tracking-wider">Subject</label>
+                <div className="flex flex-col gap-1">
+                  <label className="font-bold text-xs text-gray-600 uppercase tracking-wider">Subject</label>
                   <select
                     value={attSubject}
                     onChange={(e) => setAttSubject(e.target.value)}
-                    className="w-full border border-gray-100 p-2.5 rounded-xl bg-gray-50/50 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                    className="w-full border border-gray-300 p-2.5 rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
                     required
                   >
                     <option value="">Select Subject</option>
@@ -596,52 +574,52 @@ function FacultyDashboard() {
                   </select>
                 </div>
 
-                <div>
-                  <label className="block mb-1.5 font-bold text-xs text-gray-500 uppercase tracking-wider">Date</label>
+                <div className="flex flex-col gap-1">
+                  <label className="font-bold text-xs text-gray-600 uppercase tracking-wider">Date</label>
                   <input
                     type="date"
                     value={attDate}
                     onChange={(e) => setAttDate(e.target.value)}
-                    className="w-full border border-gray-100 p-2.5 rounded-xl bg-gray-50/50 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                    className="w-full border border-gray-300 p-2.5 rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
                     required
                   />
                 </div>
 
-                <div>
-                  <label className="block mb-1.5 font-bold text-xs text-gray-500 uppercase tracking-wider">Time</label>
+                <div className="flex flex-col gap-1">
+                  <label className="font-bold text-xs text-gray-600 uppercase tracking-wider">Time</label>
                   <input
                     type="text"
                     value={attTime}
                     onChange={(e) => setAttTime(e.target.value)}
                     placeholder="e.g. 10:00 AM"
-                    className="w-full border border-gray-100 p-2.5 rounded-xl bg-gray-50/50 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                    className="w-full border border-gray-300 p-2.5 rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
                     required
                   />
                 </div>
               </div>
 
               {/* Student Presence Checklist */}
-              <div>
-                <label className="block mb-2 font-bold text-xs text-gray-500 uppercase tracking-wider">
+              <div className="flex flex-col gap-1">
+                <label className="font-bold text-xs text-gray-600 uppercase tracking-wider">
                   Check present students ({attSelectedStudents.length} selected)
                 </label>
 
-                <div className="border border-gray-100 rounded-2xl max-h-[200px] overflow-y-auto p-3 space-y-2 bg-gray-50/50">
+                <div className="border border-gray-300 rounded-lg max-h-[200px] overflow-y-auto p-3 space-y-2 bg-gray-50">
                   {students.map(st => {
                     const isChecked = attSelectedStudents.includes(st.id);
                     return (
                       <div
                         key={st.id}
                         onClick={() => toggleAttStudent(st.id)}
-                        className={`p-2.5 rounded-xl border flex items-center justify-between cursor-pointer transition text-sm ${
+                        className={`p-2.5 rounded-lg border flex items-center justify-between cursor-pointer transition text-sm ${
                           isChecked 
-                            ? "bg-indigo-50 border-indigo-200 font-semibold text-indigo-900" 
-                            : "bg-white border-gray-100"
+                            ? "bg-blue-50 border-blue-300 font-semibold text-blue-900" 
+                            : "bg-white border-gray-300 hover:bg-gray-100"
                         }`}
                       >
                         <span>{st.name || st.username}</span>
                         <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${
-                          isChecked ? "bg-indigo-600 border-indigo-600 text-white" : "border-gray-200"
+                          isChecked ? "bg-blue-600 border-blue-600 text-white" : "border-gray-300"
                         }`}>
                           {isChecked && <span className="text-[9px] font-bold">✓</span>}
                         </div>
@@ -653,7 +631,7 @@ function FacultyDashboard() {
 
               <button
                 type="submit"
-                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl text-sm transition"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg text-sm transition"
               >
                 Save Attendance Record
               </button>
@@ -664,36 +642,36 @@ function FacultyDashboard() {
 
       {/* 3. LOG MARKS & GRADES MODAL */}
       {showMarksModal && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-3xl border border-gray-100 max-w-2xl w-full max-h-[85vh] overflow-y-auto p-6 md:p-8 shadow-xl relative">
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl border border-gray-300 max-w-2xl w-full max-h-[85vh] overflow-y-auto p-6 md:p-8 shadow-2xl relative">
             <button
               onClick={() => {
                 setShowMarksModal(false);
                 setMarkStudent("");
                 setMarkValue("");
               }}
-              className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 bg-gray-50 p-1.5 rounded-full"
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-xl font-bold"
             >
-              <X className="w-4 h-4" />
+              ✕
             </button>
 
             <div className="mb-6">
-              <h2 className="text-xl font-bold text-gray-800">Grades & Marks Workstation</h2>
-              <p className="text-xs text-gray-400">Log scores or manage existing evaluations</p>
+              <h2 className="text-xl font-bold text-blue-700">Grades & Marks Workstation</h2>
+              <p className="text-xs text-gray-500">Log scores or manage existing evaluations</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               
               {/* Left Column: Form to log new marks */}
-              <div>
-                <h3 className="font-bold text-sm text-gray-800 mb-3.5">Log Mark Entry</h3>
+              <div className="space-y-4">
+                <h3 className="font-bold text-sm text-gray-800 mb-1 border-b pb-1 border-gray-200">Log Mark Entry</h3>
                 <form onSubmit={handleSaveMarks} className="space-y-4">
-                  <div>
-                    <label className="block mb-1 font-bold text-xs text-gray-500">Student</label>
+                  <div className="flex flex-col gap-1">
+                    <label className="font-bold text-xs text-gray-600">Student</label>
                     <select
                       value={markStudent}
                       onChange={(e) => setMarkStudent(e.target.value)}
-                      className="w-full border border-gray-100 p-2.5 rounded-xl bg-gray-50/50 text-xs focus:outline-none focus:ring-2"
+                      className="w-full border border-gray-300 p-2.5 rounded-lg bg-white text-xs focus:outline-none focus:ring-2 focus:ring-blue-400"
                       required
                     >
                       <option value="">Select Student</option>
@@ -703,12 +681,12 @@ function FacultyDashboard() {
                     </select>
                   </div>
 
-                  <div>
-                    <label className="block mb-1 font-bold text-xs text-gray-500">Subject</label>
+                  <div className="flex flex-col gap-1">
+                    <label className="font-bold text-xs text-gray-600">Subject</label>
                     <select
                       value={markSubject}
                       onChange={(e) => setMarkSubject(e.target.value)}
-                      className="w-full border border-gray-100 p-2.5 rounded-xl bg-gray-50/50 text-xs focus:outline-none focus:ring-2"
+                      className="w-full border border-gray-300 p-2.5 rounded-lg bg-white text-xs focus:outline-none focus:ring-2 focus:ring-blue-400"
                       required
                     >
                       <option value="">Select Subject</option>
@@ -719,8 +697,8 @@ function FacultyDashboard() {
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block mb-1 font-bold text-xs text-gray-500">Score (0-100)</label>
+                    <div className="flex flex-col gap-1">
+                      <label className="font-bold text-xs text-gray-600">Score (0-100)</label>
                       <input
                         type="number"
                         min="0"
@@ -728,17 +706,17 @@ function FacultyDashboard() {
                         value={markValue}
                         onChange={(e) => setMarkValue(e.target.value)}
                         placeholder="85"
-                        className="w-full border border-gray-100 p-2.5 rounded-xl bg-gray-50/50 text-xs focus:outline-none focus:ring-2"
+                        className="w-full border border-gray-300 p-2.5 rounded-lg bg-white text-xs focus:outline-none focus:ring-2 focus:ring-blue-400"
                         required
                       />
                     </div>
 
-                    <div>
-                      <label className="block mb-1 font-bold text-xs text-gray-500">Evaluation Type</label>
+                    <div className="flex flex-col gap-1">
+                      <label className="font-bold text-xs text-gray-600">Evaluation Type</label>
                       <select
                         value={markTerm}
                         onChange={(e) => setMarkTerm(e.target.value)}
-                        className="w-full border border-gray-100 p-2.5 rounded-xl bg-gray-50/50 text-xs focus:outline-none"
+                        className="w-full border border-gray-300 p-2.5 rounded-lg bg-white text-xs focus:outline-none"
                       >
                         <option value="weekly">Weekly</option>
                         <option value="monthly">Monthly</option>
@@ -746,20 +724,20 @@ function FacultyDashboard() {
                     </div>
                   </div>
 
-                  <div>
-                    <label className="block mb-1 font-bold text-xs text-gray-500">Date</label>
+                  <div className="flex flex-col gap-1">
+                    <label className="font-bold text-xs text-gray-600">Date</label>
                     <input
                       type="date"
                       value={markDate}
                       onChange={(e) => setMarkDate(e.target.value)}
-                      className="w-full border border-gray-100 p-2.5 rounded-xl bg-gray-50/50 text-xs"
+                      className="w-full border border-gray-300 p-2.5 rounded-lg bg-white text-xs"
                       required
                     />
                   </div>
 
                   <button
                     type="submit"
-                    className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl text-xs transition"
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-lg text-xs transition"
                   >
                     Submit Mark Record
                   </button>
@@ -768,23 +746,23 @@ function FacultyDashboard() {
 
               {/* Right Column: List of existing marks to delete/modify */}
               <div>
-                <h3 className="font-bold text-sm text-gray-800 mb-3">All Mark Entries</h3>
+                <h3 className="font-bold text-sm text-gray-800 mb-1 border-b pb-1 border-gray-200">All Mark Entries</h3>
                 <div className="space-y-2.5 max-h-[350px] overflow-y-auto pr-1">
                   {marksList.length > 0 ? (
                     marksList.map(m => (
-                      <div key={m.id} className="p-3 bg-gray-50 border border-gray-100 rounded-xl flex justify-between items-center text-xs">
+                      <div key={m.id} className="p-3 bg-gray-50 border border-gray-300 rounded-lg flex justify-between items-center text-xs">
                         <div>
                           <div className="font-bold text-gray-800">{m.student?.name || "Student"}</div>
-                          <div className="text-[10px] text-gray-400 mt-0.5">
+                          <div className="text-[10px] text-gray-500 mt-0.5">
                             {m.subject?.name || "Subject"} | {m.marks}pts | {m.term}
                           </div>
                         </div>
                         <button
                           onClick={() => handleDeleteMark(m.id)}
-                          className="text-rose-600 hover:bg-rose-50 p-1.5 rounded"
+                          className="text-red-500 hover:bg-red-50 p-1.5 rounded transition"
                           title="Delete Entry"
                         >
-                          <Trash2 className="w-3.5 h-3.5" />
+                          ✕
                         </button>
                       </div>
                     ))

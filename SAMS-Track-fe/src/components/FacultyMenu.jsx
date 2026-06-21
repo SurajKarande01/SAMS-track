@@ -10,24 +10,33 @@ function FacultyMenu() {
   };
 
   return (
-    <nav className="bg-slate-950 text-white px-6 h-16 flex items-center justify-between sticky top-0 z-50 shadow-sm border-b border-slate-900">
-      <Link to="/faculty-dashboard" className="font-extrabold text-lg tracking-tight bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
+    <nav className="bg-blue-600 text-white p-4 flex items-center justify-between shadow border-b border-blue-700">
+      <Link to="/faculty-dashboard" className="font-bold text-xl tracking-tight">
         SAMS-TRACK
       </Link>
 
       <div className="flex gap-6 items-center">
-        <Link to="/faculty-dashboard" className="hover:text-indigo-200 text-sm font-semibold transition">
+        <Link to="/faculty-dashboard" className="hover:text-blue-200 text-sm font-bold">
           Dashboard
         </Link>
-        <Link to="/add-student" className="hover:text-indigo-200 text-sm font-semibold transition">
-          Add Students
+        <Link to="/add-student" className="hover:text-blue-200 text-sm font-bold">
+          Add Student
         </Link>
-        <Link to="/my-profile" className="hover:text-indigo-200 text-sm font-semibold transition">
-          To Profile
+        <Link to="/all-students" className="hover:text-blue-200 text-sm font-bold">
+          All Students
+        </Link>
+        <Link to="/mark-attendance" className="hover:text-blue-200 text-sm font-bold">
+          Mark Attendance
+        </Link>
+        <Link to="/view-attendance" className="hover:text-blue-200 text-sm font-bold">
+          View Attendance
+        </Link>
+        <Link to="/my-profile" className="hover:text-blue-200 text-sm font-bold">
+          Profile
         </Link>
         <button
           onClick={logout}
-          className="bg-rose-600 hover:bg-rose-700 px-4 py-1.5 rounded-xl text-sm font-bold transition shadow-sm"
+          className="bg-red-500 hover:bg-red-600 px-4 py-1.5 rounded font-bold text-sm transition border border-red-600 shadow"
         >
           Logout
         </button>

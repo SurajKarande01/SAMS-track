@@ -76,18 +76,18 @@ function AllSubject() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-blue-200 via-purple-200 to-pink-200 flex flex-col">
       <AdminMenu />
 
-      <div className="p-6 flex-grow">
-        <div className="flex justify-between items-center mb-4 max-w-4xl mx-auto">
-          <h2 className="text-xl font-bold text-gray-800">All Subjects</h2>
+      <div className="p-6 max-w-4xl mx-auto flex-grow w-full">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold text-blue-700">All Subjects</h2>
           <button
             onClick={() => {
               setSubjectName("");
               setShowAddModal(true);
             }}
-            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition font-medium shadow-sm"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-semibold shadow transition"
           >
             Add Subject
           </button>
@@ -96,27 +96,27 @@ function AllSubject() {
         {loading ? (
           <div className="text-center py-4 text-gray-600">Loading...</div>
         ) : (
-          <div className="overflow-x-auto border rounded border-gray-200 bg-white max-w-4xl mx-auto shadow-sm">
-            <table className="w-full border-collapse">
+          <div className="overflow-x-auto bg-white rounded-lg shadow-lg p-4 border border-gray-300">
+            <table className="w-full border border-gray-300 text-left">
               <thead>
-                <tr className="bg-gray-100 text-gray-700">
-                  <th className="border-b p-3 text-center w-16">#</th>
-                  <th className="border-b p-3 text-center w-24">ID</th>
-                  <th className="border-b p-3 text-left">Subject Name</th>
-                  <th className="border-b p-3 text-center w-48">Actions</th>
+                <tr className="bg-gray-200 text-gray-800">
+                  <th className="border px-4 py-2 text-center w-16">#</th>
+                  <th className="border px-4 py-2 text-center w-24">ID</th>
+                  <th className="border px-4 py-2">Subject Name</th>
+                  <th className="border px-4 py-2 text-center w-48">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {subjects.length > 0 ? (
                   subjects.map((subject, index) => (
                     <tr key={subject.id} className="hover:bg-gray-50">
-                      <td className="border-b p-3 text-center text-gray-500">{index + 1}</td>
-                      <td className="border-b p-3 text-center text-gray-500">{subject.id}</td>
-                      <td className="border-b p-3 font-medium text-gray-700">{subject.name}</td>
-                      <td className="border-b p-3 text-center space-x-2">
+                      <td className="border px-4 py-2 text-center text-gray-500">{index + 1}</td>
+                      <td className="border px-4 py-2 text-center text-gray-500">{subject.id}</td>
+                      <td className="border px-4 py-2 font-medium text-gray-700">{subject.name}</td>
+                      <td className="border px-4 py-2 text-center space-x-2">
                         <button
                           onClick={() => startEditSubject(subject)}
-                          className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm transition"
+                          className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition"
                         >
                           Edit
                         </button>
@@ -131,7 +131,7 @@ function AllSubject() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="4" className="text-center p-4 text-gray-500">
+                    <td colSpan="4" className="text-center p-4 text-gray-500 border">
                       No subjects found.
                     </td>
                   </tr>
@@ -145,8 +145,8 @@ function AllSubject() {
       {/* Add Subject Modal */}
       {showAddModal && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="bg-white rounded p-6 w-96 shadow-lg border border-gray-200">
-            <h3 className="font-bold text-lg text-gray-800 mb-4">Add Subject</h3>
+          <div className="bg-white rounded-lg p-6 w-96 shadow-xl border border-gray-300">
+            <h3 className="font-bold text-lg text-blue-600 mb-4">Add Subject</h3>
             <form onSubmit={handleAddSubject}>
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-1">Subject Name</label>
@@ -154,7 +154,7 @@ function AllSubject() {
                   type="text"
                   value={subjectName}
                   onChange={(e) => setSubjectName(e.target.value)}
-                  className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  className="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
                   placeholder="e.g. Mathematics"
                   required
                 />
@@ -163,13 +163,13 @@ function AllSubject() {
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded transition"
+                  className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded transition font-medium"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition font-medium"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-semibold transition"
                 >
                   Save
                 </button>
@@ -182,8 +182,8 @@ function AllSubject() {
       {/* Edit Subject Modal */}
       {showEditModal && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="bg-white rounded p-6 w-96 shadow-lg border border-gray-200">
-            <h3 className="font-bold text-lg text-gray-800 mb-4">Edit Subject</h3>
+          <div className="bg-white rounded-lg p-6 w-96 shadow-xl border border-gray-300">
+            <h3 className="font-bold text-lg text-blue-600 mb-4">Edit Subject</h3>
             <form onSubmit={handleEditSubject}>
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-1">Subject Name</label>
@@ -191,7 +191,7 @@ function AllSubject() {
                   type="text"
                   value={subjectName}
                   onChange={(e) => setSubjectName(e.target.value)}
-                  className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  className="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
                   required
                 />
               </div>
@@ -203,13 +203,13 @@ function AllSubject() {
                     setCurrentSubject(null);
                     setSubjectName("");
                   }}
-                  className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded transition"
+                  className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded transition font-medium"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition font-medium"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-semibold transition"
                 >
                   Update
                 </button>

@@ -47,6 +47,10 @@ function FacultyDashboard() {
     fetchData();
   }, [loggedInUser]);
 
+  /**
+   * fetchData: Async function that retrieves all critical faculty dashboard data.
+   * Fetches subjects assigned to the current faculty, all students, all subjects, and all marks.
+   */
   const fetchData = async () => {
     try {
       if (loggedInUser) {
@@ -71,7 +75,12 @@ function FacultyDashboard() {
     }
   };
 
-  // Add Subject action
+  /**
+   * handleAddSubject: Handles submission of the quick add subject form.
+   * Registers a new subject and assigns the current faculty user to it.
+   *
+   * @param {Object} e - React form submission event
+   */
   const handleAddSubject = async (e) => {
     e.preventDefault();
     if (!newSubjectName.trim()) return;
@@ -98,7 +107,11 @@ function FacultyDashboard() {
     }
   };
 
-  // Delete Student action
+  /**
+   * handleDeleteStudent: Deletes a student profile from the database by ID.
+   *
+   * @param {number} id - Student ID to delete
+   */
   const handleDeleteStudent = async (id) => {
     if (window.confirm("Are you sure you want to delete this student profile?")) {
       try {
@@ -113,7 +126,11 @@ function FacultyDashboard() {
     }
   };
 
-  // Attendance Submission
+  /**
+   * handleSaveAttendance: Submits the marked attendance record for selected student IDs.
+   *
+   * @param {Object} e - Submit event
+   */
   const handleSaveAttendance = async (e) => {
     e.preventDefault();
     if (!attSubject) {
@@ -142,7 +159,11 @@ function FacultyDashboard() {
     }
   };
 
-  // Marks Submission
+  /**
+   * handleSaveMarks: Saves a student's mark entry for a specific subject and term.
+   *
+   * @param {Object} e - Submit event
+   */
   const handleSaveMarks = async (e) => {
     e.preventDefault();
     if (!markStudent || !markSubject || !markValue) {
@@ -170,6 +191,11 @@ function FacultyDashboard() {
     }
   };
 
+  /**
+   * handleDeleteMark: Deletes a specific marks entry from the academic logs.
+   *
+   * @param {number} id - Marks record ID
+   */
   const handleDeleteMark = async (id) => {
     if (window.confirm("Are you sure you want to delete this marks entry?")) {
       try {
@@ -184,6 +210,11 @@ function FacultyDashboard() {
     }
   };
 
+  /**
+   * toggleAttStudent: Toggles selection state of a student when marking attendance.
+   *
+   * @param {number} id - Student ID to toggle
+   */
   const toggleAttStudent = (id) => {
     if (attSelectedStudents.includes(id)) {
       setAttSelectedStudents(attSelectedStudents.filter(sid => sid !== id));
@@ -192,6 +223,11 @@ function FacultyDashboard() {
     }
   };
 
+  /**
+   * handlePrintReport: Opens browser print window for student academic report card.
+   *
+   * @param {string} term - Evaluation term (weekly/monthly/midterm/final)
+   */
   const handlePrintReport = (term) => {
     const printContent = document.getElementById("student-report-print-area").innerHTML;
     const originalContent = document.body.innerHTML;

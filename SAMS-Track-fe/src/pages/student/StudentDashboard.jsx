@@ -47,6 +47,10 @@ function StudentDashboard() {
     fetchData();
   }, [studentId, role]);
 
+  /**
+   * fetchData: Async function that retrieves all critical student dashboard data.
+   * Fetches student details, all subjects, enrolled subjects, marks/grades, and attendance.
+   */
   const fetchData = async () => {
     try {
       // 1. Fetch Student Details
@@ -84,6 +88,12 @@ function StudentDashboard() {
     }
   };
 
+  /**
+   * handleChooseSubjects: Toggles subject enrollment for the student.
+   * Enrolls the student if not already enrolled, or unenrolls if they are.
+   *
+   * @param {number} subjectId - The unique ID of the subject
+   */
   const handleChooseSubjects = async (subjectId) => {
     let updatedIds = [];
     const isEnrolled = enrolledSubjects.some(s => s.id === subjectId);
@@ -107,6 +117,11 @@ function StudentDashboard() {
     }
   };
 
+  /**
+   * handleUpdateProfile: Submits updated profile information (address, contacts, email, password) to the API.
+   *
+   * @param {Object} e - Submit event
+   */
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
     try {
@@ -130,6 +145,9 @@ function StudentDashboard() {
     }
   };
 
+  /**
+   * handleDeleteProfile: Deletes the current student profile permanently and logs them out.
+   */
   const handleDeleteProfile = async () => {
     if (window.confirm("Are you absolutely sure you want to delete your profile? This action is permanent and will log you out.")) {
       try {
@@ -142,6 +160,9 @@ function StudentDashboard() {
     }
   };
 
+  /**
+   * handleLogout: Clears user session keys from local storage and redirects to the home page.
+   */
   const handleLogout = () => {
     localStorage.removeItem("role");
     localStorage.removeItem("username");
@@ -149,7 +170,12 @@ function StudentDashboard() {
     navigate("/");
   };
 
-  // Process chart data
+  /**
+   * getChartData: Formats marks history for visualization in the progress AreaChart.
+   * Filters by the selected term view (weekly/monthly) and sorts chronologically.
+   *
+   * @returns {Array<Object>} - Formatted recharts data points
+   */
   const getChartData = () => {
     // Filter marks by view: weekly / monthly
     const filteredMarks = marks.filter(m => m.term?.toLowerCase() === graphView.toLowerCase());

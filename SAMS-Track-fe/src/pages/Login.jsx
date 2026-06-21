@@ -2,6 +2,10 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { userService } from "../services/userService";
 
+/**
+ * Login Component: Handles user authentication, sets local storage
+ * variables on success, and routes users based on their role (admin, faculty, student, parent).
+ */
 function Login() {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
@@ -9,21 +13,30 @@ function Login() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  /**
+   * handleLogin: Event handler triggered on form submit.
+   * Calls the userService API to validate user credentials.
+   *
+   * @param {Object} e - React form submission event
+   */
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
     setLoading(true);
 
     try {
+      // Perform backend login API request
       const user = await userService.login(username, password);
 
       if (user && user.role) {
+        // Store user metadata in local storage for session management
         localStorage.setItem("username", user.username);
         localStorage.setItem("role", user.role);
         if (user.studentId) {
           localStorage.setItem("studentId", user.studentId.toString());
         }
 
+        // Navigate dynamically based on role type
         if (user.role === "admin") {
           navigate("/admin-dashboard");
         } else if (user.role === "faculty") {
@@ -37,6 +50,7 @@ function Login() {
         setError("Invalid username or password");
       }
     } catch (err) {
+      // Capture and display API validation errors
       if (err.response && err.response.data && typeof err.response.data === "string") {
         setError(err.response.data);
       } else {

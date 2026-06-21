@@ -3,6 +3,10 @@ import AdminMenu from "../components/AdminMenu";
 import FacultyMenu from "../components/FacultyMenu";
 import { userService } from "../services/userService";
 
+/**
+ * Profile Component: Displays and allows the logged-in user to update
+ * their account details (names, email, password).
+ */
 function Profile() {
   const username = localStorage.getItem("username");
   const role = localStorage.getItem("role");
@@ -10,14 +14,21 @@ function Profile() {
   const [isEditing, setIsEditing] = useState(false);
   const [form, setForm] = useState({ username: "", password: "", firstName: "", lastName: "", email: "", role: "" });
 
+  // Load user information on component mount
   useEffect(() => {
     userService.getByUsername(username)
       .then((data) => { setUser(data); setForm(data); })
       .catch((err) => console.error(err));
   }, [username]);
 
+  /**
+   * handleChange: Handles input field changes and updates form state.
+   */
   const handleChange = (e) => { setForm({ ...form, [e.target.name]: e.target.value }); };
 
+  /**
+   * handleSave: Submits the updated profile details to the backend API.
+   */
   const handleSave = () => {
     userService.update(form)
       .then((data) => { alert("Profile updated!"); setUser(data); setIsEditing(false); })
@@ -26,18 +37,27 @@ function Profile() {
 
   if (!user) return <div className="p-6">Loading...</div>;
 
+  /**
+   * getBackgroundClass: Determines background gradient class based on user role.
+   */
   const getBackgroundClass = () => {
     if (role === "admin") return "bg-gradient-to-br from-blue-200 via-purple-200 to-pink-200";
     if (role === "faculty") return "bg-gradient-to-br from-green-200 via-blue-200 to-purple-200";
     return "bg-gradient-to-br from-indigo-200 via-purple-200 to-pink-200";
   };
 
+  /**
+   * getHeaderColor: Determines text header color class based on user role.
+   */
   const getHeaderColor = () => {
     if (role === "admin") return "text-blue-700";
     if (role === "faculty") return "text-green-700";
     return "text-indigo-700";
   };
 
+  /**
+   * getButtonClass: Determines edit button color class based on user role.
+   */
   const getButtonClass = () => {
     if (role === "admin") return "bg-blue-600 hover:bg-blue-700";
     if (role === "faculty") return "bg-green-600 hover:bg-green-700";

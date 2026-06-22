@@ -86,16 +86,7 @@ function FacultyDashboard() {
     if (!newSubjectName.trim()) return;
 
     try {
-      // API expects name and facultyUsername
-      await subjectService.add(newSubjectName.trim());
-      
-      // Update with current facultyUsername if recently added
-      const allSubs = await subjectService.getAll();
-      const added = allSubs.find(s => s.name === newSubjectName.trim() && !s.facultyUsername);
-      if (added) {
-        added.facultyUsername = loggedInUser;
-        await subjectService.update(added.id, added.name, added.facultyUsername); // Updates association
-      }
+      await subjectService.add(newSubjectName.trim(), loggedInUser);
 
       setSuccessMsg("Subject created successfully!");
       setNewSubjectName("");

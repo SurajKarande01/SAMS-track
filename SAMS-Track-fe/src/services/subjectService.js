@@ -5,8 +5,8 @@ export const subjectService = {
     const response = await API.get("/subject/get-all-subjects");
     return response.data;
   },
-  add: async (name) => {
-    const response = await API.post("/subject/add-subject", { name });
+  add: async (name, facultyUsername) => {
+    const response = await API.post("/subject/add-subject", { name, facultyUsername });
     return response.data;
   },
   update: async (id, name, facultyUsername) => {

@@ -1,4 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
+import Logo from "./Logo";
 
 function FacultyMenu() {
   const navigate = useNavigate();
@@ -11,8 +12,8 @@ function FacultyMenu() {
 
   return (
     <nav className="bg-blue-600 text-white p-4 flex items-center justify-between shadow border-b border-blue-700">
-      <Link to="/faculty-dashboard" className="font-bold text-xl tracking-tight">
-        SAMS-TRACK
+      <Link to="/faculty-dashboard" className="flex items-center">
+        <Logo showText={true} />
       </Link>
 
       <div className="flex gap-6 items-center">

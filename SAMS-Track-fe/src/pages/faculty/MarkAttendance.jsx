@@ -17,10 +17,10 @@ function MarkAttendance() {
 
   // fetch subjects
   useEffect(() => {
-    subjectService.getAll()
+    subjectService.getByFaculty(username)
       .then((data) => setSubjects(data))
       .catch((err) => console.error(err));
-  }, []);
+  }, [username]);
 
   // fetch students
   useEffect(() => {
@@ -34,6 +34,11 @@ function MarkAttendance() {
       .catch((err) => console.error(err));
   }, []);
 
+  // Filter students enrolled in the selected subject
+  const filteredStudents = selectedSubject
+    ? students.filter((s) => s.subjects && s.subjects.some((sub) => sub.id === Number(selectedSubject)))
+    : [];
+
   // toggle checkbox
   const toggleStudent = (id) => {
     setAttendance({ ...attendance, [id]: !attendance[id] });
@@ -41,15 +46,15 @@ function MarkAttendance() {
 
   // select all
   const selectAll = () => {
-    const updated = {};
-    students.forEach((s) => (updated[s.id] = true));
+    const updated = { ...attendance };
+    filteredStudents.forEach((s) => (updated[s.id] = true));
     setAttendance(updated);
   };
 
   // deselect all
   const deselectAll = () => {
-    const updated = {};
-    students.forEach((s) => (updated[s.id] = false));
+    const updated = { ...attendance };
+    filteredStudents.forEach((s) => (updated[s.id] = false));
     setAttendance(updated);
   };
 
@@ -60,7 +65,7 @@ function MarkAttendance() {
       return;
     }
 
-    const selectedStudents = students
+    const selectedStudents = filteredStudents
       .filter((s) => attendance[s.id])
       .map((s) => ({ id: s.id }));
 
@@ -145,8 +150,10 @@ function MarkAttendance() {
 
           {/* students list */}
           <div className="border border-gray-300 rounded-lg p-4 bg-gray-50 max-h-96 overflow-y-auto">
-            {students.length > 0 ? (
-              students.map((student) => (
+            {!selectedSubject ? (
+              <p className="text-gray-500 text-center py-4">Please select a subject to load students.</p>
+            ) : filteredStudents.length > 0 ? (
+              filteredStudents.map((student) => (
                 <div key={student.id} className="flex items-center mb-2 last:mb-0 hover:bg-gray-200/55 p-1 rounded">
                   <input
                     type="checkbox"
@@ -161,7 +168,7 @@ function MarkAttendance() {
                 </div>
               ))
             ) : (
-              <p className="text-gray-500 text-center py-4">No students found</p>
+              <p className="text-gray-500 text-center py-4">No students enrolled in this subject.</p>
             )}
           </div>
 

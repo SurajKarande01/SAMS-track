@@ -4,6 +4,7 @@ import { studentService } from "../../services/studentService";
 import { subjectService } from "../../services/subjectService";
 import { marksService } from "../../services/marksService";
 import { attendanceService } from "../../services/attendanceService";
+import Logo from "../../components/Logo";
 import { 
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend 
 } from "recharts";
@@ -207,12 +208,7 @@ function StudentDashboard() {
       <nav className="border-b border-gray-300 bg-white shadow sticky top-0 z-40">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold shadow border border-blue-700">
-              S
-            </div>
-            <span className="font-bold text-lg tracking-tight text-blue-700">
-              SAMS-TRACK
-            </span>
+            <Logo showText={true} textClass="font-bold text-lg tracking-tight text-blue-700" />
           </div>
 
           <div className="flex items-center gap-6">
@@ -499,7 +495,7 @@ function StudentDashboard() {
                 <form onSubmit={handleUpdateProfile} className="space-y-5">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div className="flex flex-col gap-1">
-                      <label className="font-bold text-xs text-gray-600 uppercase tracking-wider">Username</label>
+                      <label className="font-bold text-xs text-gray-600 uppercase tracking-wider">Full Name</label>
                       <input
                         type="text"
                         value={name}

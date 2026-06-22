@@ -43,12 +43,13 @@ public class UserController {
 			return new ResponseEntity<>("Username and password are required", HttpStatus.BAD_REQUEST);
 		}
 
-		// 1. ADMIN AUTH: fixed unique login. Username/ID: "admin@123", Email: "admin@gmail.com".
-		if (username.equals("admin@123") || username.equals("admin@gmail.com")) {
-			User adminUser = service.getUserByName("admin@123");
-			if (adminUser == null) {
+		// 1. ADMIN AUTH: logs in using Gmail (@gmail.com) only.
+		if (username.endsWith("@gmail.com")) {
+			User adminUser = service.getUserByName(username);
+			// Auto-create default "admin@gmail.com" on first boot if missing
+			if (adminUser == null && "admin@gmail.com".equals(username)) {
 				adminUser = new User();
-				adminUser.setUsername("admin@123");
+				adminUser.setUsername("admin@gmail.com");
 				adminUser.setPassword("admin");
 				adminUser.setEmail("admin@gmail.com");
 				adminUser.setRole("admin");
@@ -56,22 +57,30 @@ public class UserController {
 				adminUser.setLastName("Admin");
 				service.registerUser(adminUser);
 			}
-			if (adminUser.getPassword().equals(password)) {
-				java.util.Map<String, Object> resp = new java.util.HashMap<>();
-				resp.put("username", "admin@123");
-				resp.put("email", "admin@gmail.com");
-				resp.put("role", "admin");
-				resp.put("firstName", "System");
-				resp.put("lastName", "Admin");
-				return new ResponseEntity<>(resp, HttpStatus.OK);
+			if (adminUser != null && "admin".equals(adminUser.getRole())) {
+				if (adminUser.getPassword().equals(password)) {
+					java.util.Map<String, Object> resp = new java.util.HashMap<>();
+					resp.put("username", adminUser.getUsername());
+					resp.put("email", adminUser.getEmail());
+					resp.put("role", "admin");
+					resp.put("firstName", adminUser.getFirstName());
+					resp.put("lastName", adminUser.getLastName());
+					return new ResponseEntity<>(resp, HttpStatus.OK);
+				} else {
+					return new ResponseEntity<>("Invalid admin credentials", HttpStatus.UNAUTHORIZED);
+				}
 			} else {
-				return new ResponseEntity<>("Invalid admin credentials", HttpStatus.UNAUTHORIZED);
+				return new ResponseEntity<>("Admin account not found", HttpStatus.UNAUTHORIZED);
 			}
 		}
 
-		// CRITICAL RULE: No user in the database is allowed to use email-based login EXCEPT the Admin.
+		// Validate non-admin logins (must be contact numbers, digits only)
 		if (username.contains("@")) {
-			return new ResponseEntity<>("Email-based login is only allowed for the Admin", HttpStatus.UNAUTHORIZED);
+			return new ResponseEntity<>("Email-based login is restricted to Gmail (@gmail.com) for Admin only", HttpStatus.UNAUTHORIZED);
+		}
+
+		if (!username.matches("\\d+")) {
+			return new ResponseEntity<>("Login username must be a contact number (digits only)", HttpStatus.UNAUTHORIZED);
 		}
 
 		// 2. STUDENT AUTH: logs in using their personal Contact Number.
@@ -104,7 +113,7 @@ public class UserController {
 			}
 		}
 
-		// 4. FACULTY AUTH: standard User lookup
+		// 4. FACULTY AUTH: standard User lookup (where username is their contact number)
 		User user = service.getUserByName(username);
 		if (user != null && "faculty".equals(user.getRole())) {
 			if (user.getPassword().equals(password)) {
@@ -119,15 +128,20 @@ public class UserController {
 			}
 		}
 
-		return new ResponseEntity<>("Invalid username/contact number or password", HttpStatus.UNAUTHORIZED);
+		return new ResponseEntity<>("Invalid contact number or password", HttpStatus.UNAUTHORIZED);
 	}
 
 	@CrossOrigin(methods = RequestMethod.POST)
 	@PostMapping("/register-user")
 	public ResponseEntity<?> registerUser(@RequestBody User user) {
-		// CRITICAL RULE: No user in the database is allowed to use email-based login EXCEPT the Admin.
-		if (user.getUsername() != null && user.getUsername().contains("@") && !"admin@123".equals(user.getUsername())) {
-			return new ResponseEntity<>("Email-based login/username is only allowed for the Admin", HttpStatus.BAD_REQUEST);
+		if ("faculty".equals(user.getRole())) {
+			if (user.getUsername() == null || !user.getUsername().matches("\\d+")) {
+				return new ResponseEntity<>("Faculty username must be a contact number (digits only)", HttpStatus.BAD_REQUEST);
+			}
+		} else if ("admin".equals(user.getRole())) {
+			if (user.getUsername() == null || !user.getUsername().endsWith("@gmail.com")) {
+				return new ResponseEntity<>("Admin username must be a Gmail address (ending in @gmail.com)", HttpStatus.BAD_REQUEST);
+			}
 		}
 		
 		User registerUser = service.registerUser(user);

@@ -99,9 +99,47 @@ public class StudentDao {
 		try {
 			session = factory.openSession();
 			transaction = session.beginTransaction();
-			session.update(studentDetails);
+			Student existing = session.get(Student.class, studentDetails.getId());
+			if (existing != null) {
+				// Check if it's a full update or partial update
+				if (studentDetails.getUsername() != null) {
+					// Full update: copy all fields including subjects
+					existing.setName(studentDetails.getName());
+					existing.setEmail(studentDetails.getEmail());
+					existing.setUsername(studentDetails.getUsername());
+					existing.setContactNo(studentDetails.getContactNo());
+					existing.setParentNo(studentDetails.getParentNo());
+					existing.setPassword(studentDetails.getPassword());
+					existing.setAddress(studentDetails.getAddress());
+					existing.setSubjects(studentDetails.getSubjects());
+				} else {
+					// Partial update: copy only provided non-null fields
+					if (studentDetails.getName() != null) {
+						existing.setName(studentDetails.getName());
+					}
+					if (studentDetails.getEmail() != null) {
+						existing.setEmail(studentDetails.getEmail());
+					}
+					if (studentDetails.getContactNo() != null) {
+						existing.setContactNo(studentDetails.getContactNo());
+					}
+					if (studentDetails.getParentNo() != null) {
+						existing.setParentNo(studentDetails.getParentNo());
+					}
+					if (studentDetails.getPassword() != null) {
+						existing.setPassword(studentDetails.getPassword());
+					}
+					if (studentDetails.getAddress() != null) {
+						existing.setAddress(studentDetails.getAddress());
+					}
+				}
+				session.update(existing);
+				s = existing;
+			} else {
+				session.update(studentDetails);
+				s = studentDetails;
+			}
 			transaction.commit();
-			s = studentDetails;
 		} catch (Exception e) {
 			if (transaction != null) {
 				transaction.rollback();

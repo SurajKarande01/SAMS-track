@@ -52,7 +52,7 @@ function AllSubject() {
     e.preventDefault();
     if (!subjectName || subjectName.trim() === "" || !currentSubject) return;
 
-    subjectService.update(currentSubject.id, subjectName)
+    subjectService.update(currentSubject.id, subjectName, currentSubject.facultyUsername)
       .then(() => {
         alert("Subject updated successfully!");
         setShowEditModal(false);

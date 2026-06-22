@@ -19,14 +19,20 @@ function ViewAttendance() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    userService.getAllFaculty()
-      .then((data) => setFaculties(data))
-      .catch((err) => console.error(err));
+    if (role === "admin") {
+      userService.getAllFaculty()
+        .then((data) => setFaculties(data))
+        .catch((err) => console.error(err));
 
-    subjectService.getAll()
-      .then((data) => setSubjects(data))
-      .catch((err) => console.error(err));
-  }, []);
+      subjectService.getAll()
+        .then((data) => setSubjects(data))
+        .catch((err) => console.error(err));
+    } else {
+      subjectService.getByFaculty(username)
+        .then((data) => setSubjects(data))
+        .catch((err) => console.error(err));
+    }
+  }, [role, username]);
 
   const showAll = () => {
     setLoading(true);

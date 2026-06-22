@@ -38,7 +38,7 @@ public class AttendanceRecord {
     )
     private Set<Student> students;
     public AttendanceRecord() {
-		// TODO Auto-generated constructor stub
+		this.id = java.util.UUID.randomUUID().toString();
 	}
 
 	public String getId() {

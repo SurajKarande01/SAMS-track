@@ -57,12 +57,21 @@ function AddUser() {
           <h2 className="text-2xl font-bold text-center text-blue-600">Add User</h2>
 
           <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-gray-700">Username</label>
+            <label className="text-sm font-medium text-gray-700">
+              Username {form.role === "faculty" && <span className="text-red-500 font-bold text-xs">(Must be Contact Number)</span>} {form.role === "admin" && <span className="text-indigo-600 font-bold text-xs">(Must be Gmail address)</span>}
+            </label>
             <input
               type="text"
               name="username"
               value={form.username}
               onChange={handleChange}
+              placeholder={
+                form.role === "faculty"
+                  ? "e.g. 9876543210"
+                  : form.role === "admin"
+                  ? "e.g. admin_name@gmail.com"
+                  : "Enter username"
+              }
               className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
               required
             />

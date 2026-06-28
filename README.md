@@ -1,7 +1,7 @@
 <h1 align="center">📊 SAMS - Track — Student Attendance Management System</h1>
 
 <p align="center">
-  A premium, full-stack Academic Attendance Tracker featuring role-based portals for administrators and faculty. SAMS-Track streamlines student registration, subject allocations, and real-time daily attendance recording.
+  A premium, full-stack Academic Attendance Tracker featuring dedicated role-based portals for Administrators, Faculty, Students, and Parents. SAMS-Track streamlines user management, subject allocations, real-time daily attendance recording, and parent progress monitoring.
 </p>
 
 <p align="center">
@@ -28,17 +28,21 @@
 
 ## ✨ Key Features
 
-- **👥 Multi-Role Authorization**: Separate dashboards and action sets for **Admins** and **Faculty Members**.
+- **👥 Multi-Role Authorization**: 4 dedicated, protected role portals (**Admin**, **Faculty**, **Student**, **Parent**).
 - **🔑 Admin Control Panel**:
-  - Register, update, and manage Faculty and Admin accounts.
-  - CRUD operations for Students and Subjects.
-  - Global overview of attendance logs.
+  - Register, update, and manage Faculty and Admin accounts (`@gmail.com` security gateway).
+  - Full CRUD operations for Students and Course Subjects.
+  - Global administrative overview of all historical attendance logs.
 - **📝 Faculty Portal**:
-  - Record daily attendance by selecting subjects, dates, and times.
-  - Real-time checkboxes to mark students present/absent.
-  - Review historical records filtered by faculty username, date, or subject.
-- **⚡ Modern Responsive UI**: Built with React 18 and Tailwind CSS v4, offering card layouts and interactive sidebars.
-- **⚙️ High-Performance Backend**: Spring Boot REST API backed by Hibernate/JPA and MySQL database with auto-updating tables.
+  - Record daily attendance by selecting subjects, dates, and time slots.
+  - Fast interactive student checklist to mark attendance status.
+  - Review and filter historical logs by subject or date.
+- **🎓 Student Portal**:
+  - Personalized academic dashboard to track presence percentage, registered subjects, and evaluation marks.
+- **👨‍👩‍👧 Parent Portal**:
+  - Secure parent login via contact number to track child's daily presence and progress metrics in real-time.
+- **⚡ Modern Responsive UI**: Built with React 18, Vite, and Tailwind CSS v4 featuring sleek dark/light card designs.
+- **⚙️ High-Performance Backend**: Spring Boot REST API backed by Hibernate/JPA and MySQL database with relational data integrity.
 
 ---
 

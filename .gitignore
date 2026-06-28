@@ -1,0 +1,12 @@
+# OS & Editor Files
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/
+.idea/
+
+# Dependencies & Build Outputs
+node_modules/
+target/
+dist/
+*.log

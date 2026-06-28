@@ -20,9 +20,10 @@
 5. [Database Schema](#-database-schema)
 6. [Backend Setup (Spring Boot)](#-backend-setup-spring-boot)
 7. [Frontend Setup (React + Vite)](#-frontend-setup-react--vite)
-8. [API Reference](#-api-reference)
-9. [Command Sheet](#-command-sheet)
-10. [Author](#-author)
+8. [Global Free Cloud Deployment](#-global-free-cloud-deployment)
+9. [API Reference](#-api-reference)
+10. [Command Sheet](#-command-sheet)
+11. [Author](#-author)
 
 ---
 
@@ -214,6 +215,41 @@ SAMS-Track uses Hibernate to auto-configure five synchronized database tables in
    npm run dev
    ```
    > 📍 The Vite UI server will launch on port **`5173`**. Access it via **`http://localhost:5173`** in your browser.
+
+---
+
+## 🌐 Global Free Cloud Deployment
+
+Follow these step-by-step instructions to deploy SAMS-Track globally across **100% Free Cloud Tier** services:
+
+### 1️⃣ Database Deployment (Free MySQL Cloud Instance)
+- **Provider**: [Aiven.io](https://aiven.io) or [Render PostgreSQL/MySQL](https://render.com).
+- **Steps**:
+  1. Create a free account on Aiven or Railway.
+  2. Provision a free MySQL database instance (service name: `sams_track`).
+  3. Copy your Cloud Database Host, Port, Database Name, Username, and Password.
+
+### 2️⃣ Backend Deployment (Render.com Free Web Service)
+- **Provider**: [Render](https://render.com)
+- **Steps**:
+  1. Log into Render with GitHub and click **New + -> Web Service**.
+  2. Connect your GitHub repository (`SurajKarande01/SAMS-track`).
+  3. Select **Dockerfile** runtime (Root Directory: `SAMS-Track-be`).
+  4. Under **Environment Variables**, add:
+     - `SPRING_DATASOURCE_URL` = `jdbc:mysql://<YOUR_AIVEN_HOST>:<PORT>/sams_track?createDatabaseIfNotExist=true`
+     - `SPRING_DATASOURCE_USERNAME` = `<YOUR_DB_USER>`
+     - `SPRING_DATASOURCE_PASSWORD` = `<YOUR_DB_PASSWORD>`
+  5. Click **Deploy Web Service**. Render will build the Docker container and output your live backend URL (e.g., `https://sams-track-be.onrender.com`).
+
+### 3️⃣ Frontend Deployment (Vercel or Netlify)
+- **Provider**: [Vercel](https://vercel.com) or [Netlify](https://netlify.com)
+- **Steps**:
+  1. Log into Vercel/Netlify using your GitHub account.
+  2. Import project repository (`SurajKarande01/SAMS-track`).
+  3. Set **Root Directory** to `SAMS-Track-fe`.
+  4. Under **Environment Variables**, add:
+     - `VITE_API_URL` = `https://sams-track-be.onrender.com` *(your live backend URL from Step 2)*.
+  5. Click **Deploy**. Your React application will go live globally with SSL enabled!
 
 ---
 

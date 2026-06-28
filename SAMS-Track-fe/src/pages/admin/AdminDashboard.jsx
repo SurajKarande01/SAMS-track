@@ -3,60 +3,59 @@ import AdminMenu from "../../components/AdminMenu";
 
 function AdminDashboard() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-200 via-purple-200 to-pink-200">
+    <div className="min-h-screen bg-gray-100 flex flex-col font-sans">
       <AdminMenu />
 
-      <div className="max-w-6xl mx-auto py-12 px-4">
-        <h2 className="text-2xl font-bold text-blue-700 mb-8 text-center">
-          Admin Functionalities
-        </h2>
+      <div className="max-w-5xl mx-auto py-10 px-4 flex-grow w-full">
+        <div className="mb-8 text-center md:text-left">
+          <h1 className="text-2xl font-bold text-gray-800">Admin Dashboard</h1>
+          <p className="text-sm text-gray-600">Overview of administrative functions and system management</p>
+        </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <Link
             to="/add-user"
-            className="bg-white rounded-xl shadow-lg p-8 flex flex-col items-center text-center hover:shadow-2xl hover:-translate-y-1 transition transform duration-200 group"
+            className="bg-white rounded border border-gray-300 p-6 flex flex-col items-center text-center hover:border-blue-500 shadow-sm transition"
           >
-            <div className="text-5xl mb-4 group-hover:scale-110 transition">👤</div>
-            <h3 className="text-lg font-bold text-blue-600 mb-2">Add User</h3>
-            <p className="text-gray-600 text-sm font-normal">Create a new user account</p>
+            <div className="text-4xl mb-3">👤</div>
+            <h3 className="text-base font-bold text-gray-800 mb-1">Add User</h3>
+            <p className="text-gray-600 text-xs">Create a new faculty or admin account</p>
           </Link>
 
           <Link
             to="/all-users"
-            className="bg-white rounded-xl shadow-lg p-8 flex flex-col items-center text-center hover:shadow-2xl hover:-translate-y-1 transition transform duration-200 group"
+            className="bg-white rounded border border-gray-300 p-6 flex flex-col items-center text-center hover:border-blue-500 shadow-sm transition"
           >
-            <div className="text-5xl mb-4 group-hover:scale-110 transition">👥</div>
-            <h3 className="text-lg font-bold text-blue-600 mb-2">All Users</h3>
-            <p className="text-gray-600 text-sm font-normal">View and manage all users</p>
+            <div className="text-4xl mb-3">👥</div>
+            <h3 className="text-base font-bold text-gray-800 mb-1">All Users</h3>
+            <p className="text-gray-600 text-xs">View and manage all registered user accounts</p>
           </Link>
 
           <Link
             to="/all-subject"
-            className="bg-white rounded-xl shadow-lg p-8 flex flex-col items-center text-center hover:shadow-2xl hover:-translate-y-1 transition transform duration-200 group"
+            className="bg-white rounded border border-gray-300 p-6 flex flex-col items-center text-center hover:border-blue-500 shadow-sm transition"
           >
-            <div className="text-5xl mb-4 group-hover:scale-110 transition">📚</div>
-            <h3 className="text-lg font-bold text-blue-600 mb-2">All Subjects</h3>
-            <p className="text-gray-600 text-sm font-normal">
-              View and manage all subjects
-            </p>
+            <div className="text-4xl mb-3">📚</div>
+            <h3 className="text-base font-bold text-gray-800 mb-1">All Subjects</h3>
+            <p className="text-gray-600 text-xs">View and manage subject courses</p>
           </Link>
 
           <Link
             to="/view-attendance"
-            className="bg-white rounded-xl shadow-lg p-8 flex flex-col items-center text-center hover:shadow-2xl hover:-translate-y-1 transition transform duration-200 group"
+            className="bg-white rounded border border-gray-300 p-6 flex flex-col items-center text-center hover:border-blue-500 shadow-sm transition"
           >
-            <div className="text-5xl mb-4 group-hover:scale-110 transition">📊</div>
-            <h3 className="text-lg font-bold text-blue-600 mb-2">View Attendance</h3>
-            <p className="text-gray-600 text-sm font-normal">Check attendance records</p>
+            <div className="text-4xl mb-3">📊</div>
+            <h3 className="text-base font-bold text-gray-800 mb-1">View Attendance</h3>
+            <p className="text-gray-600 text-xs">Check system-wide attendance logs</p>
           </Link>
 
           <Link
             to="/my-profile"
-            className="bg-white rounded-xl shadow-lg p-8 flex flex-col items-center text-center hover:shadow-2xl hover:-translate-y-1 transition transform duration-200 group"
+            className="bg-white rounded border border-gray-300 p-6 flex flex-col items-center text-center hover:border-blue-500 shadow-sm transition"
           >
-            <div className="text-5xl mb-4 group-hover:scale-110 transition">🧑‍💼</div>
-            <h3 className="text-lg font-bold text-blue-600 mb-2">My Profile</h3>
-            <p className="text-gray-600 text-sm font-normal">View your profile</p>
+            <div className="text-4xl mb-3">🧑‍💼</div>
+            <h3 className="text-base font-bold text-gray-800 mb-1">My Profile</h3>
+            <p className="text-gray-600 text-xs">View and update your personal profile</p>
           </Link>
         </div>
       </div>
@@ -65,3 +64,4 @@ function AdminDashboard() {
 }
 
 export default AdminDashboard;
+

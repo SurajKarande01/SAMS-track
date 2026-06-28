@@ -59,82 +59,77 @@ function ViewAttendance() {
     setShowModal(true);
   };
 
-  const getBackgroundClass = () => {
-    if (role === "admin") return "bg-gradient-to-br from-blue-200 via-purple-200 to-pink-200";
-    return "bg-gradient-to-br from-green-200 via-blue-200 to-purple-200";
-  };
-
-  const getHeaderColor = () => {
-    if (role === "admin") return "text-blue-700";
-    return "text-green-700";
-  };
-
   return (
-    <div className={`min-h-screen ${getBackgroundClass()} flex flex-col`}>
+    <div className="min-h-screen bg-gray-100 flex flex-col font-sans">
       {role === "admin" ? <AdminMenu /> : <FacultyMenu />}
-      <div className="p-6 max-w-6xl mx-auto flex-grow w-full">
-        <h2 className={`text-2xl font-bold mb-6 text-center ${getHeaderColor()}`}>View Attendance</h2>
+      <div className="p-6 max-w-5xl mx-auto flex-grow w-full">
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-gray-800">View Attendance Records</h1>
+          <p className="text-sm text-gray-600">Search and verify logged student attendance entries</p>
+        </div>
         
-        {/* filters */}
-        <div className="bg-white p-6 rounded-lg shadow border border-gray-300 flex flex-wrap gap-4 mb-6 items-end">
+        {/* Filters */}
+        <div className="bg-white p-5 rounded border border-gray-300 shadow-sm flex flex-wrap gap-4 mb-6 items-end">
           {role === "admin" && (
-            <div className="flex flex-col flex-1 min-w-[200px]">
-              <label className="text-sm font-medium mb-1 text-gray-700">Faculty</label>
-              <select value={selectedFaculty} onChange={(e) => setSelectedFaculty(e.target.value)} className="border rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none">
+            <div className="flex flex-col flex-1 min-w-[180px]">
+              <label className="text-xs font-semibold uppercase text-gray-700 mb-1">Faculty</label>
+              <select value={selectedFaculty} onChange={(e) => setSelectedFaculty(e.target.value)} className="border border-gray-300 rounded px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
                 <option value="">Select Faculty</option>
                 {faculties.map((f, i) => (<option key={i} value={f.username}>{f.firstName} {f.lastName}</option>))}
               </select>
             </div>
           )}
-          <div className="flex flex-col flex-1 min-w-[200px]">
-            <label className="text-sm font-medium mb-1 text-gray-700">Subject</label>
-            <select value={selectedSubject} onChange={(e) => setSelectedSubject(e.target.value)} className="border rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none">
+          <div className="flex flex-col flex-1 min-w-[180px]">
+            <label className="text-xs font-semibold uppercase text-gray-700 mb-1">Subject</label>
+            <select value={selectedSubject} onChange={(e) => setSelectedSubject(e.target.value)} className="border border-gray-300 rounded px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
               <option value="">Select Subject</option>
               {subjects.map((s, i) => (<option key={i} value={s.id}>{s.name}</option>))}
             </select>
           </div>
-          <div className="flex flex-col flex-1 min-w-[200px]">
-            <label className="text-sm font-medium mb-1 text-gray-700">Date</label>
-            <input type="date" value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} className="border rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none" />
+          <div className="flex flex-col flex-1 min-w-[180px]">
+            <label className="text-xs font-semibold uppercase text-gray-700 mb-1">Date</label>
+            <input type="date" value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} className="border border-gray-300 rounded px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none" />
           </div>
           <div className="flex gap-2">
-            {role === "admin" && (<button onClick={showAll} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-semibold transition">Show All</button>)}
-            <button onClick={showFiltered} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-semibold transition">Search</button>
+            {role === "admin" && (<button onClick={showAll} className="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded text-sm font-semibold transition shadow-sm">Show All</button>)}
+            <button onClick={showFiltered} className="bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded text-sm font-semibold transition shadow-sm">Search</button>
           </div>
         </div>
 
-        {/* attendance table */}
+        {/* Attendance table */}
         {loading ? (
-          <div className="text-center py-4 text-gray-600">Loading...</div>
+          <div className="text-center py-8 text-gray-600 font-medium">Loading records...</div>
         ) : (
-          <div className="overflow-x-auto bg-white rounded-lg shadow-lg p-4 border border-gray-300">
-            <table className="w-full border border-gray-300 text-left">
+          <div className="overflow-x-auto bg-white rounded border border-gray-300 shadow-sm">
+            <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-gray-200 text-gray-800">
-                  <th className="border px-4 py-2 text-center w-16">#</th>
-                  <th className="border px-4 py-2">Faculty</th>
-                  <th className="border px-4 py-2">Subject</th>
-                  <th className="border px-4 py-2 text-center w-32">Date</th>
-                  <th className="border px-4 py-2 text-center w-28">Time</th>
-                  <th className="border px-4 py-2 text-center w-24">Count</th>
-                  <th className="border px-4 py-2 text-center w-28">Details</th>
+                <tr className="bg-gray-100 text-gray-700 text-xs uppercase border-b border-gray-300">
+                  <th className="p-3 text-center w-12">#</th>
+                  <th className="p-3">Faculty</th>
+                  <th className="p-3">Subject</th>
+                  <th className="p-3 text-center w-32">Date</th>
+                  <th className="p-3 text-center w-28">Time</th>
+                  <th className="p-3 text-center w-28">Present Count</th>
+                  <th className="p-3 text-center w-28">Actions</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="divide-y divide-gray-200 text-sm">
                 {attendance.length > 0 ? attendance.map((a, i) => (
-                  <tr key={a.id} className="hover:bg-gray-50">
-                    <td className="border px-4 py-2 text-center">{i + 1}</td>
-                    <td className="border px-4 py-2">{a.user?.firstName} {a.user?.lastName}</td>
-                    <td className="border px-4 py-2">{a.subject?.name}</td>
-                    <td className="border px-4 py-2 text-center">{a.date}</td>
-                    <td className="border px-4 py-2 text-center">{a.time}</td>
-                    <td className="border px-4 py-2 text-center">{a.numberOfStudents}</td>
-                    <td className="border px-4 py-2 text-center">
-                      <button onClick={() => showStudents(a.students)} className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm font-semibold transition">Show</button>
+                  <tr key={a.id || i} className="hover:bg-gray-50">
+                    <td className="p-3 text-center text-gray-600">{i + 1}</td>
+                    <td className="p-3 font-medium text-gray-800">{a.user ? `${a.user.firstName || ''} ${a.user.lastName || ''}`.trim() || a.user.username : "N/A"}</td>
+                    <td className="p-3 text-gray-800">{a.subject?.name || "N/A"}</td>
+                    <td className="p-3 text-center text-gray-600">{a.date}</td>
+                    <td className="p-3 text-center text-gray-600">{a.time}</td>
+                    <td className="p-3 text-center font-bold text-blue-700">{a.numberOfStudents || (a.students ? a.students.length : 0)}</td>
+                    <td className="p-3 text-center">
+                      <button onClick={() => showStudents(a.students)} className="bg-blue-100 text-blue-700 hover:bg-blue-200 border border-blue-300 px-3 py-1 rounded text-xs font-semibold transition">
+                        View List
+                      </button>
                     </td>
                   </tr>
                 )) : (
-                  <tr><td colSpan="7" className="text-center p-4 text-gray-500 border">No records found</td></tr>
+                  <tr><td colSpan="7" className="text-center py-8 text-gray-500 text-sm">No attendance logs found matching the filter criteria.</td></tr>
                 )}
               </tbody>
             </table>
@@ -143,17 +138,22 @@ function ViewAttendance() {
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 animate-fade-in" onClick={() => setShowModal(false)}>
-          <div className="bg-white rounded-lg shadow-xl p-6 w-80 border border-gray-300" onClick={(e) => e.stopPropagation()}>
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="font-bold text-blue-600 text-lg">Students</h3>
-              <button onClick={() => setShowModal(false)} className="text-gray-500 hover:text-gray-800 text-xl font-semibold">✕</button>
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" onClick={() => setShowModal(false)}>
+          <div className="bg-white rounded border border-gray-300 shadow-xl p-6 max-w-md w-full" onClick={(e) => e.stopPropagation()}>
+            <div className="flex justify-between items-center mb-4 border-b pb-2 border-gray-200">
+              <h3 className="font-bold text-gray-800 text-base">Present Students List</h3>
+              <button onClick={() => setShowModal(false)} className="text-gray-500 hover:text-gray-800 font-bold text-lg">✕</button>
             </div>
             {modalStudents.length > 0 ? (
-              <ul className="list-disc pl-5 text-gray-700 max-h-60 overflow-y-auto space-y-1">
-                {modalStudents.map((s) => (<li key={s.id}>{s.name}</li>))}
+              <ul className="divide-y divide-gray-100 text-sm max-h-60 overflow-y-auto">
+                {modalStudents.map((s, idx) => (
+                  <li key={s.id || idx} className="py-2 flex items-center justify-between">
+                    <span className="font-medium text-gray-800">{s.name || s.username}</span>
+                    <span className="text-xs text-green-700 bg-green-100 px-2 py-0.5 rounded border border-green-200 font-semibold">Present</span>
+                  </li>
+                ))}
               </ul>
-            ) : (<p className="text-gray-500 text-center py-2">No students</p>)}
+            ) : (<p className="text-gray-500 text-center py-4 text-sm">No present student records logged.</p>)}
           </div>
         </div>
       )}
@@ -162,3 +162,4 @@ function ViewAttendance() {
 }
 
 export default ViewAttendance;
+

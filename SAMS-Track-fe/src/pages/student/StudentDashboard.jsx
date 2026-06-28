@@ -203,21 +203,22 @@ function StudentDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-200 via-blue-200 to-purple-200 text-gray-900 font-sans flex flex-col">
+    <div className="min-h-screen bg-gray-100 text-gray-900 font-sans flex flex-col">
       {/* Top navbar */}
-      <nav className="border-b border-gray-300 bg-white shadow sticky top-0 z-40">
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Logo showText={true} textClass="font-bold text-lg tracking-tight text-blue-700" />
+      <nav className="bg-blue-700 text-white shadow-sm sticky top-0 z-40 px-6 py-3">
+        <div className="max-w-6xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="text-xl font-bold tracking-wide">SAMS-TRACK</span>
+            <span className="bg-blue-800 text-blue-100 text-xs px-2 py-0.5 rounded font-medium border border-blue-600">Student Portal</span>
           </div>
 
-          <div className="flex items-center gap-6">
-            <div className="hidden md:flex items-center gap-2 text-xs bg-gray-100 text-gray-700 py-1.5 px-3 rounded-lg border border-gray-300">
-              <span>Logged in as: <strong className="text-gray-900">{loggedInUser}</strong> ({role.toUpperCase()})</span>
+          <div className="flex items-center gap-4">
+            <div className="hidden md:flex items-center gap-2 text-xs bg-blue-800 text-blue-100 py-1 px-3 rounded border border-blue-600">
+              <span>User: <strong className="text-white">{loggedInUser}</strong> ({role.toUpperCase()})</span>
             </div>
             <button
               onClick={handleLogout}
-              className="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-1.5 rounded transition text-sm"
+              className="bg-red-600 hover:bg-red-700 text-white font-semibold px-3.5 py-1.5 rounded transition text-xs border border-red-700 shadow-sm"
             >
               Logout
             </button>

@@ -8,21 +8,19 @@ function MarkAttendance() {
   const [subjects, setSubjects] = useState([]);
   const [students, setStudents] = useState([]);
   const [selectedSubject, setSelectedSubject] = useState("");
-  const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const [time, setTime] = useState("10:00");
   const [attendance, setAttendance] = useState({});
   const [loading, setLoading] = useState(false);
 
   const username = localStorage.getItem("username");
 
-  // fetch subjects
   useEffect(() => {
     subjectService.getByFaculty(username)
       .then((data) => setSubjects(data))
       .catch((err) => console.error(err));
   }, [username]);
 
-  // fetch students
   useEffect(() => {
     studentService.getAll()
       .then((data) => {
@@ -34,34 +32,29 @@ function MarkAttendance() {
       .catch((err) => console.error(err));
   }, []);
 
-  // Filter students enrolled in the selected subject
   const filteredStudents = selectedSubject
     ? students.filter((s) => s.subjects && s.subjects.some((sub) => sub.id === Number(selectedSubject)))
     : [];
 
-  // toggle checkbox
   const toggleStudent = (id) => {
-    setAttendance({ ...attendance, [id]: !attendance[id] });
+    setAttendance((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  // select all
   const selectAll = () => {
     const updated = { ...attendance };
     filteredStudents.forEach((s) => (updated[s.id] = true));
     setAttendance(updated);
   };
 
-  // deselect all
   const deselectAll = () => {
     const updated = { ...attendance };
     filteredStudents.forEach((s) => (updated[s.id] = false));
     setAttendance(updated);
   };
 
-  // submit
   const handleSubmit = async () => {
     if (!selectedSubject || !date || !time) {
-      alert("Please fill all fields!");
+      alert("Please select a subject, date, and time!");
       return;
     }
 
@@ -70,8 +63,9 @@ function MarkAttendance() {
       .map((s) => ({ id: s.id }));
 
     if (selectedStudents.length === 0) {
-      alert("Please select at least one student!");
-      return;
+      if (!window.confirm("No students are marked as present. Do you want to submit all as Absent?")) {
+        return;
+      }
     }
 
     const payload = {
@@ -85,101 +79,144 @@ function MarkAttendance() {
     setLoading(true);
     try {
       await attendanceService.takeAttendance(payload);
-      alert("Attendance marked successfully!");
+      alert("Attendance recorded successfully!");
     } catch (err) {
       console.error(err);
-      alert("Error while marking attendance.");
+      alert("Error while recording attendance.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-200 via-blue-200 to-purple-200 flex flex-col">
+    <div className="min-h-screen bg-gray-100 flex flex-col font-sans">
       <FacultyMenu />
 
       <div className="p-6 max-w-4xl mx-auto flex-grow w-full">
-        <h2 className="text-2xl font-bold mb-6 text-center text-blue-700">Mark Attendance</h2>
+        <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-800">Mark Attendance</h1>
+            <p className="text-sm text-gray-600">Select course subject and mark student presence</p>
+          </div>
+        </div>
 
-        <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-300 flex flex-col gap-4">
-          {/* subject, date, time */}
-          <div className="flex flex-wrap gap-4">
-            <select
-              value={selectedSubject}
-              onChange={(e) => setSelectedSubject(e.target.value)}
-              className="border rounded px-3 py-2 flex-1 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-            >
-              <option value="">Select Subject</option>
-              {subjects.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.name}
-                </option>
-              ))}
-            </select>
+        <div className="bg-white p-6 rounded border border-gray-300 shadow-sm flex flex-col gap-5">
+          {/* Controls */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-semibold text-gray-700 uppercase">Select Subject</label>
+              <select
+                value={selectedSubject}
+                onChange={(e) => setSelectedSubject(e.target.value)}
+                className="border border-gray-300 rounded px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              >
+                <option value="">-- Choose Subject --</option>
+                {subjects.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.name}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-            <input
-              type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              className="border rounded px-3 py-2 flex-1 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-            />
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-semibold text-gray-700 uppercase">Date</label>
+              <input
+                type="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                className="border border-gray-300 rounded px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              />
+            </div>
 
-            <input
-              type="time"
-              value={time}
-              onChange={(e) => setTime(e.target.value)}
-              className="border rounded px-3 py-2 flex-1 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-            />
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-semibold text-gray-700 uppercase">Time Slot</label>
+              <input
+                type="text"
+                value={time}
+                onChange={(e) => setTime(e.target.value)}
+                placeholder="e.g. 10:00 AM"
+                className="border border-gray-300 rounded px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              />
+            </div>
           </div>
 
-          {/* select all / deselect all buttons */}
-          <div className="flex gap-2">
-            <button
-              onClick={selectAll}
-              className="bg-green-600 hover:bg-green-700 text-white px-4 py-1.5 rounded font-semibold text-sm transition"
-            >
-              Select All
-            </button>
-            <button
-              onClick={deselectAll}
-              className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-1.5 rounded font-semibold text-sm transition"
-            >
-              Deselect All
-            </button>
-          </div>
+          {/* Quick toggle bar */}
+          {selectedSubject && (
+            <div className="flex justify-between items-center bg-gray-50 p-3 rounded border border-gray-200 text-xs">
+              <span className="font-semibold text-gray-700">
+                Enrolled Students: {filteredStudents.length} | Marked Present: {filteredStudents.filter(s => attendance[s.id]).length}
+              </span>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={selectAll}
+                  className="bg-green-700 hover:bg-green-800 text-white px-3 py-1 rounded font-semibold transition"
+                >
+                  Mark All Present
+                </button>
+                <button
+                  type="button"
+                  onClick={deselectAll}
+                  className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded font-semibold transition"
+                >
+                  Mark All Absent
+                </button>
+              </div>
+            </div>
+          )}
 
-          {/* students list */}
-          <div className="border border-gray-300 rounded-lg p-4 bg-gray-50 max-h-96 overflow-y-auto">
+          {/* Student list */}
+          <div className="border border-gray-300 rounded overflow-hidden">
             {!selectedSubject ? (
-              <p className="text-gray-500 text-center py-4">Please select a subject to load students.</p>
+              <p className="text-gray-500 text-center py-8 text-sm">Please select a subject above to view enrolled students.</p>
             ) : filteredStudents.length > 0 ? (
-              filteredStudents.map((student) => (
-                <div key={student.id} className="flex items-center mb-2 last:mb-0 hover:bg-gray-200/55 p-1 rounded">
-                  <input
-                    type="checkbox"
-                    id={`student-${student.id}`}
-                    checked={attendance[student.id] || false}
-                    onChange={() => toggleStudent(student.id)}
-                    className="mr-2 cursor-pointer focus:ring-blue-400 h-4 w-4 text-blue-600 border-gray-300 rounded"
-                  />
-                  <label htmlFor={`student-${student.id}`} className="cursor-pointer text-gray-700 select-none">
-                    {student.id} - {student.name}
-                  </label>
-                </div>
-              ))
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-gray-100 text-gray-700 text-xs uppercase border-b border-gray-300">
+                    <th className="p-3 w-16 text-center">ID</th>
+                    <th className="p-3">Student Name</th>
+                    <th className="p-3 text-center w-32">Attendance Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200 text-sm">
+                  {filteredStudents.map((student) => {
+                    const isPresent = !!attendance[student.id];
+                    return (
+                      <tr key={student.id} className={isPresent ? "bg-green-50/50" : "hover:bg-gray-50"}>
+                        <td className="p-3 text-center text-gray-600">{student.id}</td>
+                        <td className="p-3 font-medium text-gray-800">{student.name || student.username}</td>
+                        <td className="p-3 text-center">
+                          <button
+                            type="button"
+                            onClick={() => toggleStudent(student.id)}
+                            className={`px-3 py-1 rounded text-xs font-bold transition border ${
+                              isPresent
+                                ? "bg-green-600 text-white border-green-700"
+                                : "bg-red-100 text-red-700 border-red-300 hover:bg-red-200"
+                            }`}
+                          >
+                            {isPresent ? "✓ PRESENT" : "✗ ABSENT"}
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
             ) : (
-              <p className="text-gray-500 text-center py-4">No students enrolled in this subject.</p>
+              <p className="text-gray-500 text-center py-8 text-sm">No students enrolled in this subject.</p>
             )}
           </div>
 
-          {/* submit button */}
-          <div className="text-center">
+          {/* Submit button */}
+          <div className="pt-2 flex justify-end">
             <button
               onClick={handleSubmit}
-              disabled={loading}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded font-semibold transition disabled:opacity-50"
+              disabled={loading || !selectedSubject}
+              className="bg-blue-700 hover:bg-blue-800 text-white px-6 py-2.5 rounded font-semibold text-sm transition shadow disabled:opacity-50"
             >
-              {loading ? "Submitting..." : "Submit Attendance"}
+              {loading ? "Saving Attendance..." : "Save Attendance Record"}
             </button>
           </div>
         </div>
@@ -189,3 +226,4 @@ function MarkAttendance() {
 }
 
 export default MarkAttendance;
+

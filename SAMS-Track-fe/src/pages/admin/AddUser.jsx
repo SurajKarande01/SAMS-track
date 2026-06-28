@@ -46,19 +46,22 @@ function AddUser() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-200 via-purple-200 to-pink-200 flex flex-col">
+    <div className="min-h-screen bg-gray-100 flex flex-col font-sans">
       <AdminMenu />
 
       <div className="flex-grow flex justify-center py-10 px-4">
         <form
           onSubmit={handleSubmit}
-          className="bg-white p-8 rounded-xl shadow-lg w-full max-w-lg flex flex-col gap-4 border"
+          className="bg-white p-8 rounded border border-gray-300 shadow-sm w-full max-w-lg flex flex-col gap-4"
         >
-          <h2 className="text-2xl font-bold text-center text-blue-600">Add User</h2>
+          <div className="border-b pb-3 border-gray-200">
+            <h2 className="text-xl font-bold text-gray-800">Add New User</h2>
+            <p className="text-xs text-gray-600">Register a new administration or faculty account</p>
+          </div>
 
           <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-gray-700">
-              Username {form.role === "faculty" && <span className="text-red-500 font-bold text-xs">(Must be Contact Number)</span>} {form.role === "admin" && <span className="text-indigo-600 font-bold text-xs">(Must be Gmail address)</span>}
+            <label className="text-xs font-semibold text-gray-700 uppercase">
+              Username {form.role === "faculty" && <span className="text-red-600 font-bold">(Must be Contact Number)</span>} {form.role === "admin" && <span className="text-blue-700 font-bold">(Must be Gmail address)</span>}
             </label>
             <input
               type="text"
@@ -72,88 +75,90 @@ function AddUser() {
                   ? "e.g. admin_name@gmail.com"
                   : "Enter username"
               }
-              className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
               required
             />
           </div>
 
-          <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-gray-700">Password</label>
-            <input
-              type="password"
-              name="password"
-              value={form.password}
-              onChange={handleChange}
-              className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-              required
-            />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-semibold text-gray-700 uppercase">First Name</label>
+              <input
+                type="text"
+                name="firstName"
+                value={form.firstName}
+                onChange={handleChange}
+                className="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                required
+              />
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-semibold text-gray-700 uppercase">Last Name</label>
+              <input
+                type="text"
+                name="lastName"
+                value={form.lastName}
+                onChange={handleChange}
+                className="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                required
+              />
+            </div>
           </div>
 
           <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-gray-700">Email</label>
+            <label className="text-xs font-semibold text-gray-700 uppercase">Email Address</label>
             <input
               type="email"
               name="email"
               value={form.email}
               onChange={handleChange}
-              className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
               required
             />
           </div>
 
           <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-gray-700">Role</label>
+            <label className="text-xs font-semibold text-gray-700 uppercase">Account Role</label>
             <select
               name="role"
               value={form.role}
               onChange={handleChange}
-              className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
               required
             >
-              <option value="">Select role</option>
+              <option value="">-- Select Role --</option>
               <option value="faculty">Faculty</option>
               <option value="admin">Admin</option>
             </select>
           </div>
 
           <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-gray-700">First Name</label>
+            <label className="text-xs font-semibold text-gray-700 uppercase">Password</label>
             <input
-              type="text"
-              name="firstName"
-              value={form.firstName}
+              type="password"
+              name="password"
+              value={form.password}
               onChange={handleChange}
-              className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-              required
-            />
-          </div>
-
-          <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-gray-700">Last Name</label>
-            <input
-              type="text"
-              name="lastName"
-              value={form.lastName}
-              onChange={handleChange}
-              className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
               required
             />
           </div>
 
           {message && (
-            <p
-              className={`text-sm text-center ${
-                message.includes("successfully") ? "text-green-600" : "text-red-500"
+            <div
+              className={`text-xs text-center p-2.5 rounded font-semibold border ${
+                message.includes("successfully") ? "bg-green-50 text-green-700 border-green-200" : "bg-red-50 text-red-600 border-red-200"
               }`}
             >
               {message}
-            </p>
+            </div>
           )}
 
           <button
             type="submit"
             disabled={loading}
-            className="bg-blue-600 text-white py-2 rounded font-semibold hover:bg-blue-700 transition disabled:opacity-50"
+            className="bg-blue-700 text-white py-2.5 rounded text-sm font-semibold hover:bg-blue-800 transition disabled:opacity-50 mt-2 shadow-sm"
           >
             {loading ? "Registering..." : "Add User"}
           </button>
@@ -164,3 +169,4 @@ function AddUser() {
 }
 
 export default AddUser;
+

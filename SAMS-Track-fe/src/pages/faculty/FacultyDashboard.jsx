@@ -237,7 +237,7 @@ function FacultyDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-200 via-blue-200 to-purple-200 text-gray-900 font-sans flex flex-col">
+    <div className="min-h-screen bg-gray-100 text-gray-900 font-sans flex flex-col">
       <FacultyMenu />
 
       <div className="p-6 md:p-8 flex-grow max-w-7xl mx-auto w-full">

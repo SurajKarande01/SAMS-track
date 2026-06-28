@@ -1,5 +1,4 @@
 import { Link, useNavigate } from "react-router-dom";
-import Logo from "./Logo";
 
 function AdminMenu() {
   const navigate = useNavigate();
@@ -10,33 +9,34 @@ function AdminMenu() {
     navigate("/");
   };
   return (
-    <nav className="bg-blue-600 text-white p-4 flex items-center justify-between shadow border-b border-blue-700">
-      <Link to="/admin-dashboard" className="flex items-center">
-        <Logo showText={true} />
+    <nav className="bg-blue-700 text-white px-6 py-3.5 flex items-center justify-between shadow-sm">
+      <Link to="/admin-dashboard" className="flex items-center gap-2">
+        <span className="text-xl font-bold tracking-wide">SAMS-TRACK</span>
+        <span className="bg-blue-800 text-blue-100 text-xs px-2 py-0.5 rounded font-medium border border-blue-600">Admin</span>
       </Link>
 
-      <div className="flex gap-6 items-center">
-        <Link to="/admin-dashboard" className="hover:text-blue-200 text-sm font-bold">
+      <div className="flex gap-5 items-center">
+        <Link to="/admin-dashboard" className="hover:text-blue-200 text-sm font-medium">
           Dashboard
         </Link>
-        <Link to="/add-user" className="hover:text-blue-200 text-sm font-bold">
+        <Link to="/add-user" className="hover:text-blue-200 text-sm font-medium">
           Add User
         </Link>
-        <Link to="/all-users" className="hover:text-blue-200 text-sm font-bold">
+        <Link to="/all-users" className="hover:text-blue-200 text-sm font-medium">
           All Users
         </Link>
-        <Link to="/all-subject" className="hover:text-blue-200 text-sm font-bold">
+        <Link to="/all-subject" className="hover:text-blue-200 text-sm font-medium">
           Subjects
         </Link>
-        <Link to="/view-attendance" className="hover:text-blue-200 text-sm font-bold">
+        <Link to="/view-attendance" className="hover:text-blue-200 text-sm font-medium">
           Attendance
         </Link>
-        <Link to="/my-profile" className="hover:text-blue-200 text-sm font-bold">
+        <Link to="/my-profile" className="hover:text-blue-200 text-sm font-medium">
           Profile
         </Link>
         <button
           onClick={logout}
-          className="bg-red-500 hover:bg-red-600 px-4 py-1.5 rounded font-bold text-sm transition border border-red-600 shadow"
+          className="bg-red-600 hover:bg-red-700 px-3.5 py-1.5 rounded text-xs font-semibold transition border border-red-700 ml-2 shadow-sm"
         >
           Logout
         </button>
@@ -46,3 +46,4 @@ function AdminMenu() {
 }
 
 export default AdminMenu;
+

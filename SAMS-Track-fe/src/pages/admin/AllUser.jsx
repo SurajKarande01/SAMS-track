@@ -4,12 +4,16 @@ import AdminMenu from "../../components/AdminMenu";
 import { userService } from "../../services/userService";
 import { subjectService } from "../../services/subjectService";
 import { attendanceService } from "../../services/attendanceService";
+import { adminDeletionService } from "../../services/adminDeletionService";
 
 function AllUser() {
   const [users, setUsers] = useState([]);
-  const [roleFilter, setRoleFilter] = useState("all"); // "all", "admin", "faculty"
+  const [roleFilter, setRoleFilter] = useState("all"); // "all", "admin", "faculty", "superadmin"
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+
+  const currentUserRole = localStorage.getItem("role") || "admin";
+  const currentUsername = localStorage.getItem("username") || "";
 
   // Activity Monitor Modal states
   const [selectedUserActivity, setSelectedUserActivity] = useState(null);
@@ -28,18 +32,42 @@ function AllUser() {
     fetchUsers();
   }, []);
 
-  const deleteUser = (username) => {
-    if (!window.confirm(`Are you sure you want to permanently delete user: ${username}?`)) return;
+  const deleteUser = async (user) => {
+    const targetUsername = user.username;
+    const targetRole = user.role;
 
-    userService.delete(username)
-      .then(() => {
+    if (targetRole === "admin") {
+      if (currentUserRole === "superadmin") {
+        if (!window.confirm(`[SUPER ADMIN] Are you sure you want to permanently delete Admin: ${targetUsername}?`)) return;
+        try {
+          await userService.delete(targetUsername);
+          alert("Admin account permanently deleted successfully.");
+          fetchUsers();
+        } catch (err) {
+          alert("Failed to delete admin account.");
+        }
+      } else {
+        // Regular Admin attempting to delete another Admin -> requires Super Admin grant!
+        if (!window.confirm(`Deleting an Admin account requires Super Admin approval. Submit deletion request for ${targetUsername} to Super Admin?`)) return;
+        try {
+          await adminDeletionService.requestDeletion(targetUsername, currentUsername);
+          alert(`✅ Deletion request for Admin (${targetUsername}) sent to Super Admin for approval!`);
+        } catch (err) {
+          alert("Failed to submit admin deletion request to Super Admin.");
+        }
+      }
+    } else {
+      // Regular user or faculty deletion
+      if (!window.confirm(`Are you sure you want to permanently delete user account: ${targetUsername}?`)) return;
+      try {
+        await userService.delete(targetUsername);
         alert("User account deleted successfully!");
         fetchUsers();
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error("Error deleting user:", err);
         alert("Failed to delete user account.");
-      });
+      }
+    }
   };
 
   const handleViewActivity = async (user) => {
@@ -75,6 +103,7 @@ function AllUser() {
   const filteredUsers = users.filter((u) => {
     if (roleFilter === "admin") return u.role === "admin";
     if (roleFilter === "faculty") return u.role === "faculty";
+    if (roleFilter === "superadmin") return u.role === "superadmin";
     return true;
   });
 
@@ -86,7 +115,7 @@ function AllUser() {
         <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
             <h1 className="text-2xl font-bold text-gray-800">All Registered Accounts</h1>
-            <p className="text-sm text-gray-600">Monitor activity, filter roles, and manage system access</p>
+            <p className="text-sm text-gray-600">Monitor activity, filter roles, and manage institutional access</p>
           </div>
           <button
             onClick={() => navigate("/add-user")}
@@ -97,9 +126,9 @@ function AllUser() {
         </div>
 
         {/* Sorting / Role Filters */}
-        <div className="bg-white p-3 rounded border border-gray-300 shadow-sm mb-6 flex items-center gap-2">
+        <div className="bg-white p-3 rounded border border-gray-300 shadow-sm mb-6 flex items-center gap-2 flex-wrap">
           <span className="text-xs font-semibold text-gray-600 uppercase mr-2">Filter by Role:</span>
-          {["all", "admin", "faculty"].map((r) => (
+          {["all", "admin", "faculty", "superadmin"].map((r) => (
             <button
               key={r}
               onClick={() => setRoleFilter(r)}
@@ -121,7 +150,7 @@ function AllUser() {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-gray-100 text-gray-700 text-xs uppercase border-b border-gray-300">
-                  <th className="p-3">Username</th>
+                  <th className="p-3">Username / Mobile</th>
                   <th className="p-3">Full Name</th>
                   <th className="p-3">Email</th>
                   <th className="p-3">Role</th>
@@ -137,7 +166,8 @@ function AllUser() {
                       <td className="p-3 text-gray-600">{user.email}</td>
                       <td className="p-3">
                         <span className={`px-2 py-0.5 rounded text-xs font-semibold uppercase border ${
-                          user.role === 'admin' ? 'bg-purple-50 text-purple-700 border-purple-200' : 'bg-blue-50 text-blue-700 border-blue-200'
+                          user.role === 'superadmin' ? 'bg-purple-100 text-purple-800 border-purple-300 font-bold' :
+                          user.role === 'admin' ? 'bg-indigo-50 text-indigo-700 border-indigo-200' : 'bg-blue-50 text-blue-700 border-blue-200'
                         }`}>
                           {user.role || "N/A"}
                         </span>
@@ -156,7 +186,7 @@ function AllUser() {
                           Edit
                         </button>
                         <button
-                          onClick={() => deleteUser(user.username)}
+                          onClick={() => deleteUser(user)}
                           className="bg-red-600 hover:bg-red-700 text-white px-2.5 py-1 rounded text-xs font-semibold transition"
                         >
                           Delete
@@ -235,7 +265,7 @@ function AllUser() {
                   </>
                 )}
 
-                {selectedUserActivity.role === "admin" && (
+                {(selectedUserActivity.role === "admin" || selectedUserActivity.role === "superadmin") && (
                   <div className="text-xs text-gray-600 bg-purple-50 p-3 rounded border border-purple-200">
                     🛡️ Full Administrative Access. System monitoring, user creation, and subject management privileges active.
                   </div>

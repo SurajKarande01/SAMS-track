@@ -6,7 +6,6 @@ import { studentService } from "../../services/studentService";
 function AddStudent() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
-    username: "",
     name: "",
     email: "",
     contactNo: "",
@@ -27,10 +26,13 @@ function AddStudent() {
     setLoading(true);
 
     try {
-      await studentService.add(form);
+      const studentData = {
+        ...form,
+        username: form.contactNo, // Automatically bind username to contact number
+      };
+      await studentService.add(studentData);
       setMessage("Student added successfully!");
       setForm({
-        username: "",
         name: "",
         email: "",
         contactNo: "",
@@ -63,22 +65,10 @@ function AddStudent() {
         >
           <div className="border-b pb-3 border-gray-200">
             <h2 className="text-xl font-bold text-gray-800">Register New Student</h2>
-            <p className="text-xs text-gray-600">Enter personal and contact information for new enrollment</p>
+            <p className="text-xs text-gray-600">Enroll student using mobile number authentication</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="flex flex-col gap-1">
-              <label className="text-xs font-semibold text-gray-700 uppercase">Username / Roll No</label>
-              <input
-                type="text"
-                name="username"
-                value={form.username}
-                onChange={handleChange}
-                className="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-                required
-              />
-            </div>
-
             <div className="flex flex-col gap-1">
               <label className="text-xs font-semibold text-gray-700 uppercase">Full Name</label>
               <input
@@ -86,13 +76,12 @@ function AddStudent() {
                 name="name"
                 value={form.name}
                 onChange={handleChange}
+                placeholder="e.g. Rahul Sharma"
                 className="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                 required
               />
             </div>
-          </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="flex flex-col gap-1">
               <label className="text-xs font-semibold text-gray-700 uppercase">Email Address</label>
               <input
@@ -100,18 +89,7 @@ function AddStudent() {
                 name="email"
                 value={form.email}
                 onChange={handleChange}
-                className="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-                required
-              />
-            </div>
-
-            <div className="flex flex-col gap-1">
-              <label className="text-xs font-semibold text-gray-700 uppercase">Password</label>
-              <input
-                type="password"
-                name="password"
-                value={form.password}
-                onChange={handleChange}
+                placeholder="e.g. rahul@example.com"
                 className="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                 required
               />
@@ -120,28 +98,43 @@ function AddStudent() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="flex flex-col gap-1">
-              <label className="text-xs font-semibold text-gray-700 uppercase">Personal Contact No</label>
+              <label className="text-xs font-semibold text-gray-700 uppercase">Student Mobile No (Login ID)</label>
               <input
                 type="text"
                 name="contactNo"
                 value={form.contactNo}
                 onChange={handleChange}
+                placeholder="10-digit mobile number"
                 className="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                 required
               />
             </div>
 
             <div className="flex flex-col gap-1">
-              <label className="text-xs font-semibold text-gray-700 uppercase">Parent Contact No</label>
+              <label className="text-xs font-semibold text-gray-700 uppercase">Parent Mobile No (Parent Login)</label>
               <input
                 type="text"
                 name="parentNo"
                 value={form.parentNo}
                 onChange={handleChange}
+                placeholder="10-digit parent number"
                 className="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                 required
               />
             </div>
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <label className="text-xs font-semibold text-gray-700 uppercase">Shared Password</label>
+            <input
+              type="password"
+              name="password"
+              value={form.password}
+              onChange={handleChange}
+              placeholder="••••••••"
+              className="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+              required
+            />
           </div>
 
           <div className="flex flex-col gap-1">
@@ -151,6 +144,7 @@ function AddStudent() {
               value={form.address}
               onChange={handleChange}
               rows="3"
+              placeholder="Full mailing address"
               className="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
               required
             ></textarea>
@@ -180,4 +174,3 @@ function AddStudent() {
 }
 
 export default AddStudent;
-

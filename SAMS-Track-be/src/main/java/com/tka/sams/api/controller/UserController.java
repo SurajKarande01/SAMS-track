@@ -43,7 +43,7 @@ public class UserController {
 			return new ResponseEntity<>("Username and password are required", HttpStatus.BAD_REQUEST);
 		}
 
-		// 1. ADMIN AUTH: logs in using Gmail (@gmail.com) only.
+		// 1. ADMIN / SUPERADMIN AUTH: logs in using Gmail (@gmail.com) only.
 		if (username.endsWith("@gmail.com")) {
 			User adminUser = service.getUserByName(username);
 			// Auto-create default "admin@gmail.com" on first boot if missing
@@ -57,12 +57,23 @@ public class UserController {
 				adminUser.setLastName("Admin");
 				service.registerUser(adminUser);
 			}
-			if (adminUser != null && "admin".equals(adminUser.getRole())) {
+			// Auto-create default "superadmin@gmail.com" on first boot if missing
+			if (adminUser == null && "superadmin@gmail.com".equals(username)) {
+				adminUser = new User();
+				adminUser.setUsername("superadmin@gmail.com");
+				adminUser.setPassword("superadmin");
+				adminUser.setEmail("superadmin@gmail.com");
+				adminUser.setRole("superadmin");
+				adminUser.setFirstName("Super");
+				adminUser.setLastName("Admin");
+				service.registerUser(adminUser);
+			}
+			if (adminUser != null && ("admin".equals(adminUser.getRole()) || "superadmin".equals(adminUser.getRole()))) {
 				if (adminUser.getPassword().equals(password)) {
 					java.util.Map<String, Object> resp = new java.util.HashMap<>();
 					resp.put("username", adminUser.getUsername());
 					resp.put("email", adminUser.getEmail());
-					resp.put("role", "admin");
+					resp.put("role", adminUser.getRole());
 					resp.put("firstName", adminUser.getFirstName());
 					resp.put("lastName", adminUser.getLastName());
 					return new ResponseEntity<>(resp, HttpStatus.OK);

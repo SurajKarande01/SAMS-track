@@ -143,6 +143,7 @@ public class AttendanceRecordDao {
 			transaction = session.beginTransaction();
 			AttendanceRecord record = session.get(AttendanceRecord.class, id);
 			if (record != null) {
+				session.createNativeQuery("delete from attendance_students where attendance_record_id = :id").setParameter("id", id).executeUpdate();
 				session.delete(record);
 				transaction.commit();
 				msg = "deleted";

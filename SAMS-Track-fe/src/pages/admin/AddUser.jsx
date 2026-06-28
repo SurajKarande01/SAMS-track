@@ -21,6 +21,12 @@ function AddUser() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
+
+    if (form.role === "faculty" && !/^\d+$/.test(form.username.trim())) {
+      setMessage("Faculty mobile number must contain only numbers.");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -55,13 +61,28 @@ function AddUser() {
           className="bg-white p-8 rounded border border-gray-300 shadow-sm w-full max-w-lg flex flex-col gap-4"
         >
           <div className="border-b pb-3 border-gray-200">
-            <h2 className="text-xl font-bold text-gray-800">Add New User</h2>
-            <p className="text-xs text-gray-600">Register a new administration or faculty account</p>
+            <h2 className="text-xl font-bold text-gray-800">Add New System User</h2>
+            <p className="text-xs text-gray-600">Register faculty (using mobile number) or admin accounts</p>
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <label className="text-xs font-semibold text-gray-700 uppercase">Account Role</label>
+            <select
+              name="role"
+              value={form.role}
+              onChange={handleChange}
+              className="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+              required
+            >
+              <option value="">-- Select Role --</option>
+              <option value="faculty">Faculty</option>
+              <option value="admin">Admin</option>
+            </select>
           </div>
 
           <div className="flex flex-col gap-1">
             <label className="text-xs font-semibold text-gray-700 uppercase">
-              Username {form.role === "faculty" && <span className="text-red-600 font-bold">(Must be Contact Number)</span>} {form.role === "admin" && <span className="text-blue-700 font-bold">(Must be Gmail address)</span>}
+              {form.role === "faculty" ? "Mobile Number (Login ID)" : "Login Username / Gmail"}
             </label>
             <input
               type="text"
@@ -70,10 +91,8 @@ function AddUser() {
               onChange={handleChange}
               placeholder={
                 form.role === "faculty"
-                  ? "e.g. 9876543210"
-                  : form.role === "admin"
-                  ? "e.g. admin_name@gmail.com"
-                  : "Enter username"
+                  ? "10-digit mobile number (e.g. 9876543210)"
+                  : "Gmail address for admin (e.g. admin@gmail.com)"
               }
               className="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
               required
@@ -119,27 +138,13 @@ function AddUser() {
           </div>
 
           <div className="flex flex-col gap-1">
-            <label className="text-xs font-semibold text-gray-700 uppercase">Account Role</label>
-            <select
-              name="role"
-              value={form.role}
-              onChange={handleChange}
-              className="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-              required
-            >
-              <option value="">-- Select Role --</option>
-              <option value="faculty">Faculty</option>
-              <option value="admin">Admin</option>
-            </select>
-          </div>
-
-          <div className="flex flex-col gap-1">
             <label className="text-xs font-semibold text-gray-700 uppercase">Password</label>
             <input
               type="password"
               name="password"
               value={form.password}
               onChange={handleChange}
+              placeholder="••••••••"
               className="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
               required
             />
@@ -169,4 +174,3 @@ function AddUser() {
 }
 
 export default AddUser;
-

@@ -2,13 +2,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { userService } from "../services/userService";
 import { studentService } from "../services/studentService";
+import { passwordResetService } from "../services/passwordResetService";
 import Logo from "../components/Logo";
 
 /**
- * Login Component: Dual-mode authentication portal.
- * - User Mode (Student, Parent, Faculty): Logs in using contact numbers only.
- * - Admin Mode: Logs in using Gmail addresses only (@gmail.com).
- * - Student Self-Registration: Allows new students to register profiles directly.
+ * Login Component: Dual-mode authentication portal with Mobile-number based login,
+ * Student Self-Registration, and Admin-managed Password Reset Requests.
  */
 function Login() {
   const navigate = useNavigate();
@@ -22,7 +21,6 @@ function Login() {
   // Student Self-Registration State
   const [showRegModal, setShowRegModal] = useState(false);
   const [regForm, setRegForm] = useState({
-    username: "",
     name: "",
     email: "",
     contactNo: "",
@@ -32,6 +30,12 @@ function Login() {
   });
   const [regMsg, setRegMsg] = useState("");
   const [regLoading, setRegLoading] = useState(false);
+
+  // Forgot Password State
+  const [showForgotModal, setShowForgotModal] = useState(false);
+  const [forgotContact, setForgotContact] = useState("");
+  const [forgotMsg, setForgotMsg] = useState("");
+  const [forgotLoading, setForgotLoading] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -45,7 +49,7 @@ function Login() {
       }
     } else {
       if (!/^\d+$/.test(trimmedUsername)) {
-        setError("Contact number must contain only numbers.");
+        setError("Mobile / Contact number must contain only numbers.");
         return;
       }
     }
@@ -63,7 +67,7 @@ function Login() {
         }
         if (!isAdminMode && user.role !== activeTab) {
           const actualRole = user.role.charAt(0).toUpperCase() + user.role.slice(1);
-          setError(`This contact number belongs to a ${actualRole} account. Please select the correct tab.`);
+          setError(`This mobile number belongs to a ${actualRole} account. Please select the correct tab.`);
           setLoading(false);
           return;
         }
@@ -114,13 +118,16 @@ function Login() {
     setRegLoading(true);
 
     try {
-      await studentService.add(regForm);
-      setRegMsg("Registration successful! You and your parent can now log in using your contact numbers and password.");
+      const payload = {
+        ...regForm,
+        username: regForm.contactNo, // Bind username strictly to mobile number
+      };
+      await studentService.add(payload);
+      setRegMsg("Registration successful! You and your parent can now log in using your mobile numbers and password.");
       setTimeout(() => {
         setShowRegModal(false);
         setRegMsg("");
         setRegForm({
-          username: "",
           name: "",
           email: "",
           contactNo: "",
@@ -137,6 +144,29 @@ function Login() {
       }
     } finally {
       setRegLoading(false);
+    }
+  };
+
+  const handleForgotSubmit = async (e) => {
+    e.preventDefault();
+    setForgotMsg("");
+    if (!/^\d+$/.test(forgotContact.trim())) {
+      setForgotMsg("Please enter a valid mobile number.");
+      return;
+    }
+    setForgotLoading(true);
+    try {
+      await passwordResetService.requestReset(forgotContact.trim(), activeTab);
+      setForgotMsg("✅ Request submitted! Admin will approve your password reset. Upon approval, your password will be set to your mobile number.");
+      setTimeout(() => {
+        setShowForgotModal(false);
+        setForgotMsg("");
+        setForgotContact("");
+      }, 4000);
+    } catch (err) {
+      setForgotMsg("Failed to submit reset request. Please verify your mobile number.");
+    } finally {
+      setForgotLoading(false);
     }
   };
 
@@ -179,7 +209,7 @@ function Login() {
         <form onSubmit={handleLogin} className="flex flex-col gap-4">
           <div className="flex flex-col gap-1">
             <label className="text-xs font-semibold text-gray-700 uppercase">
-              {isAdminMode ? "Gmail Address" : `${activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} Contact No`}
+              {isAdminMode ? "Gmail Address" : `${activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} Mobile No`}
             </label>
             <input
               type={isAdminMode ? "email" : "text"}
@@ -192,9 +222,18 @@ function Login() {
           </div>
 
           <div className="flex flex-col gap-1">
-            <label className="text-xs font-semibold text-gray-700 uppercase">
-              Password
-            </label>
+            <div className="flex justify-between items-center">
+              <label className="text-xs font-semibold text-gray-700 uppercase">Password</label>
+              {!isAdminMode && (
+                <button
+                  type="button"
+                  onClick={() => setShowForgotModal(true)}
+                  className="text-xs text-blue-600 hover:underline font-medium"
+                >
+                  Forgot Password?
+                </button>
+              )}
+            </div>
             <input
               type="password"
               value={password}
@@ -220,7 +259,7 @@ function Login() {
           </button>
         </form>
 
-        {/* Student Self-Registration Trigger (Shown in Student/Parent tabs) */}
+        {/* Student Self-Registration Trigger */}
         {!isAdminMode && (activeTab === "student" || activeTab === "parent") && (
           <div className="mt-4 text-center">
             <button
@@ -263,7 +302,7 @@ function Login() {
             <div className="flex justify-between items-center mb-4 border-b pb-2 border-gray-200">
               <div>
                 <h3 className="font-bold text-gray-800 text-base">Student Self-Registration</h3>
-                <p className="text-xs text-gray-500">Register once. Student & Parent share login credentials.</p>
+                <p className="text-xs text-gray-500">Register with mobile numbers. Student & Parent share login credentials.</p>
               </div>
               <button onClick={() => setShowRegModal(false)} className="text-gray-500 hover:text-gray-800 font-bold text-lg">✕</button>
             </div>
@@ -271,40 +310,34 @@ function Login() {
             <form onSubmit={handleStudentRegister} className="flex flex-col gap-3">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs font-semibold text-gray-700 uppercase">Roll No / Username</label>
-                  <input type="text" name="username" value={regForm.username} onChange={handleRegChange} required className="w-full border border-gray-300 rounded px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-blue-500" />
-                </div>
-                <div>
                   <label className="text-xs font-semibold text-gray-700 uppercase">Full Name</label>
-                  <input type="text" name="name" value={regForm.name} onChange={handleRegChange} required className="w-full border border-gray-300 rounded px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-blue-500" />
+                  <input type="text" name="name" value={regForm.name} onChange={handleRegChange} required placeholder="Rahul Sharma" className="w-full border border-gray-300 rounded px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-blue-500" />
                 </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="text-xs font-semibold text-gray-700 uppercase">Email Address</label>
-                  <input type="email" name="email" value={regForm.email} onChange={handleRegChange} required className="w-full border border-gray-300 rounded px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-blue-500" />
-                </div>
-                <div>
-                  <label className="text-xs font-semibold text-gray-700 uppercase">Shared Password</label>
-                  <input type="password" name="password" value={regForm.password} onChange={handleRegChange} required className="w-full border border-gray-300 rounded px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-blue-500" />
+                  <input type="email" name="email" value={regForm.email} onChange={handleRegChange} required placeholder="rahul@example.com" className="w-full border border-gray-300 rounded px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-blue-500" />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs font-semibold text-gray-700 uppercase">Student Contact No</label>
-                  <input type="text" name="contactNo" value={regForm.contactNo} onChange={handleRegChange} placeholder="For Student Login" required className="w-full border border-gray-300 rounded px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-blue-500" />
+                  <label className="text-xs font-semibold text-gray-700 uppercase">Student Mobile No</label>
+                  <input type="text" name="contactNo" value={regForm.contactNo} onChange={handleRegChange} placeholder="10-digit number" required className="w-full border border-gray-300 rounded px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-blue-500" />
                 </div>
                 <div>
-                  <label className="text-xs font-semibold text-gray-700 uppercase">Parent Contact No</label>
-                  <input type="text" name="parentNo" value={regForm.parentNo} onChange={handleRegChange} placeholder="For Parent Login" required className="w-full border border-gray-300 rounded px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-blue-500" />
+                  <label className="text-xs font-semibold text-gray-700 uppercase">Parent Mobile No</label>
+                  <input type="text" name="parentNo" value={regForm.parentNo} onChange={handleRegChange} placeholder="10-digit number" required className="w-full border border-gray-300 rounded px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-blue-500" />
                 </div>
               </div>
 
               <div>
+                <label className="text-xs font-semibold text-gray-700 uppercase">Shared Password</label>
+                <input type="password" name="password" value={regForm.password} onChange={handleRegChange} placeholder="••••••••" required className="w-full border border-gray-300 rounded px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-blue-500" />
+              </div>
+
+              <div>
                 <label className="text-xs font-semibold text-gray-700 uppercase">Residential Address</label>
-                <textarea name="address" value={regForm.address} onChange={handleRegChange} rows="2" required className="w-full border border-gray-300 rounded px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-blue-500"></textarea>
+                <textarea name="address" value={regForm.address} onChange={handleRegChange} rows="2" required placeholder="Address" className="w-full border border-gray-300 rounded px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-blue-500"></textarea>
               </div>
 
               {regMsg && (
@@ -319,6 +352,50 @@ function Login() {
                 </button>
                 <button type="submit" disabled={regLoading} className="bg-green-700 hover:bg-green-800 text-white px-4 py-1.5 rounded text-xs font-semibold transition shadow-sm disabled:opacity-50">
                   {regLoading ? "Registering..." : "Submit Registration"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Forgot Password Request Modal */}
+      {showForgotModal && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" onClick={() => setShowForgotModal(false)}>
+          <div className="bg-white rounded border border-gray-300 shadow-xl p-6 max-w-sm w-full" onClick={(e) => e.stopPropagation()}>
+            <div className="flex justify-between items-center mb-4 border-b pb-2 border-gray-200">
+              <div>
+                <h3 className="font-bold text-gray-800 text-base">Request Password Reset</h3>
+                <p className="text-xs text-gray-500">Request password reset for {activeTab.toUpperCase()}</p>
+              </div>
+              <button onClick={() => setShowForgotModal(false)} className="text-gray-500 hover:text-gray-800 font-bold text-lg">✕</button>
+            </div>
+
+            <form onSubmit={handleForgotSubmit} className="flex flex-col gap-4">
+              <div>
+                <label className="text-xs font-semibold text-gray-700 uppercase mb-1 block">Registered Mobile Number</label>
+                <input
+                  type="text"
+                  value={forgotContact}
+                  onChange={(e) => setForgotContact(e.target.value)}
+                  placeholder="e.g. 9876543210"
+                  required
+                  className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              {forgotMsg && (
+                <div className={`text-xs text-center p-2.5 rounded font-semibold border ${forgotMsg.includes("✅") ? "bg-green-50 text-green-700 border-green-200" : "bg-red-50 text-red-600 border-red-200"}`}>
+                  {forgotMsg}
+                </div>
+              )}
+
+              <div className="flex justify-end gap-2 pt-2 border-t border-gray-200">
+                <button type="button" onClick={() => setShowForgotModal(false)} className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-3 py-1.5 rounded text-xs font-semibold">
+                  Cancel
+                </button>
+                <button type="submit" disabled={forgotLoading} className="bg-blue-700 hover:bg-blue-800 text-white px-4 py-1.5 rounded text-xs font-semibold shadow-sm disabled:opacity-50">
+                  {forgotLoading ? "Submitting..." : "Submit Reset Request"}
                 </button>
               </div>
             </form>

@@ -114,13 +114,17 @@ public class SubjectDao {
 			transaction = session.beginTransaction();
 			Subject subject = session.get(Subject.class, id);
 			
-			if(subject!=null) {
+			if (subject != null) {
+				session.createNativeQuery("delete from attendance_students where attendance_record_id in (select id from attendance_record where subject_id = :id)").setParameter("id", id).executeUpdate();
+				session.createQuery("delete from AttendanceRecord where subject.id = :id").setParameter("id", id).executeUpdate();
+				session.createNativeQuery("delete from student_subjects where subject_id = :id").setParameter("id", id).executeUpdate();
+
 				session.delete(subject);
 				transaction.commit();
 				msg = "deleted";
-			}else {
+			} else {
 				transaction.rollback();
-				msg="not exists";
+				msg = "not exists";
 			}
 		} catch (Exception e) {
 			if (transaction != null) {

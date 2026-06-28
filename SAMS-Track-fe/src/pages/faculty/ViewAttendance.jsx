@@ -19,7 +19,8 @@ function ViewAttendance() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (role === "admin") {
+    setLoading(true);
+    if (role === "admin" || role === "superadmin") {
       userService.getAllFaculty()
         .then((data) => setFaculties(data))
         .catch((err) => console.error(err));
@@ -27,17 +28,36 @@ function ViewAttendance() {
       subjectService.getAll()
         .then((data) => setSubjects(data))
         .catch((err) => console.error(err));
+
+      attendanceService.getAllRecords()
+        .then((data) => setAttendance(data))
+        .catch((err) => console.error(err))
+        .finally(() => setLoading(false));
     } else {
       subjectService.getByFaculty(username)
         .then((data) => setSubjects(data))
         .catch((err) => console.error(err));
+
+      attendanceService.getAllRecords()
+        .then((data) => {
+          const facultyLogs = (data || []).filter(a => a.user && a.user.username === username);
+          setAttendance(facultyLogs);
+        })
+        .catch((err) => console.error(err))
+        .finally(() => setLoading(false));
     }
   }, [role, username]);
 
   const showAll = () => {
     setLoading(true);
     attendanceService.getAllRecords()
-      .then((data) => setAttendance(data))
+      .then((data) => {
+        if (role === "faculty") {
+          setAttendance((data || []).filter(a => a.user && a.user.username === username));
+        } else {
+          setAttendance(data || []);
+        }
+      })
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));
   };
@@ -107,7 +127,7 @@ function ViewAttendance() {
             <input type="date" value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} className="border border-gray-300 rounded px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none" />
           </div>
           <div className="flex gap-2">
-            {role === "admin" && (<button onClick={showAll} className="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded text-sm font-semibold transition shadow-sm">Show All</button>)}
+            <button onClick={showAll} className="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded text-sm font-semibold transition shadow-sm">Show All</button>
             <button onClick={showFiltered} className="bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded text-sm font-semibold transition shadow-sm">Search</button>
           </div>
         </div>

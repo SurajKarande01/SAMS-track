@@ -32,8 +32,11 @@ function MarkAttendance() {
       .catch((err) => console.error(err));
   }, []);
 
-  const filteredStudents = selectedSubject
+  const enrolledMatches = selectedSubject
     ? students.filter((s) => s.subjects && s.subjects.some((sub) => sub.id === Number(selectedSubject)))
+    : [];
+  const filteredStudents = selectedSubject
+    ? (enrolledMatches.length > 0 ? enrolledMatches : students)
     : [];
 
   const toggleStudent = (id) => {

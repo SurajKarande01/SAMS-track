@@ -277,7 +277,7 @@ function StudentDashboard() {
         )}
 
         {/* Dashboard Tabs & Navigation */}
-        <div className="flex flex-wrap gap-2 mb-8 bg-white/60 p-1.5 rounded-xl w-fit border border-gray-300 shadow">
+        <div className="flex flex-wrap gap-2 mb-8 bg-white p-1.5 rounded-xl w-fit border border-gray-300 shadow">
           <button
             onClick={() => setActiveTab("progress")}
             className={`px-4 py-2 rounded-lg text-sm font-bold transition duration-200 border ${

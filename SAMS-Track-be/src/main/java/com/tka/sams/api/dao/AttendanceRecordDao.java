@@ -133,4 +133,31 @@ public class AttendanceRecordDao {
 		}
 		return record;
 	}
+
+	public String deleteAttendanceRecord(String id) {
+		Session session = null;
+		Transaction transaction = null;
+		String msg = "not exists";
+		try {
+			session = factory.openSession();
+			transaction = session.beginTransaction();
+			AttendanceRecord record = session.get(AttendanceRecord.class, id);
+			if (record != null) {
+				session.delete(record);
+				transaction.commit();
+				msg = "deleted";
+			}
+		} catch (Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
+			e.printStackTrace();
+			msg = "error";
+		} finally {
+			if (session != null) {
+				session.close();
+			}
+		}
+		return msg;
+	}
 }

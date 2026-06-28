@@ -59,6 +59,22 @@ function ViewAttendance() {
     setShowModal(true);
   };
 
+  const handleDeleteAttendance = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this attendance record log?")) return;
+    try {
+      await attendanceService.delete(id);
+      alert("Attendance record deleted successfully!");
+      if (selectedFaculty && selectedSubject && selectedDate) {
+        showFiltered();
+      } else {
+        showAll();
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete attendance record.");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col font-sans">
       {role === "admin" ? <AdminMenu /> : <FacultyMenu />}
@@ -122,9 +138,12 @@ function ViewAttendance() {
                     <td className="p-3 text-center text-gray-600">{a.date}</td>
                     <td className="p-3 text-center text-gray-600">{a.time}</td>
                     <td className="p-3 text-center font-bold text-blue-700">{a.numberOfStudents || (a.students ? a.students.length : 0)}</td>
-                    <td className="p-3 text-center">
-                      <button onClick={() => showStudents(a.students)} className="bg-blue-100 text-blue-700 hover:bg-blue-200 border border-blue-300 px-3 py-1 rounded text-xs font-semibold transition">
+                    <td className="p-3 text-center space-x-2">
+                      <button onClick={() => showStudents(a.students)} className="bg-blue-100 text-blue-700 hover:bg-blue-200 border border-blue-300 px-2.5 py-1 rounded text-xs font-semibold transition">
                         View List
+                      </button>
+                      <button onClick={() => handleDeleteAttendance(a.id)} className="bg-red-600 hover:bg-red-700 text-white px-2.5 py-1 rounded text-xs font-semibold transition shadow-sm">
+                        Delete
                       </button>
                     </td>
                   </tr>

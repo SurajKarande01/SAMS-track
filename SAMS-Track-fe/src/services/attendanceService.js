@@ -13,4 +13,8 @@ export const attendanceService = {
     const response = await API.get(`/attendance/get-attendance/${faculty}/${subjectId}/${date}`);
     return response.data;
   },
+  delete: async (id) => {
+    const response = await API.delete(`/attendance/delete-attendance/${id}`);
+    return response.data;
+  },
 };

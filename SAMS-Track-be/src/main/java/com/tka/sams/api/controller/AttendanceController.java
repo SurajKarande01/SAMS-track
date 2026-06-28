@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -96,6 +97,16 @@ public class AttendanceController {
 			return new org.springframework.http.ResponseEntity<>(saved, org.springframework.http.HttpStatus.CREATED);
 		} else {
 			return new org.springframework.http.ResponseEntity<>("Failed to record attendance", org.springframework.http.HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@DeleteMapping("/delete-attendance/{id}")
+	public org.springframework.http.ResponseEntity<String> deleteAttendance(@PathVariable String id) {
+		String result = attendanceRecordService.deleteAttendanceRecord(id);
+		if ("deleted".equals(result)) {
+			return new org.springframework.http.ResponseEntity<>(result, org.springframework.http.HttpStatus.OK);
+		} else {
+			return new org.springframework.http.ResponseEntity<>(result, org.springframework.http.HttpStatus.NOT_FOUND);
 		}
 	}
 }

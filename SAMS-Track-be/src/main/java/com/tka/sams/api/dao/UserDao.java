@@ -47,6 +47,12 @@ public class UserDao {
 			transaction = session.beginTransaction();
 			User user = session.get(User.class, username);
 			if (user != null) {
+				// Disassociate from AttendanceRecords and Subjects before deletion
+				session.createQuery("update AttendanceRecord set user = null where user.username = :uname")
+						.setParameter("uname", username).executeUpdate();
+				session.createQuery("update Subject set facultyUsername = null where facultyUsername = :uname")
+						.setParameter("uname", username).executeUpdate();
+
 				session.delete(user);
 				transaction.commit();
 				msg = "deleted";

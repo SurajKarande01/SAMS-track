@@ -51,4 +51,8 @@ public class AttendanceRecordService {
 
 		return dao.getAttendanceByFacultySubjectDate(faculty, subjectId, date);
 	}
+
+	public String deleteAttendanceRecord(String id) {
+		return dao.deleteAttendanceRecord(id);
+	}
 }

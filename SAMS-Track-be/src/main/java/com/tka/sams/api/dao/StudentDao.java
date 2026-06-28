@@ -163,6 +163,7 @@ public class StudentDao {
 			Student student = session.get(Student.class, id);
 
 			if (student != null) {
+				session.createQuery("delete from Mark where student.id = :id").setParameter("id", id).executeUpdate();
 				session.createNativeQuery("delete from attendance_students where student_id = :id").setParameter("id", id).executeUpdate();
 				session.createNativeQuery("delete from student_subjects where student_id = :id").setParameter("id", id).executeUpdate();
 				session.delete(student);

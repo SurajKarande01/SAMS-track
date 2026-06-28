@@ -214,7 +214,7 @@ function StudentDashboard() {
 
           <div className="flex items-center gap-4">
             <div className="hidden md:flex items-center gap-2 text-xs bg-blue-800 text-blue-100 py-1 px-3 rounded border border-blue-600">
-              <span>User: <strong className="text-white">{loggedInUser}</strong> ({role.toUpperCase()})</span>
+              <span>Mobile: <strong className="text-white">{loggedInUser}</strong> ({role.toUpperCase()})</span>
             </div>
             <button
               onClick={handleLogout}

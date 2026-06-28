@@ -8,9 +8,15 @@ function ProtectedRoute({ children, allowedRoles }) {
     return <Navigate to="/login" replace />;
   }
 
-  if (allowedRoles && !allowedRoles.includes(role)) {
+  // Check if role is allowed (Super Admin automatically satisfies Admin permissions)
+  const isAllowed = allowedRoles && (
+    allowedRoles.includes(role) || 
+    (role === "superadmin" && allowedRoles.includes("admin"))
+  );
+
+  if (allowedRoles && !isAllowed) {
     // If user doesn't have permissions, redirect to their dashboard
-    if (role === "admin") {
+    if (role === "admin" || role === "superadmin") {
       return <Navigate to="/admin-dashboard" replace />;
     } else if (role === "faculty") {
       return <Navigate to="/faculty-dashboard" replace />;

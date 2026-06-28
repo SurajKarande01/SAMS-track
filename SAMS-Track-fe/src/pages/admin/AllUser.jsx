@@ -58,10 +58,10 @@ function AllUser() {
       }
     } else {
       // Regular user or faculty deletion
-      if (!window.confirm(`Are you sure you want to permanently delete user account: ${targetUsername}?`)) return;
+      if (!window.confirm(`Are you sure you want to permanently delete faculty/user account: ${targetUsername}?`)) return;
       try {
         await userService.delete(targetUsername);
-        alert("User account deleted successfully!");
+        alert("Account deleted successfully!");
         fetchUsers();
       } catch (err) {
         console.error("Error deleting user:", err);
@@ -99,13 +99,21 @@ function AllUser() {
     }
   };
 
-  // Filter users by selected role
+  // Filter users by selected role with Privacy Masking for Super Admin data
   const filteredUsers = users.filter((u) => {
+    // Privacy Masking: Hide Super Admin account details from non-superadmins
+    if (currentUserRole !== "superadmin" && u.role === "superadmin") {
+      return false;
+    }
     if (roleFilter === "admin") return u.role === "admin";
     if (roleFilter === "faculty") return u.role === "faculty";
     if (roleFilter === "superadmin") return u.role === "superadmin";
     return true;
   });
+
+  const availableRoles = currentUserRole === "superadmin" 
+    ? ["all", "admin", "faculty", "superadmin"] 
+    : ["all", "admin", "faculty"];
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col font-sans">
@@ -114,8 +122,8 @@ function AllUser() {
       <div className="p-6 max-w-5xl mx-auto flex-grow w-full">
         <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-gray-800">All Registered Accounts</h1>
-            <p className="text-sm text-gray-600">Monitor activity, filter roles, and manage institutional access</p>
+            <h1 className="text-2xl font-bold text-gray-800">User Management Portal</h1>
+            <p className="text-sm text-gray-600">Monitor activity, manage roles, and enforce institutional privileges</p>
           </div>
           <button
             onClick={() => navigate("/add-user")}
@@ -128,7 +136,7 @@ function AllUser() {
         {/* Sorting / Role Filters */}
         <div className="bg-white p-3 rounded border border-gray-300 shadow-sm mb-6 flex items-center gap-2 flex-wrap">
           <span className="text-xs font-semibold text-gray-600 uppercase mr-2">Filter by Role:</span>
-          {["all", "admin", "faculty", "superadmin"].map((r) => (
+          {availableRoles.map((r) => (
             <button
               key={r}
               onClick={() => setRoleFilter(r)}
@@ -150,7 +158,7 @@ function AllUser() {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-gray-100 text-gray-700 text-xs uppercase border-b border-gray-300">
-                  <th className="p-3">Username / Mobile</th>
+                  <th className="p-3">Mobile / Login ID</th>
                   <th className="p-3">Full Name</th>
                   <th className="p-3">Email</th>
                   <th className="p-3">Role</th>
@@ -197,7 +205,7 @@ function AllUser() {
                 ) : (
                   <tr>
                     <td colSpan="5" className="text-center py-8 text-gray-500 text-sm">
-                      No matching user accounts found.
+                      No matching accounts found.
                     </td>
                   </tr>
                 )}

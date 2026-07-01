@@ -109,55 +109,99 @@ function AllSubject() {
         {loading ? (
           <div className="text-center py-8 text-gray-600 font-medium">Loading subjects...</div>
         ) : (
-          <div className="overflow-x-auto bg-white rounded border border-gray-300 shadow-sm">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-gray-100 text-gray-700 text-xs uppercase border-b border-gray-300">
-                  <th className="p-3 text-center w-12">#</th>
-                  <th className="p-3 text-center w-20">ID</th>
-                  <th className="p-3">Subject Name</th>
-                  <th className="p-3">Assigned Faculty</th>
-                  <th className="p-3 text-center w-36">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200 text-sm">
-                {subjects.length > 0 ? (
-                  subjects.map((subject, index) => (
-                    <tr key={subject.id} className="hover:bg-gray-50">
-                      <td className="p-3 text-center text-gray-500">{index + 1}</td>
-                      <td className="p-3 text-center text-gray-600 font-medium">{subject.id}</td>
-                      <td className="p-3 font-semibold text-gray-800">{subject.name}</td>
-                      <td className="p-3 text-gray-700">
-                        <span className={`px-2 py-0.5 rounded text-xs font-medium ${subject.facultyUsername ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-gray-100 text-gray-500'}`}>
-                          {getFacultyName(subject.facultyUsername)}
-                        </span>
-                      </td>
-                      <td className="p-3 text-center space-x-2">
-                        <button
-                          onClick={() => startEditSubject(subject)}
-                          className="bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1 rounded text-xs font-semibold transition"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => deleteSubject(subject.id)}
-                          className="bg-red-600 hover:bg-red-700 text-white px-2.5 py-1 rounded text-xs font-semibold transition"
-                        >
-                          Delete
-                        </button>
+          <>
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto bg-white rounded border border-gray-300 shadow-sm">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-gray-100 text-gray-700 text-xs uppercase border-b border-gray-300">
+                    <th className="p-3 text-center w-12">#</th>
+                    <th className="p-3 text-center w-20">ID</th>
+                    <th className="p-3">Subject Name</th>
+                    <th className="p-3">Assigned Faculty</th>
+                    <th className="p-3 text-center w-36">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200 text-sm">
+                  {subjects.length > 0 ? (
+                    subjects.map((subject, index) => (
+                      <tr key={subject.id} className="hover:bg-gray-50">
+                        <td className="p-3 text-center text-gray-500">{index + 1}</td>
+                        <td className="p-3 text-center text-gray-600 font-medium">{subject.id}</td>
+                        <td className="p-3 font-semibold text-gray-800">{subject.name}</td>
+                        <td className="p-3 text-gray-700">
+                          <span className={`px-2 py-0.5 rounded text-xs font-medium ${subject.facultyUsername ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-gray-100 text-gray-500'}`}>
+                            {getFacultyName(subject.facultyUsername)}
+                          </span>
+                        </td>
+                        <td className="p-3 text-center space-x-2">
+                          <button
+                            onClick={() => startEditSubject(subject)}
+                            className="bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1 rounded text-xs font-semibold transition"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => deleteSubject(subject.id)}
+                            className="bg-red-600 hover:bg-red-700 text-white px-2.5 py-1 rounded text-xs font-semibold transition"
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="5" className="text-center py-8 text-gray-500 text-sm">
+                        No subjects registered.
                       </td>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="5" className="text-center py-8 text-gray-500 text-sm">
-                      No subjects registered.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile Card View */}
+            <div className="md:hidden flex flex-col gap-4">
+              {subjects.length > 0 ? (
+                subjects.map((subject, index) => (
+                  <div key={subject.id} className="bg-white p-4 rounded border border-gray-300 shadow-sm flex flex-col gap-3">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h4 className="font-bold text-gray-800 text-sm">{subject.name}</h4>
+                        <p className="text-xs text-gray-500 mt-0.5">Subject ID: {subject.id}</p>
+                      </div>
+                      <span className="text-xs font-semibold text-gray-400">#{index + 1}</span>
+                    </div>
+                    <div className="text-xs text-gray-600 flex items-center gap-1.5">
+                      <span className="font-semibold text-gray-500">Faculty:</span>
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${subject.facultyUsername ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-gray-100 text-gray-500'}`}>
+                        {getFacultyName(subject.facultyUsername)}
+                      </span>
+                    </div>
+                    <div className="flex gap-2 mt-1 border-t pt-3 border-gray-100 justify-end">
+                      <button
+                        onClick={() => startEditSubject(subject)}
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded text-xs font-semibold flex-1 transition text-center"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => deleteSubject(subject.id)}
+                        className="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded text-xs font-semibold flex-1 transition text-center"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center py-8 bg-white rounded border border-gray-300 text-gray-500 text-sm shadow-sm">
+                  No subjects registered.
+                </div>
+              )}
+            </div>
+          </>
         )}
       </div>
 

@@ -201,85 +201,160 @@ function AllUser() {
         {loading ? (
           <div className="text-center py-8 text-gray-600 font-medium">Loading user accounts...</div>
         ) : (
-          <div className="overflow-x-auto bg-white rounded border border-gray-300 shadow-sm">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-gray-100 text-gray-700 text-xs uppercase border-b border-gray-300">
-                  <th className="p-3">Mobile / Login ID</th>
-                  <th className="p-3">Full Name</th>
-                  <th className="p-3">Email</th>
-                  <th className="p-3">Role</th>
-                  <th className="p-3 text-center w-56">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200 text-sm">
-                {filteredUsers.length > 0 ? (
-                  filteredUsers.map((user, i) => (
-                    <tr key={i} className="hover:bg-gray-50">
-                      <td className="p-3 font-semibold text-gray-800">{user.username}</td>
-                      <td className="p-3 text-gray-700">
-                        {user.role === "student" 
-                          ? (user.name || user.username) 
-                          : (`${user.firstName || ''} ${user.lastName || ''}`.trim() || user.username)
-                        }
-                      </td>
-                      <td className="p-3 text-gray-600">{user.email}</td>
-                      <td className="p-3">
-                        <span className={`px-2 py-0.5 rounded text-xs font-semibold uppercase border ${
-                          user.role === 'superadmin' ? 'bg-purple-100 text-purple-800 border-purple-300 font-bold' :
-                          user.role === 'admin' ? 'bg-indigo-50 text-indigo-700 border-indigo-200' :
-                          user.role === 'student' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-blue-50 text-blue-700 border-blue-200'
-                        }`}>
-                          {user.role || "N/A"}
-                        </span>
-                      </td>
-                      <td className="p-3 text-center space-x-1.5">
-                        <button
-                          onClick={() => handleViewActivity(user)}
-                          className="bg-purple-600 hover:bg-purple-700 text-white px-2.5 py-1 rounded text-xs font-semibold transition"
-                        >
-                          Activity
-                        </button>
-                        <button
-                          onClick={() => {
-                            if (user.role === "student") {
-                              setEditingStudent(user);
-                              setStudentForm({
-                                id: user.id || "",
-                                name: user.name || "",
-                                email: user.email || "",
-                                contactNo: user.contactNo || "",
-                                parentNo: user.parentNo || "",
-                                password: user.password || "",
-                                address: user.address || "",
-                              });
-                            } else {
-                              navigate(`/update-user/${user.username}`);
-                            }
-                          }}
-                          className="bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1 rounded text-xs font-semibold transition"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => deleteUser(user)}
-                          className="bg-red-600 hover:bg-red-700 text-white px-2.5 py-1 rounded text-xs font-semibold transition"
-                        >
-                          Delete
-                        </button>
+          <>
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto bg-white rounded border border-gray-300 shadow-sm">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-gray-100 text-gray-700 text-xs uppercase border-b border-gray-300">
+                    <th className="p-3">Mobile / Login ID</th>
+                    <th className="p-3">Full Name</th>
+                    <th className="p-3">Email</th>
+                    <th className="p-3">Role</th>
+                    <th className="p-3 text-center w-56">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200 text-sm">
+                  {filteredUsers.length > 0 ? (
+                    filteredUsers.map((user, i) => (
+                      <tr key={i} className="hover:bg-gray-50">
+                        <td className="p-3 font-semibold text-gray-800">{user.username}</td>
+                        <td className="p-3 text-gray-700">
+                          {user.role === "student" 
+                            ? (user.name || user.username) 
+                            : (`${user.firstName || ''} ${user.lastName || ''}`.trim() || user.username)
+                          }
+                        </td>
+                        <td className="p-3 text-gray-600">{user.email}</td>
+                        <td className="p-3">
+                          <span className={`px-2 py-0.5 rounded text-xs font-semibold uppercase border ${
+                            user.role === 'superadmin' ? 'bg-purple-100 text-purple-800 border-purple-300 font-bold' :
+                            user.role === 'admin' ? 'bg-indigo-50 text-indigo-700 border-indigo-200' :
+                            user.role === 'student' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-blue-50 text-blue-700 border-blue-200'
+                          }`}>
+                            {user.role || "N/A"}
+                          </span>
+                        </td>
+                        <td className="p-3 text-center space-x-1.5">
+                          <button
+                            onClick={() => handleViewActivity(user)}
+                            className="bg-purple-600 hover:bg-purple-700 text-white px-2.5 py-1 rounded text-xs font-semibold transition"
+                          >
+                            Activity
+                          </button>
+                          <button
+                            onClick={() => {
+                              if (user.role === "student") {
+                                setEditingStudent(user);
+                                setStudentForm({
+                                  id: user.id || "",
+                                  name: user.name || "",
+                                  email: user.email || "",
+                                  contactNo: user.contactNo || "",
+                                  parentNo: user.parentNo || "",
+                                  password: user.password || "",
+                                  address: user.address || "",
+                                });
+                              } else {
+                                navigate(`/update-user/${user.username}`);
+                              }
+                            }}
+                            className="bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1 rounded text-xs font-semibold transition"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => deleteUser(user)}
+                            className="bg-red-600 hover:bg-red-700 text-white px-2.5 py-1 rounded text-xs font-semibold transition"
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="5" className="text-center py-8 text-gray-500 text-sm">
+                        No matching accounts found.
                       </td>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="5" className="text-center py-8 text-gray-500 text-sm">
-                      No matching accounts found.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile Card View */}
+            <div className="md:hidden flex flex-col gap-4">
+              {filteredUsers.length > 0 ? (
+                filteredUsers.map((user, i) => (
+                  <div key={i} className="bg-white p-4 rounded border border-gray-300 shadow-sm flex flex-col gap-3">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h4 className="font-bold text-gray-800 text-sm">
+                          {user.role === "student" 
+                            ? (user.name || user.username) 
+                            : (`${user.firstName || ''} ${user.lastName || ''}`.trim() || user.username)
+                          }
+                        </h4>
+                        <p className="text-xs text-gray-500 mt-0.5">{user.username}</p>
+                      </div>
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase border ${
+                        user.role === 'superadmin' ? 'bg-purple-100 text-purple-800 border-purple-300 font-bold' :
+                        user.role === 'admin' ? 'bg-indigo-50 text-indigo-700 border-indigo-200' :
+                        user.role === 'student' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-blue-50 text-blue-700 border-blue-200'
+                      }`}>
+                        {user.role || "N/A"}
+                      </span>
+                    </div>
+                    {user.email && (
+                      <div className="text-xs text-gray-600">
+                        <span className="font-semibold text-gray-500">Email:</span> {user.email}
+                      </div>
+                    )}
+                    <div className="flex gap-2 mt-1 border-t pt-3 border-gray-100 justify-end">
+                      <button
+                        onClick={() => handleViewActivity(user)}
+                        className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded text-xs font-semibold flex-1 transition text-center"
+                      >
+                        Activity
+                      </button>
+                      <button
+                        onClick={() => {
+                          if (user.role === "student") {
+                            setEditingStudent(user);
+                            setStudentForm({
+                              id: user.id || "",
+                              name: user.name || "",
+                              email: user.email || "",
+                              contactNo: user.contactNo || "",
+                              parentNo: user.parentNo || "",
+                              password: user.password || "",
+                              address: user.address || "",
+                            });
+                          } else {
+                            navigate(`/update-user/${user.username}`);
+                          }
+                        }}
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded text-xs font-semibold flex-1 transition text-center"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => deleteUser(user)}
+                        className="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded text-xs font-semibold flex-1 transition text-center"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center py-8 bg-white rounded border border-gray-300 text-gray-500 text-sm shadow-sm">
+                  No matching accounts found.
+                </div>
+              )}
+            </div>
+          </>
         )}
       </div>
 

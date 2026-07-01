@@ -136,43 +136,95 @@ function ViewAttendance() {
         {loading ? (
           <div className="text-center py-8 text-gray-600 font-medium">Loading records...</div>
         ) : (
-          <div className="overflow-x-auto bg-white rounded border border-gray-300 shadow-sm">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-gray-100 text-gray-700 text-xs uppercase border-b border-gray-300">
-                  <th className="p-3 text-center w-12">#</th>
-                  <th className="p-3">Faculty</th>
-                  <th className="p-3">Subject</th>
-                  <th className="p-3 text-center w-32">Date</th>
-                  <th className="p-3 text-center w-28">Time</th>
-                  <th className="p-3 text-center w-28">Present Count</th>
-                  <th className="p-3 text-center w-28">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200 text-sm">
-                {attendance.length > 0 ? attendance.map((a, i) => (
-                  <tr key={a.id || i} className="hover:bg-gray-50">
-                    <td className="p-3 text-center text-gray-600">{i + 1}</td>
-                    <td className="p-3 font-medium text-gray-800">{a.user ? `${a.user.firstName || ''} ${a.user.lastName || ''}`.trim() || a.user.username : "N/A"}</td>
-                    <td className="p-3 text-gray-800">{a.subject?.name || "N/A"}</td>
-                    <td className="p-3 text-center text-gray-600">{a.date}</td>
-                    <td className="p-3 text-center text-gray-600">{a.time}</td>
-                    <td className="p-3 text-center font-bold text-blue-700">{a.numberOfStudents || (a.students ? a.students.length : 0)}</td>
-                    <td className="p-3 text-center space-x-2">
-                      <button onClick={() => showStudents(a.students)} className="bg-blue-100 text-blue-700 hover:bg-blue-200 border border-blue-300 px-2.5 py-1 rounded text-xs font-semibold transition">
+          <>
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto bg-white rounded border border-gray-300 shadow-sm">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-gray-100 text-gray-700 text-xs uppercase border-b border-gray-300">
+                    <th className="p-3 text-center w-12">#</th>
+                    <th className="p-3">Faculty</th>
+                    <th className="p-3">Subject</th>
+                    <th className="p-3 text-center w-32">Date</th>
+                    <th className="p-3 text-center w-28">Time</th>
+                    <th className="p-3 text-center w-28">Present Count</th>
+                    <th className="p-3 text-center w-28">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200 text-sm">
+                  {attendance.length > 0 ? attendance.map((a, i) => (
+                    <tr key={a.id || i} className="hover:bg-gray-50">
+                      <td className="p-3 text-center text-gray-600">{i + 1}</td>
+                      <td className="p-3 font-medium text-gray-800">{a.user ? `${a.user.firstName || ''} ${a.user.lastName || ''}`.trim() || a.user.username : "N/A"}</td>
+                      <td className="p-3 text-gray-800">{a.subject?.name || "N/A"}</td>
+                      <td className="p-3 text-center text-gray-600">{a.date}</td>
+                      <td className="p-3 text-center text-gray-600">{a.time}</td>
+                      <td className="p-3 text-center font-bold text-blue-700">{a.numberOfStudents || (a.students ? a.students.length : 0)}</td>
+                      <td className="p-3 text-center space-x-2">
+                        <button onClick={() => showStudents(a.students)} className="bg-blue-100 text-blue-700 hover:bg-blue-200 border border-blue-300 px-2.5 py-1 rounded text-xs font-semibold transition">
+                          View List
+                        </button>
+                        <button onClick={() => handleDeleteAttendance(a.id)} className="bg-red-600 hover:bg-red-700 text-white px-2.5 py-1 rounded text-xs font-semibold transition shadow-sm">
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  )) : (
+                    <tr><td colSpan="7" className="text-center py-8 text-gray-500 text-sm">No attendance logs found matching the filter criteria.</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile Card View */}
+            <div className="md:hidden flex flex-col gap-4">
+              {attendance.length > 0 ? (
+                attendance.map((a, i) => (
+                  <div key={a.id || i} className="bg-white p-4 rounded border border-gray-300 shadow-sm flex flex-col gap-3">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h4 className="font-bold text-gray-800 text-sm">{a.subject?.name || "N/A"}</h4>
+                        <p className="text-xs text-gray-500 mt-0.5">Faculty: {a.user ? `${a.user.firstName || ''} ${a.user.lastName || ''}`.trim() || a.user.username : "N/A"}</p>
+                      </div>
+                      <span className="text-xs font-semibold text-gray-400">#{i + 1}</span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2 text-xs text-gray-600 border-t border-b py-2 border-gray-100">
+                      <div>
+                        <span className="font-semibold text-gray-500 block mb-0.5">Date</span>
+                        {a.date}
+                      </div>
+                      <div>
+                        <span className="font-semibold text-gray-500 block mb-0.5">Time Slot</span>
+                        {a.time}
+                      </div>
+                      <div>
+                        <span className="font-semibold text-gray-500 block mb-0.5">Present</span>
+                        <span className="font-bold text-blue-700">{a.numberOfStudents || (a.students ? a.students.length : 0)}</span>
+                      </div>
+                    </div>
+                    <div className="flex gap-2 justify-end">
+                      <button
+                        onClick={() => showStudents(a.students)}
+                        className="bg-blue-100 text-blue-700 hover:bg-blue-200 border border-blue-300 px-3 py-1.5 rounded text-xs font-semibold flex-1 transition text-center"
+                      >
                         View List
                       </button>
-                      <button onClick={() => handleDeleteAttendance(a.id)} className="bg-red-600 hover:bg-red-700 text-white px-2.5 py-1 rounded text-xs font-semibold transition shadow-sm">
+                      <button
+                        onClick={() => handleDeleteAttendance(a.id)}
+                        className="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded text-xs font-semibold flex-1 transition text-center"
+                      >
                         Delete
                       </button>
-                    </td>
-                  </tr>
-                )) : (
-                  <tr><td colSpan="7" className="text-center py-8 text-gray-500 text-sm">No attendance logs found matching the filter criteria.</td></tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center py-8 bg-white rounded border border-gray-300 text-gray-500 text-sm shadow-sm">
+                  No attendance logs found matching the filter criteria.
+                </div>
+              )}
+            </div>
+          </>
         )}
       </div>
 

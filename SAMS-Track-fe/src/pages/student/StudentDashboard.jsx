@@ -244,22 +244,22 @@ function StudentDashboard() {
             </p>
           </div>
 
-          <div className="flex gap-4">
-            <div className="bg-gray-100 border border-gray-300 rounded-lg p-3 min-w-[120px] text-center shadow">
-              <div className="text-2xl font-bold text-blue-700">{enrolledSubjects.length}</div>
-              <div className="text-xs text-gray-500 font-semibold mt-1">Enrolled Subjects</div>
+          <div className="grid grid-cols-3 gap-2 sm:gap-4 w-full md:w-auto">
+            <div className="bg-gray-100 border border-gray-300 rounded-lg p-3 text-center shadow">
+              <div className="text-xl sm:text-2xl font-bold text-blue-700">{enrolledSubjects.length}</div>
+              <div className="text-[10px] sm:text-xs text-gray-500 font-semibold mt-1">Enrolled Subjects</div>
             </div>
-            <div className="bg-gray-100 border border-gray-300 rounded-lg p-3 min-w-[120px] text-center shadow">
-              <div className="text-2xl font-bold text-green-700">
+            <div className="bg-gray-100 border border-gray-300 rounded-lg p-3 text-center shadow">
+              <div className="text-xl sm:text-2xl font-bold text-green-700">
                 {marks.length > 0 
                   ? (marks.reduce((acc, curr) => acc + curr.marks, 0) / marks.length).toFixed(1)
                   : "N/A"}
               </div>
-              <div className="text-xs text-gray-500 font-semibold mt-1">Avg Marks</div>
+              <div className="text-[10px] sm:text-xs text-gray-500 font-semibold mt-1">Avg Marks</div>
             </div>
-            <div className="bg-gray-100 border border-gray-300 rounded-lg p-3 min-w-[120px] text-center shadow">
-              <div className="text-2xl font-bold text-purple-700">{attendance.length}</div>
-              <div className="text-xs text-gray-500 font-semibold mt-1">Present Days</div>
+            <div className="bg-gray-100 border border-gray-300 rounded-lg p-3 text-center shadow">
+              <div className="text-xl sm:text-2xl font-bold text-purple-700">{attendance.length}</div>
+              <div className="text-[10px] sm:text-xs text-gray-500 font-semibold mt-1">Present Days</div>
             </div>
           </div>
         </div>

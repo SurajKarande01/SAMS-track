@@ -170,7 +170,7 @@ function MarkAttendance() {
           )}
 
           {/* Student list */}
-          <div className="border border-gray-300 rounded overflow-hidden">
+          <div className="border border-gray-300 rounded overflow-hidden overflow-x-auto">
             {!selectedSubject ? (
               <p className="text-gray-500 text-center py-8 text-sm">Please select a subject above to view enrolled students.</p>
             ) : filteredStudents.length > 0 ? (

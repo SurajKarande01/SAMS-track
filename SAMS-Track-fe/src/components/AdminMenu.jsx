@@ -64,7 +64,7 @@ function AdminMenu() {
 
       {/* Mobile Navigation Dropdown */}
       {isOpen && (
-        <div className="md:hidden bg-blue-850 border-t border-blue-600 px-6 py-4 flex flex-col gap-3 text-sm font-medium absolute left-0 right-0 shadow-lg">
+        <div className="md:hidden bg-blue-800 border-t border-blue-600 px-6 py-4 flex flex-col gap-3 text-sm font-medium absolute left-0 right-0 shadow-lg">
           <Link to="/admin-dashboard" onClick={() => setIsOpen(false)} className="hover:text-blue-200 transition py-1 block">
             Dashboard
           </Link>

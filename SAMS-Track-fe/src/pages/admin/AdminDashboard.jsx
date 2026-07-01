@@ -9,7 +9,7 @@ import { passwordResetService } from "../../services/passwordResetService";
 import { adminDeletionService } from "../../services/adminDeletionService";
 
 function AdminDashboard() {
-  const [studentCount, setStudentCount] = useState(0);
+  const [userCount, setUserCount] = useState(0);
   const [facultyCount, setFacultyCount] = useState(0);
   const [subjectCount, setSubjectCount] = useState(0);
   const [attendanceCount, setAttendanceCount] = useState(0);
@@ -23,14 +23,15 @@ function AdminDashboard() {
   const fetchDashboardData = () => {
     setLoading(true);
     Promise.all([
+      userService.getAll().catch(() => []),
       studentService.getAll().catch(() => []),
       userService.getAllFaculty().catch(() => []),
       subjectService.getAll().catch(() => []),
       attendanceService.getAllRecords().catch(() => []),
       passwordResetService.getPendingRequests().catch(() => []),
       currentUserRole === "superadmin" ? adminDeletionService.getPendingRequests().catch(() => []) : Promise.resolve([]),
-    ]).then(([students, faculties, subjects, attendances, resetRequests, adminDeletionReqs]) => {
-      setStudentCount(students.length || 0);
+    ]).then(([users, students, faculties, subjects, attendances, resetRequests, adminDeletionReqs]) => {
+      setUserCount((users.length || 0) + (students.length || 0));
       setFacultyCount(faculties.length || 0);
       setSubjectCount(subjects.length || 0);
       setAttendanceCount(attendances.length || 0);
@@ -117,12 +118,12 @@ function AdminDashboard() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
           <div className="bg-white p-5 rounded border border-gray-300 shadow-sm flex flex-col justify-between">
             <div className="flex justify-between items-center">
-              <span className="text-xs font-bold text-gray-500 uppercase">Registered Students</span>
-              <span className="text-2xl">🎓</span>
+              <span className="text-xs font-bold text-gray-500 uppercase">Registered Users</span>
+              <span className="text-2xl">👥</span>
             </div>
             <div className="mt-3">
-              <div className="text-3xl font-bold text-blue-700">{loading ? "..." : studentCount}</div>
-              <p className="text-xs text-gray-500 mt-1">Total student profiles</p>
+              <div className="text-3xl font-bold text-blue-700">{loading ? "..." : userCount}</div>
+              <p className="text-xs text-gray-500 mt-1">Total platform accounts</p>
             </div>
           </div>
 

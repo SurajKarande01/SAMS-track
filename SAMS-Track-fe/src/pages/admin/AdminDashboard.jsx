@@ -42,6 +42,7 @@ function AdminDashboard() {
 
   useEffect(() => {
     fetchDashboardData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleApproveReset = async (id, contactNo) => {
@@ -51,6 +52,7 @@ function AdminDashboard() {
       setActionMsg(`✅ Approved! Password for ${contactNo} has been reset to their mobile number.`);
       fetchDashboardData();
     } catch (err) {
+      console.error(err);
       alert("Failed to approve reset request.");
     }
   };
@@ -62,6 +64,7 @@ function AdminDashboard() {
       setActionMsg("Password reset request rejected.");
       fetchDashboardData();
     } catch (err) {
+      console.error(err);
       alert("Failed to reject reset request.");
     }
   };
@@ -73,6 +76,7 @@ function AdminDashboard() {
       setActionMsg(`🛡️ Granted! Admin account ${targetAdmin} has been permanently deleted.`);
       fetchDashboardData();
     } catch (err) {
+      console.error(err);
       alert("Failed to grant admin deletion request.");
     }
   };
@@ -84,6 +88,7 @@ function AdminDashboard() {
       setActionMsg("Admin deletion request denied.");
       fetchDashboardData();
     } catch (err) {
+      console.error(err);
       alert("Failed to deny request.");
     }
   };

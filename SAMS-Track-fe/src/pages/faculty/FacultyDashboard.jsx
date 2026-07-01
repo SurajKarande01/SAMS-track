@@ -250,14 +250,14 @@ function FacultyDashboard() {
             </p>
           </div>
 
-          <div className="flex gap-4">
-            <div className="bg-gray-100 border border-gray-300 rounded-lg p-3 min-w-[120px] text-center shadow">
-              <div className="text-2xl font-bold text-blue-700">{assignedSubjects.length}</div>
-              <div className="text-xs text-gray-500 font-semibold mt-1">Assigned Classes</div>
+          <div className="grid grid-cols-2 gap-3 w-full md:w-auto">
+            <div className="bg-gray-100 border border-gray-300 rounded-lg p-3 text-center shadow">
+              <div className="text-xl sm:text-2xl font-bold text-blue-700">{assignedSubjects.length}</div>
+              <div className="text-[10px] sm:text-xs text-gray-500 font-semibold mt-1">Assigned Classes</div>
             </div>
-            <div className="bg-gray-100 border border-gray-300 rounded-lg p-3 min-w-[120px] text-center shadow">
-              <div className="text-2xl font-bold text-green-700">{students.length}</div>
-              <div className="text-xs text-gray-500 font-semibold mt-1">Total Students</div>
+            <div className="bg-gray-100 border border-gray-300 rounded-lg p-3 text-center shadow">
+              <div className="text-xl sm:text-2xl font-bold text-green-700">{students.length}</div>
+              <div className="text-[10px] sm:text-xs text-gray-500 font-semibold mt-1">Total Students</div>
             </div>
           </div>
         </div>

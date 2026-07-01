@@ -164,6 +164,7 @@ function Login() {
         setForgotContact("");
       }, 4000);
     } catch (err) {
+      console.error(err);
       setForgotMsg("Failed to submit reset request. Please verify your mobile number.");
     } finally {
       setForgotLoading(false);

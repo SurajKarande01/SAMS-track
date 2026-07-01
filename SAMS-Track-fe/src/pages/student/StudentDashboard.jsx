@@ -46,6 +46,7 @@ function StudentDashboard() {
       return;
     }
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [studentId, role]);
 
   /**
@@ -113,6 +114,7 @@ function StudentDashboard() {
       setTimeout(() => setSuccessMsg(""), 3000);
       fetchData();
     } catch (err) {
+      console.error(err);
       setErrorMsg("Failed to update subject enrollment");
       setTimeout(() => setErrorMsg(""), 3000);
     }
@@ -141,6 +143,7 @@ function StudentDashboard() {
       setTimeout(() => setSuccessMsg(""), 3000);
       fetchData();
     } catch (err) {
+      console.error(err);
       setErrorMsg("Failed to update profile");
       setTimeout(() => setErrorMsg(""), 3000);
     }
@@ -155,6 +158,7 @@ function StudentDashboard() {
         await studentService.delete(studentId);
         handleLogout();
       } catch (err) {
+        console.error(err);
         setErrorMsg("Failed to delete profile");
         setTimeout(() => setErrorMsg(""), 3000);
       }

@@ -45,6 +45,7 @@ function FacultyDashboard() {
 
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loggedInUser]);
 
   /**
@@ -93,6 +94,7 @@ function FacultyDashboard() {
       setTimeout(() => setSuccessMsg(""), 3000);
       fetchData();
     } catch (err) {
+      console.error(err);
       setErrorMsg("Failed to add subject");
       setTimeout(() => setErrorMsg(""), 3000);
     }
@@ -111,6 +113,7 @@ function FacultyDashboard() {
         setTimeout(() => setSuccessMsg(""), 3000);
         fetchData();
       } catch (err) {
+        console.error(err);
         setErrorMsg("Failed to delete student");
         setTimeout(() => setErrorMsg(""), 3000);
       }
@@ -145,6 +148,7 @@ function FacultyDashboard() {
       setTimeout(() => setSuccessMsg(""), 3000);
       fetchData();
     } catch (err) {
+      console.error(err);
       setErrorMsg("Failed to record attendance");
       setTimeout(() => setErrorMsg(""), 3000);
     }
@@ -177,6 +181,7 @@ function FacultyDashboard() {
       setTimeout(() => setSuccessMsg(""), 3000);
       fetchData();
     } catch (err) {
+      console.error(err);
       setErrorMsg("Failed to record marks");
       setTimeout(() => setErrorMsg(""), 3000);
     }
@@ -195,6 +200,7 @@ function FacultyDashboard() {
         setTimeout(() => setSuccessMsg(""), 3000);
         fetchData();
       } catch (err) {
+        console.error(err);
         setErrorMsg("Failed to delete marks record");
         setTimeout(() => setErrorMsg(""), 3000);
       }
@@ -221,7 +227,6 @@ function FacultyDashboard() {
    */
   const handlePrintReport = (term) => {
     const printContent = document.getElementById("student-report-print-area").innerHTML;
-    const originalContent = document.body.innerHTML;
     
     // Create print layout
     document.body.innerHTML = `

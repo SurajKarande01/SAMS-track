@@ -2,13 +2,15 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AdminMenu from "../../components/AdminMenu";
 import { userService } from "../../services/userService";
+import { studentService } from "../../services/studentService";
+import { marksService } from "../../services/marksService";
 import { subjectService } from "../../services/subjectService";
 import { attendanceService } from "../../services/attendanceService";
 import { adminDeletionService } from "../../services/adminDeletionService";
 
 function AllUser() {
   const [users, setUsers] = useState([]);
-  const [roleFilter, setRoleFilter] = useState("all"); // "all", "admin", "faculty", "superadmin"
+  const [roleFilter, setRoleFilter] = useState("all"); // "all", "admin", "faculty", "student", "superadmin"
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
@@ -20,11 +22,33 @@ function AllUser() {
   const [activityData, setActivityData] = useState(null);
   const [loadingActivity, setLoadingActivity] = useState(false);
 
+  // Student Edit Modal states
+  const [editingStudent, setEditingStudent] = useState(null);
+  const [studentForm, setStudentForm] = useState({
+    id: "",
+    name: "",
+    email: "",
+    contactNo: "",
+    parentNo: "",
+    password: "",
+    address: "",
+  });
+
   const fetchUsers = () => {
     setLoading(true);
-    userService.getAll()
-      .then((data) => setUsers(data || []))
-      .catch((err) => console.error("Error fetching users:", err))
+    Promise.all([
+      userService.getAll().catch(() => []),
+      studentService.getAll().catch(() => []),
+    ])
+      .then(([usersList, studentsList]) => {
+        const formattedStudents = (studentsList || []).map((s) => ({
+          ...s,
+          role: "student",
+          username: s.contactNo || s.username || `student-${s.id}`,
+        }));
+        setUsers([...(usersList || []), ...formattedStudents]);
+      })
+      .catch((err) => console.error("Error fetching users/students:", err))
       .finally(() => setLoading(false));
   };
 
@@ -36,7 +60,17 @@ function AllUser() {
     const targetUsername = user.username;
     const targetRole = user.role;
 
-    if (targetRole === "admin") {
+    if (targetRole === "student") {
+      if (!window.confirm(`Are you sure you want to permanently delete student profile: ${user.name || targetUsername}?`)) return;
+      try {
+        await studentService.delete(user.id);
+        alert("Student profile deleted successfully.");
+        fetchUsers();
+      } catch (err) {
+        console.error(err);
+        alert("Failed to delete student profile.");
+      }
+    } else if (targetRole === "admin") {
       if (currentUserRole === "superadmin") {
         if (!window.confirm(`[SUPER ADMIN] Are you sure you want to permanently delete Admin: ${targetUsername}?`)) return;
         try {
@@ -87,6 +121,16 @@ function AllUser() {
           loggedAttendanceCount: facultyAtts.length,
           recentLogs: facultyAtts.slice(0, 5)
         });
+      } else if (user.role === "student") {
+        const [subs, marks] = await Promise.all([
+          studentService.getSubjects(user.id).catch(() => []),
+          marksService.getByStudent(user.id).catch(() => [])
+        ]);
+        setActivityData({
+          assignedSubjects: subs || [],
+          loggedAttendanceCount: 0,
+          recentLogs: marks || []
+        });
       } else {
         setActivityData({
           assignedSubjects: [],
@@ -109,13 +153,14 @@ function AllUser() {
     }
     if (roleFilter === "admin") return u.role === "admin";
     if (roleFilter === "faculty") return u.role === "faculty";
+    if (roleFilter === "student") return u.role === "student";
     if (roleFilter === "superadmin") return u.role === "superadmin";
     return true;
   });
 
   const availableRoles = currentUserRole === "superadmin" 
-    ? ["all", "admin", "faculty", "superadmin"] 
-    : ["all", "admin", "faculty"];
+    ? ["all", "admin", "faculty", "student", "superadmin"] 
+    : ["all", "admin", "faculty", "student"];
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col font-sans">
@@ -172,12 +217,18 @@ function AllUser() {
                   filteredUsers.map((user, i) => (
                     <tr key={i} className="hover:bg-gray-50">
                       <td className="p-3 font-semibold text-gray-800">{user.username}</td>
-                      <td className="p-3 text-gray-700">{`${user.firstName || ''} ${user.lastName || ''}`.trim() || user.username}</td>
+                      <td className="p-3 text-gray-700">
+                        {user.role === "student" 
+                          ? (user.name || user.username) 
+                          : (`${user.firstName || ''} ${user.lastName || ''}`.trim() || user.username)
+                        }
+                      </td>
                       <td className="p-3 text-gray-600">{user.email}</td>
                       <td className="p-3">
                         <span className={`px-2 py-0.5 rounded text-xs font-semibold uppercase border ${
                           user.role === 'superadmin' ? 'bg-purple-100 text-purple-800 border-purple-300 font-bold' :
-                          user.role === 'admin' ? 'bg-indigo-50 text-indigo-700 border-indigo-200' : 'bg-blue-50 text-blue-700 border-blue-200'
+                          user.role === 'admin' ? 'bg-indigo-50 text-indigo-700 border-indigo-200' :
+                          user.role === 'student' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-blue-50 text-blue-700 border-blue-200'
                         }`}>
                           {user.role || "N/A"}
                         </span>
@@ -190,7 +241,22 @@ function AllUser() {
                           Activity
                         </button>
                         <button
-                          onClick={() => navigate(`/update-user/${user.username}`)}
+                          onClick={() => {
+                            if (user.role === "student") {
+                              setEditingStudent(user);
+                              setStudentForm({
+                                id: user.id || "",
+                                name: user.name || "",
+                                email: user.email || "",
+                                contactNo: user.contactNo || "",
+                                parentNo: user.parentNo || "",
+                                password: user.password || "",
+                                address: user.address || "",
+                              });
+                            } else {
+                              navigate(`/update-user/${user.username}`);
+                            }
+                          }}
                           className="bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1 rounded text-xs font-semibold transition"
                         >
                           Edit
@@ -235,8 +301,20 @@ function AllUser() {
               <div className="flex flex-col gap-4 text-sm">
                 <div className="bg-gray-50 p-3 rounded border border-gray-200">
                   <p className="text-xs text-gray-500 uppercase font-semibold">Account Profile Details</p>
-                  <p className="font-medium text-gray-800 mt-1">Name: {selectedUserActivity.firstName} {selectedUserActivity.lastName}</p>
+                  <p className="font-medium text-gray-800 mt-1">
+                    Name: {selectedUserActivity.role === "student" 
+                      ? selectedUserActivity.name 
+                      : `${selectedUserActivity.firstName || ''} ${selectedUserActivity.lastName || ''}`.trim() || selectedUserActivity.username
+                    }
+                  </p>
                   <p className="text-gray-600 text-xs">Email: {selectedUserActivity.email}</p>
+                  {selectedUserActivity.role === "student" && (
+                    <>
+                      <p className="text-gray-600 text-xs">Student Contact: {selectedUserActivity.contactNo}</p>
+                      <p className="text-gray-600 text-xs">Parent Contact: {selectedUserActivity.parentNo}</p>
+                      <p className="text-gray-600 text-xs">Address: {selectedUserActivity.address}</p>
+                    </>
+                  )}
                   <p className="text-gray-600 text-xs">Status: Active Operational Account</p>
                 </div>
 
@@ -275,6 +353,41 @@ function AllUser() {
                   </>
                 )}
 
+                {selectedUserActivity.role === "student" && activityData && (
+                  <>
+                    <div>
+                      <p className="text-xs font-bold text-gray-700 uppercase mb-1">Enrolled Subjects ({activityData.assignedSubjects.length})</p>
+                      {activityData.assignedSubjects.length > 0 ? (
+                        <div className="flex flex-wrap gap-1">
+                          {activityData.assignedSubjects.map((s, idx) => (
+                            <span key={idx} className="bg-green-100 text-green-800 text-xs px-2 py-0.5 rounded border border-green-200 font-medium">
+                              {s.name}
+                            </span>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-xs text-gray-500">Not enrolled in any subjects.</p>
+                      )}
+                    </div>
+
+                    <div>
+                      <p className="text-xs font-bold text-gray-700 uppercase mb-1">Academic Marks / Grades ({activityData.recentLogs.length})</p>
+                      {activityData.recentLogs.length > 0 ? (
+                        <ul className="divide-y divide-gray-100 text-xs max-h-40 overflow-y-auto">
+                          {activityData.recentLogs.map((log, idx) => (
+                            <li key={idx} className="py-1.5 flex justify-between items-center">
+                              <span className="font-semibold text-gray-700">{log.subject?.name || "Subject"} ({log.term})</span>
+                              <span className="text-blue-700 font-bold">{log.marks} / 100</span>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="text-xs text-gray-500">No marks recorded yet.</p>
+                      )}
+                    </div>
+                  </>
+                )}
+
                 {(selectedUserActivity.role === "admin" || selectedUserActivity.role === "superadmin") && (
                   <div className="text-xs text-gray-600 bg-purple-50 p-3 rounded border border-purple-200">
                     🛡️ Full Administrative Access. System monitoring, user creation, and subject management privileges active.
@@ -287,6 +400,119 @@ function AllUser() {
                 Close Monitor
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Student Edit Modal */}
+      {editingStudent && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" onClick={() => setEditingStudent(null)}>
+          <div className="bg-white rounded border border-gray-300 shadow-xl p-6 max-w-md w-full" onClick={(e) => e.stopPropagation()}>
+            <div className="flex justify-between items-center mb-4 border-b pb-2 border-gray-200">
+              <div>
+                <h3 className="font-bold text-gray-800 text-base">Edit Student Profile</h3>
+                <p className="text-xs text-gray-500">Modify details for student: {editingStudent.name}</p>
+              </div>
+              <button onClick={() => setEditingStudent(null)} className="text-gray-500 hover:text-gray-800 font-bold text-lg">✕</button>
+            </div>
+
+            <form
+              onSubmit={async (e) => {
+                e.preventDefault();
+                try {
+                  await studentService.update(studentForm);
+                  alert("Student profile updated successfully!");
+                  setEditingStudent(null);
+                  fetchUsers();
+                } catch (err) {
+                  console.error(err);
+                  alert("Failed to update student profile.");
+                }
+              }}
+              className="flex flex-col gap-3"
+            >
+              <div>
+                <label className="text-xs font-semibold text-gray-700 uppercase">Full Name</label>
+                <input
+                  type="text"
+                  value={studentForm.name}
+                  onChange={(e) => setStudentForm({ ...studentForm, name: e.target.value })}
+                  required
+                  className="w-full border border-gray-300 rounded px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-semibold text-gray-700 uppercase">Email Address</label>
+                <input
+                  type="email"
+                  value={studentForm.email}
+                  onChange={(e) => setStudentForm({ ...studentForm, email: e.target.value })}
+                  required
+                  className="w-full border border-gray-300 rounded px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-semibold text-gray-700 uppercase">Student Mobile No</label>
+                  <input
+                    type="text"
+                    value={studentForm.contactNo}
+                    disabled
+                    className="w-full border border-gray-300 rounded px-2.5 py-1.5 text-xs bg-gray-100 text-gray-500 cursor-not-allowed"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-gray-700 uppercase">Parent Mobile No</label>
+                  <input
+                    type="text"
+                    value={studentForm.parentNo}
+                    onChange={(e) => setStudentForm({ ...studentForm, parentNo: e.target.value })}
+                    required
+                    className="w-full border border-gray-300 rounded px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="text-xs font-semibold text-gray-700 uppercase">Password</label>
+                <input
+                  type="password"
+                  value={studentForm.password}
+                  onChange={(e) => setStudentForm({ ...studentForm, password: e.target.value })}
+                  required
+                  className="w-full border border-gray-300 rounded px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-semibold text-gray-700 uppercase">Address</label>
+                <textarea
+                  value={studentForm.address}
+                  onChange={(e) => setStudentForm({ ...studentForm, address: e.target.value })}
+                  rows="2"
+                  required
+                  className="w-full border border-gray-300 rounded px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-blue-500"
+                ></textarea>
+              </div>
+
+              <div className="flex justify-end gap-2 mt-2 pt-2 border-t border-gray-200">
+                <button
+                  type="button"
+                  onClick={() => setEditingStudent(null)}
+                  className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-3 py-1.5 rounded text-xs font-semibold"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="bg-blue-700 hover:bg-blue-800 text-white px-4 py-1.5 rounded text-xs font-semibold transition shadow-sm"
+                >
+                  Save Changes
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

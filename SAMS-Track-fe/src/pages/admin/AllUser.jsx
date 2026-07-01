@@ -44,6 +44,7 @@ function AllUser() {
           alert("Admin account permanently deleted successfully.");
           fetchUsers();
         } catch (err) {
+          console.error(err);
           alert("Failed to delete admin account.");
         }
       } else {
@@ -53,6 +54,7 @@ function AllUser() {
           await adminDeletionService.requestDeletion(targetUsername, currentUsername);
           alert(`✅ Deletion request for Admin (${targetUsername}) sent to Super Admin for approval!`);
         } catch (err) {
+          console.error(err);
           alert("Failed to submit admin deletion request to Super Admin.");
         }
       }

@@ -10,7 +10,7 @@ public class User {
 	
 	@Id
 	private String username;
-	@JsonIgnore
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String password;
 	private String firstName;
 	private String lastName;
@@ -33,7 +33,6 @@ public class User {
 		return password;
 	}
 
-	@JsonProperty
 	public void setPassword(String password) {
 		this.password = password;
 	}

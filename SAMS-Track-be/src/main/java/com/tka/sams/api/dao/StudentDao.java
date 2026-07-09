@@ -111,7 +111,9 @@ public class StudentDao {
 					existing.setParentNo(studentDetails.getParentNo());
 					existing.setPassword(studentDetails.getPassword());
 					existing.setAddress(studentDetails.getAddress());
-					existing.setSubjects(studentDetails.getSubjects());
+					if (studentDetails.getSubjects() != null) {
+						existing.setSubjects(new java.util.HashSet<>(studentDetails.getSubjects()));
+					}
 				} else {
 					// Partial update: copy only provided non-null fields
 					if (studentDetails.getName() != null) {

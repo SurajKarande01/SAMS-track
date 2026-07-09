@@ -91,7 +91,6 @@ public class AttendanceController {
 		attendanceRecord.setStudents(studentSet);
 		attendanceRecord.setNumberOfStudents(studentSet.size());
 
-		System.out.println(attendanceRecord);
 		AttendanceRecord saved = attendanceRecordService.saveAttendance(attendanceRecord);
 		if (saved != null) {
 			return new org.springframework.http.ResponseEntity<>(saved, org.springframework.http.HttpStatus.CREATED);

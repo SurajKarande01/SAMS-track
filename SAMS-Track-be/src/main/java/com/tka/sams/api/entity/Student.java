@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 public class Student {
@@ -21,6 +23,7 @@ public class Student {
     private String username;
     private String contactNo;
     private String parentNo;
+    @JsonIgnore
     private String password;
     private String address;
 
@@ -87,6 +90,7 @@ public class Student {
         return password;
     }
 
+    @JsonProperty
     public void setPassword(String password) {
         this.password = password;
     }

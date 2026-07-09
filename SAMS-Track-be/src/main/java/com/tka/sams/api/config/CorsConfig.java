@@ -15,8 +15,11 @@ public class CorsConfig {
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
         
-        // Allow all origins (for dev; restrict in prod)
-        config.setAllowedOriginPatterns(List.of("*"));
+        // Allow only the production frontend origin
+        config.setAllowedOriginPatterns(List.of(
+            "https://sams-track.vercel.app",
+            "http://localhost:*"
+        ));
         
         // Allow all HTTP methods
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));

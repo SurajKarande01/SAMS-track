@@ -163,8 +163,7 @@ function Login() {
         setForgotMsg("");
         setForgotContact("");
       }, 4000);
-    } catch (err) {
-      console.error(err);
+    } catch {
       setForgotMsg("Failed to submit reset request. Please verify your mobile number.");
     } finally {
       setForgotLoading(false);

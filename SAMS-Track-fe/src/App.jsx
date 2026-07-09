@@ -5,6 +5,7 @@ import "./App.css";
 import Welcome from "./pages/Welcome";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
+import NotFound from "./pages/NotFound";
 
 // Admin Pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -135,6 +136,8 @@ function App() {
               </ProtectedRoute>
             }
           />
+          {/* 404 Catch-All */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
       <Footer />

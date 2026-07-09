@@ -97,7 +97,7 @@ function ViewAttendance() {
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col font-sans">
-      {role === "admin" ? <AdminMenu /> : <FacultyMenu />}
+      {(role === "admin" || role === "superadmin") ? <AdminMenu /> : <FacultyMenu />}
       <div className="p-6 max-w-5xl mx-auto flex-grow w-full">
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-gray-800">View Attendance Records</h1>
@@ -106,7 +106,7 @@ function ViewAttendance() {
         
         {/* Filters */}
         <div className="bg-white p-5 rounded border border-gray-300 shadow-sm flex flex-wrap gap-4 mb-6 items-end">
-          {role === "admin" && (
+          {(role === "admin" || role === "superadmin") && (
             <div className="flex flex-col flex-1 min-w-[180px]">
               <label className="text-xs font-semibold uppercase text-gray-700 mb-1">Faculty</label>
               <select value={selectedFaculty} onChange={(e) => setSelectedFaculty(e.target.value)} className="border border-gray-300 rounded px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">

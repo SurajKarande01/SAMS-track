@@ -7,8 +7,7 @@ function AdminMenu() {
   const [isOpen, setIsOpen] = useState(false);
 
   const logout = () => {
-    localStorage.removeItem("role");
-    localStorage.removeItem("username");
+    localStorage.clear();
     navigate("/");
   };
 

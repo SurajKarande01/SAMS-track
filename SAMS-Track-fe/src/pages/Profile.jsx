@@ -13,7 +13,7 @@ function Profile() {
   useEffect(() => {
     userService.getByUsername(username)
       .then((data) => { setUser(data); setForm(data); })
-      .catch((err) => console.error(err));
+      .catch(() => {});
   }, [username]);
 
   const handleChange = (e) => { setForm({ ...form, [e.target.name]: e.target.value }); };
@@ -28,7 +28,7 @@ function Profile() {
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col font-sans">
-      {role === "admin" ? <AdminMenu /> : <FacultyMenu />}
+      {(role === "admin" || role === "superadmin") ? <AdminMenu /> : <FacultyMenu />}
       <div className="flex-grow flex justify-center py-10 px-4">
         <div className="bg-white p-8 rounded border border-gray-300 shadow-sm w-full max-w-lg flex flex-col gap-4">
           <div className="border-b pb-3 border-gray-200">

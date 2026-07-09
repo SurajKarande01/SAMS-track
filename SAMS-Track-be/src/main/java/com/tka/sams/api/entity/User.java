@@ -2,12 +2,15 @@ package com.tka.sams.api.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 public class User {
 	
 	@Id
 	private String username;
+	@JsonIgnore
 	private String password;
 	private String firstName;
 	private String lastName;
@@ -30,6 +33,7 @@ public class User {
 		return password;
 	}
 
+	@JsonProperty
 	public void setPassword(String password) {
 		this.password = password;
 	}

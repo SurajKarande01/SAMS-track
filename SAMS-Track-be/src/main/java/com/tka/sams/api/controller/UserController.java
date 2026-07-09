@@ -209,4 +209,22 @@ public class UserController {
 		}
 	}
 
+	// Admin Forgot Password: resets admin password to default "admin"
+	@PostMapping("/reset-admin-password")
+	public ResponseEntity<String> resetAdminPassword(@RequestParam String email) {
+		if (email == null || !email.endsWith("@gmail.com")) {
+			return new ResponseEntity<>("Invalid Gmail address", HttpStatus.BAD_REQUEST);
+		}
+		User adminUser = service.getUserByName(email);
+		if (adminUser == null) {
+			return new ResponseEntity<>("Admin account not found with this email", HttpStatus.NOT_FOUND);
+		}
+		if (!"admin".equals(adminUser.getRole()) && !"superadmin".equals(adminUser.getRole())) {
+			return new ResponseEntity<>("This account is not an Admin", HttpStatus.BAD_REQUEST);
+		}
+		adminUser.setPassword("admin");
+		service.updateUser(adminUser);
+		return new ResponseEntity<>("Password has been reset to default successfully", HttpStatus.OK);
+	}
+
 }

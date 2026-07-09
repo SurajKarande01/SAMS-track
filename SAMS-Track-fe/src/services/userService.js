@@ -29,4 +29,8 @@ export const userService = {
     const response = await API.put("/user/update-user", userData);
     return response.data;
   },
+  resetAdminPassword: async (email) => {
+    const response = await API.post(`/user/reset-admin-password?email=${email}`);
+    return response.data;
+  },
 };

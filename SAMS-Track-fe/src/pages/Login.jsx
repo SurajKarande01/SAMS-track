@@ -37,6 +37,12 @@ function Login() {
   const [forgotMsg, setForgotMsg] = useState("");
   const [forgotLoading, setForgotLoading] = useState(false);
 
+  // Admin Forgot Password State
+  const [showAdminForgotModal, setShowAdminForgotModal] = useState(false);
+  const [adminForgotEmail, setAdminForgotEmail] = useState("");
+  const [adminForgotMsg, setAdminForgotMsg] = useState("");
+  const [adminForgotLoading, setAdminForgotLoading] = useState(false);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
@@ -98,6 +104,30 @@ function Login() {
       }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleAdminForgotSubmit = async (e) => {
+    e.preventDefault();
+    setAdminForgotMsg("");
+    const trimmedEmail = adminForgotEmail.trim();
+    if (!trimmedEmail.endsWith("@gmail.com")) {
+      setAdminForgotMsg("Please enter a valid Gmail address.");
+      return;
+    }
+    setAdminForgotLoading(true);
+    try {
+      await userService.resetAdminPassword(trimmedEmail);
+      setAdminForgotMsg('✅ Password has been reset to default "admin". You can now log in.');
+      setTimeout(() => {
+        setShowAdminForgotModal(false);
+        setAdminForgotMsg("");
+        setAdminForgotEmail("");
+      }, 3000);
+    } catch {
+      setAdminForgotMsg("Failed to reset password. Please verify your Gmail address.");
+    } finally {
+      setAdminForgotLoading(false);
     }
   };
 
@@ -224,15 +254,13 @@ function Login() {
           <div className="flex flex-col gap-1">
             <div className="flex justify-between items-center">
               <label className="text-xs font-semibold text-gray-700 uppercase">Password</label>
-              {!isAdminMode && (
-                <button
-                  type="button"
-                  onClick={() => setShowForgotModal(true)}
-                  className="text-xs text-blue-600 hover:underline font-medium"
-                >
-                  Forgot Password?
-                </button>
-              )}
+              <button
+                type="button"
+                onClick={() => isAdminMode ? setShowAdminForgotModal(true) : setShowForgotModal(true)}
+                className="text-xs text-blue-600 hover:underline font-medium"
+              >
+                Forgot Password?
+              </button>
             </div>
             <input
               type="password"
@@ -396,6 +424,50 @@ function Login() {
                 </button>
                 <button type="submit" disabled={forgotLoading} className="bg-blue-700 hover:bg-blue-800 text-white px-4 py-1.5 rounded text-xs font-semibold shadow-sm disabled:opacity-50">
                   {forgotLoading ? "Submitting..." : "Submit Reset Request"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Admin Forgot Password Modal */}
+      {showAdminForgotModal && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" onClick={() => setShowAdminForgotModal(false)}>
+          <div className="bg-white rounded border border-gray-300 shadow-xl p-6 max-w-sm w-full" onClick={(e) => e.stopPropagation()}>
+            <div className="flex justify-between items-center mb-4 border-b pb-2 border-gray-200">
+              <div>
+                <h3 className="font-bold text-gray-800 text-base">Admin Password Reset</h3>
+                <p className="text-xs text-gray-500">Reset your admin password to default &quot;admin&quot;</p>
+              </div>
+              <button onClick={() => setShowAdminForgotModal(false)} className="text-gray-500 hover:text-gray-800 font-bold text-lg">✕</button>
+            </div>
+
+            <form onSubmit={handleAdminForgotSubmit} className="flex flex-col gap-4">
+              <div>
+                <label className="text-xs font-semibold text-gray-700 uppercase mb-1 block">Registered Admin Gmail</label>
+                <input
+                  type="email"
+                  value={adminForgotEmail}
+                  onChange={(e) => setAdminForgotEmail(e.target.value)}
+                  placeholder="e.g. admin@gmail.com"
+                  required
+                  className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              {adminForgotMsg && (
+                <div className={`text-xs text-center p-2.5 rounded font-semibold border ${adminForgotMsg.includes("✅") ? "bg-green-50 text-green-700 border-green-200" : "bg-red-50 text-red-600 border-red-200"}`}>
+                  {adminForgotMsg}
+                </div>
+              )}
+
+              <div className="flex justify-end gap-2 pt-2 border-t border-gray-200">
+                <button type="button" onClick={() => setShowAdminForgotModal(false)} className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-3 py-1.5 rounded text-xs font-semibold">
+                  Cancel
+                </button>
+                <button type="submit" disabled={adminForgotLoading} className="bg-blue-700 hover:bg-blue-800 text-white px-4 py-1.5 rounded text-xs font-semibold shadow-sm disabled:opacity-50">
+                  {adminForgotLoading ? "Resetting..." : "Reset Password"}
                 </button>
               </div>
             </form>

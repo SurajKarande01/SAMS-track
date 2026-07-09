@@ -71,15 +71,29 @@ public class UserDao {
 		return msg;
 	}
 
-	public User updateUser(User user) {
+	public User updateUser(User userDetails) {
 		Session session = null;
 		Transaction transaction = null;
 		try {
 			session = factory.openSession();
 			transaction = session.beginTransaction();
-			session.update(user);
-			transaction.commit();
-			return user;
+			User existing = session.get(User.class, userDetails.getUsername());
+			if (existing != null) {
+				existing.setFirstName(userDetails.getFirstName());
+				existing.setLastName(userDetails.getLastName());
+				existing.setEmail(userDetails.getEmail());
+				existing.setRole(userDetails.getRole());
+				if (userDetails.getPassword() != null && !userDetails.getPassword().trim().isEmpty()) {
+					existing.setPassword(userDetails.getPassword());
+				}
+				session.update(existing);
+				transaction.commit();
+				return existing;
+			} else {
+				session.update(userDetails);
+				transaction.commit();
+				return userDetails;
+			}
 		} catch (Exception e) {
 			if (transaction != null) {
 				transaction.rollback();

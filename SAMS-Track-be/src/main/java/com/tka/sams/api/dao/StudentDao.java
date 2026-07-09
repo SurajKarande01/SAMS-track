@@ -109,7 +109,9 @@ public class StudentDao {
 					existing.setUsername(studentDetails.getUsername());
 					existing.setContactNo(studentDetails.getContactNo());
 					existing.setParentNo(studentDetails.getParentNo());
-					existing.setPassword(studentDetails.getPassword());
+					if (studentDetails.getPassword() != null && !studentDetails.getPassword().trim().isEmpty()) {
+						existing.setPassword(studentDetails.getPassword());
+					}
 					existing.setAddress(studentDetails.getAddress());
 					if (studentDetails.getSubjects() != null) {
 						existing.setSubjects(new java.util.HashSet<>(studentDetails.getSubjects()));
@@ -128,7 +130,7 @@ public class StudentDao {
 					if (studentDetails.getParentNo() != null) {
 						existing.setParentNo(studentDetails.getParentNo());
 					}
-					if (studentDetails.getPassword() != null) {
+					if (studentDetails.getPassword() != null && !studentDetails.getPassword().trim().isEmpty()) {
 						existing.setPassword(studentDetails.getPassword());
 					}
 					if (studentDetails.getAddress() != null) {

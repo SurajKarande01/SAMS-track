@@ -551,12 +551,12 @@ function AllUser() {
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-gray-700 uppercase">Password</label>
+                <label className="text-xs font-semibold text-gray-700 uppercase">Password (Optional)</label>
                 <input
                   type="password"
                   value={studentForm.password}
                   onChange={(e) => setStudentForm({ ...studentForm, password: e.target.value })}
-                  required
+                  placeholder="Leave blank to keep existing password"
                   className="w-full border border-gray-300 rounded px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-blue-500"
                 />
               </div>

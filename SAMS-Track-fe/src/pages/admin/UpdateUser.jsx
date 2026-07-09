@@ -121,14 +121,14 @@ function UpdateUser() {
           </div>
 
           <div className="flex flex-col gap-1">
-            <label className="text-xs font-semibold text-gray-700 uppercase">Password</label>
+            <label className="text-xs font-semibold text-gray-700 uppercase">Password (Optional)</label>
             <input
               type="password"
               name="password"
               value={user.password || ""}
               onChange={handleChange}
+              placeholder="Leave blank to keep existing password"
               className="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-              required
             />
           </div>
 
